@@ -1,6 +1,7 @@
 import PropType from "prop-types";
 import { ChevronRight } from "lucide-react";
 import PosterItem from "./PosterItem";
+import { posterItemType } from "../constants";
 
 function PosterBoard({ name, content }) {
   return (
@@ -18,13 +19,8 @@ function PosterBoard({ name, content }) {
       </div>
       {/* Poster container */}
       <div className="flex flex-row justify-evenly items-center">
-        {content.slice(0, 7).map((item) => (
-          <PosterItem
-            key={item?.id}
-            name={item?.title?.userPreferred}
-            image={item?.image}
-            color={item?.color || "00ffff"}
-          />
+        {content.slice(0, 7).map((item, id) => (
+          <PosterItem key={id} item={item} type={posterItemType.general} />
         ))}
       </div>
     </div>

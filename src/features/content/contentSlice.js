@@ -11,12 +11,18 @@ const loadHomePage = createAsyncThunk("content/loadHomePage", async () => {
   };
 });
 
+const applyFilter = createAsyncThunk("content/applyFilter", async (params) => {
+  const res = await animeApi.advancedSearch(params);
+  return res.data;
+});
+
 const initialState = {
   isHomePageLoaded: false,
   trending: [],
   // additional trending content related info like currentPage, hasNextPage
   popular: [],
   // additional popular content related info like currentPage, hasNextPage
+  filterContent: [],
 };
 
 export const contentSlice = createSlice({
@@ -24,6 +30,7 @@ export const contentSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    // Initial home page load
     builder.addCase(loadHomePage.fulfilled, (state, action) => {
       const { trending, popular } = action.payload;
 
@@ -35,10 +42,18 @@ export const contentSlice = createSlice({
       builder.addCase(loadHomePage.rejected, (state, action) => {
         console.log(action.error.message);
       });
+
+      // filter
+    builder.addCase(applyFilter.fulfilled, (state, action) => {
+      state.filterContent = action.payload?.results || [];
+    }),
+      builder.addCase(applyFilter.rejected, (state, action) => {
+        console.log(action.error.message);
+      });
   },
 });
 
 // Action creators are generated for each case reducer function
 // export const {  } = contentSlice.actions;
-export { loadHomePage };
+export { loadHomePage, applyFilter };
 export default contentSlice.reducer;

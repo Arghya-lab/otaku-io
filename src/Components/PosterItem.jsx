@@ -1,15 +1,29 @@
 import { useState } from "react";
 import PropType from "prop-types";
+import { posterItemType } from "../constants";
+import { useDispatch } from "react-redux";
+import { setMiniMeta } from "../features/selected/selectedSlice";
 
-function PosterItem({ name, image, color }) {
+function PosterItem({ item, type }) {
+  const dispatch = useDispatch();
+
   const [isHover, setIsHover] = useState(false);
+
+  const handleClick = () => {
+    if (type === posterItemType.general) {
+      return;
+    } else if (type === posterItemType.filter) {
+      dispatch(setMiniMeta(item));
+    }
+  };
 
   return (
     <div
       role="button"
       className="p-3 w-[calc(100%/5)] flex flex-col"
       onPointerEnter={() => setIsHover(true)}
-      onPointerLeave={() => setIsHover(false)}>
+      onPointerLeave={() => setIsHover(false)}
+      onClick={handleClick}>
       <div
         className={`pt-64 relative overflow-hidden rounded-[0.75rem] ring-[3px] ${
           isHover ? "ring-slate-50" : "ring-transparent"
@@ -19,25 +33,26 @@ function PosterItem({ name, image, color }) {
             isHover ? "scale-110" : null
           }`}>
           <img
-          title={name}
+            title={item?.title?.english}
             className="h-64 object-cover"
-            src={image}
+            src={item?.image}
           />
         </div>
       </div>
       <div
         className="h-16 text-sm font-medium flex items-center"
-        style={{ color: isHover ? color : "#FFFFFF" }}>
-        <p className="px-2 w-full line-clamp-2 text-center ">{name}</p>
+        style={{ color: isHover ? item?.color || "00ffff" : "#FFFFFF" }}>
+        <p className="px-2 w-full line-clamp-2 text-center">
+          {item?.title?.userPreferred}
+        </p>
       </div>
     </div>
   );
 }
 
 PosterItem.propTypes = {
-  name: PropType.string.isRequired,
-  image: PropType.string.isRequired,
-  color: PropType.string.isRequired,
+  item: PropType.object.isRequired,
+  type: PropType.string.isRequired,
 };
 
 export default PosterItem;

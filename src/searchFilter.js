@@ -1,4 +1,5 @@
 export const formatList = [
+  { value: undefined, name: "None" },
   { value: "TV", name: "Tv" },
   { value: "TV_SHORT", name: "TV Short" },
   { value: "MOVIE", name: "Movie" },
@@ -23,9 +24,11 @@ export const sortList = [
   { value: "SCORE", name: "Score Asc" },
   { value: "TITLE_ROMAJI", name: "Alphabetically" },
   { value: "TITLE_ROMAJI_DESC", name: "Alphabetically Desc" },
+  { value: undefined, name: "None" },
 ];
 
 export const genreList = [
+  { value: undefined, name: "None" },
   { value: "Action", name: "Action" },
   { value: "Adventure", name: "Adventure" },
   { value: "Comedy", name: "Comedy" },
@@ -50,4 +53,5 @@ export const statusList = [
   { value: "NOT_YET_RELEASED", name: "Not Yet Released" },
   { value: "CANCELLED", name: "Cancelled" },
   { value: "HIATUS", name: "Hiatus" },
+  { value: undefined, name: "None" },
 ];

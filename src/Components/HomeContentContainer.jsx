@@ -4,8 +4,8 @@ import PosterBoard from "./PosterBoard";
 import { useSelector } from "react-redux";
 
 function HomeContentContainer() {
-  const { trending, popular } = useSelector(state=>state.content
-    )
+  const { trending, popular } = useSelector((state) => state.content);
+  
   return (
     <SimpleBar className="h-[calc(100vh-88px)]">
       <Carousel />

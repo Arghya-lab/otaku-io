@@ -44,7 +44,7 @@ export const genreList = [
   { value: "Thriller", name: "Thriller" },
 ];
 
-export const status = [
+export const statusList = [
   { value: "FINISHED", name: "Finished" },
   { value: "RELEASING", name: "Releasing" },
   { value: "NOT_YET_RELEASED", name: "Not Yet Released" },

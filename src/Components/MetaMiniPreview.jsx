@@ -10,7 +10,7 @@ function MetaMiniPreview() {
 
   return (
     <div className="w-[416px] p-8 mx-4 mb-4 relative">
-      <div className="absolute left-0 right-4 top-0 bottom-0 rounded-[0.75rem]  bg-[#141e30]  overflow-hidden">
+      <div className="absolute left-0 right-4 top-0 bottom-0 rounded-xl  bg-[#141e30]  overflow-hidden">
         <img
           className="h-full w-full object-cover opacity-30 blur"
           src={miniMeta?.image}

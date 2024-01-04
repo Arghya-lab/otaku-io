@@ -8,6 +8,7 @@ import { formatList, genreList, sortList, statusList } from "../searchFilter";
 import { posterItemType } from "../constants";
 import { applyFilter } from "../features/content/contentSlice";
 import { setMiniMeta } from "../features/selected/selectedSlice";
+import { changeFilter } from "../features/filter/filterSlice";
 
 function DiscoverContentContainer() {
   const dispatch = useDispatch();
@@ -37,10 +38,38 @@ function DiscoverContentContainer() {
       <div className="flex-1 flex flex-col">
         {/* Selectable input container */}
         <div className="p-4 flex flex-row flex-wrap gap-4">
-          <Select type={"format"} list={formatList} />
-          <Select type={"genres"} list={genreList} />
-          <Select type={"sort"} list={sortList} />
-          <Select type={"status"} list={statusList} />
+          <Select
+            name={"format"}
+            list={formatList}
+            selected={selected["format"]}
+            onChange={(data) => {
+              dispatch(changeFilter({ type: "format", data }));
+            }}
+          />
+          <Select
+            name={"genres"}
+            list={genreList}
+            selected={selected["genres"]}
+            onChange={(data) => {
+              dispatch(changeFilter({ type: "genres", data }));
+            }}
+          />
+          <Select
+            name={"sort"}
+            list={sortList}
+            selected={selected["sort"]}
+            onChange={(data) => {
+              dispatch(changeFilter({ type: "sort", data }));
+            }}
+          />
+          <Select
+            name={"status"}
+            list={statusList}
+            selected={selected["status"]}
+            onChange={(data) => {
+              dispatch(changeFilter({ type: "status", data }));
+            }}
+          />
         </div>
         {/* Meta items container */}
         <SimpleBar className="h-[587px]">

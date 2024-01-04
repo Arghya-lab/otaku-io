@@ -1,14 +1,14 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "https://march-api1.vercel.app/",
+  baseURL: import.meta.env.VITE_CONSUMET_BASE_URL,
   timeout: 8000,
 });
 
 // Api search functions
 // Query Parameters for search:  page
 const search = async (query, params) =>
-  await instance.get(`https://march-api1.vercel.app/meta/anilist/${query}`, {
+  await instance.get(`meta/anilist/${query}`, {
     params,
   });
 
@@ -19,26 +19,47 @@ const search = async (query, params) =>
 // genres = enum[ "Action", "Adventure", "Comedy", "Drama", "Fantasy", "Horror", "Mecha", "Music", "Mystery", "Psychological", "Romance", "Sci-Fi", "Slice of Life", "Sports", "Supernatural", "Thriller" ]   => multiple accepted & should be inside array
 // status = enum[ "RELEASING", "NOT_YET_RELEASED", "FINISHED", "CANCELLED", "HIATUS", ]
 const advancedSearch = async (params) =>
-  await instance.get("/meta/anilist/advanced-search", { params });
+  await instance.get("meta/anilist/advanced-search", { params });
 
 // Query Parameters for getPopular:  page, perPage
 const getPopular = async (params) =>
   await instance.get("meta/anilist/popular", { params });
 
-const getRandom = async () => await instance.get("/meta/anilist/random-anime");
-
 // Query Parameters for getTrending:  page, perPage
 const getTrending = async (params) =>
-  await instance.get("/meta/anilist/trending", { params });
+  await instance.get("meta/anilist/trending", { params });
 
-// Query Parameters for getTrending:  page, perPage, provider
+// Query Parameters for getRecentEpisodes:  page, perPage, provider
 const getRecentEpisodes = async (params) =>
-  await instance.get("/meta/anilist/recent-episodes", { params });
+  await instance.get("meta/anilist/recent-episodes", { params });
+
+// Query Parameters for getDetails:  dub, provider
+const getDetails = async (id, params) => {
+  const fetchFiller =
+    params?.provider === "gogoanime" || params?.provider === "zoro"
+      ? true
+      : false;
+  if (fetchFiller) {
+    params = { fetchFiller: fetchFiller, ...params };
+  }
+  return await instance.get(`meta/anilist/info/${id}`, { params });
+};
+
+const getRandom = async () => await instance.get("/meta/anilist/random-anime");
 
 const getUpcoming = async () =>
-  axios.get("https://api.jikan.moe/v4/top/anime", {
+  await axios.get(import.meta.env.VITE_UPCOMING_ANIME_URL, {
     params: {
       filter: "upcoming",
+    },
+  });
+
+// Query Parameters for getImdbData:  apikey, t, i
+const getImdbData = async (params) =>
+  await axios.get(import.meta.env.VITE_OMDB_BASE_URL, {
+    params: {
+      apikey: import.meta.env.VITE_OMDB_API_KEY,
+      ...params,
     },
   });
 
@@ -46,10 +67,12 @@ const animeApi = {
   search,
   advancedSearch,
   getPopular,
-  getRandom,
   getTrending,
   getRecentEpisodes,
+  getDetails,
+  getRandom,
   getUpcoming,
+  getImdbData,
 };
 
 export default animeApi;

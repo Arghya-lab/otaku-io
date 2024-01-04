@@ -25,7 +25,7 @@ function PosterItem({ item, type }) {
       onPointerLeave={() => setIsHover(false)}
       onClick={handleClick}>
       <div
-        className={`pt-64 relative overflow-hidden rounded-[0.75rem] ring-[3px] ${
+        className={`pt-64 relative overflow-hidden rounded-xl ring-[3px] ${
           isHover ? "ring-slate-50" : "ring-transparent"
         }`}>
         <div

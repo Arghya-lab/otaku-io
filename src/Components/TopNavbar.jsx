@@ -1,8 +1,9 @@
-import { Box, Search, UserRound } from "lucide-react";
+import { Box, Search } from "lucide-react";
+import UserBtn from "./Ui/UserBtn";
 
 function TopNavbar() {
   return (
-    <div className="w-screen p-5 flex items-center justify-between">
+    <div className="w-screen px-5 h-20 flex items-center justify-between">
       <Box size={36} className="opacity-40 text-slate-300" />
       <div className="h-12 min-w-[480px] max-w-2xl rounded-[45px] bg-slate-700 shadow-sm flex flex-row items-center">
         <input
@@ -20,9 +21,7 @@ function TopNavbar() {
           <Search size={24} className="opacity-90 text-slate-300" />
         </div>
       </div>
-      <div className="w-12 h-12 cursor-pointer flex justify-center items-center rounded-[10px] opacity-65 text-slate-300  hover:bg-slate-600 hover:opacity-100 hover:text-slate-100">
-        <UserRound size={24} strokeWidth={2.5} />
-      </div>
+      <UserBtn />
     </div>
   );
 }

@@ -16,6 +16,14 @@ const applyFilter = createAsyncThunk("content/applyFilter", async (params) => {
   return res.data;
 });
 
+const loadDetailInfo = createAsyncThunk(
+  "content/loadDetailInfo",
+  async ({ id, params }) => {
+    const res = await animeApi.getDetails(id, { dub: true, ...params });
+    return res.data;
+  }
+);
+
 const initialState = {
   isHomePageLoaded: false,
   trending: [],
@@ -23,6 +31,7 @@ const initialState = {
   popular: [],
   // additional popular content related info like currentPage, hasNextPage
   filterContent: [],
+  detailInfo: {},
 };
 
 export const contentSlice = createSlice({
@@ -43,11 +52,19 @@ export const contentSlice = createSlice({
         console.log(action.error.message);
       });
 
-      // filter
+    // filter
     builder.addCase(applyFilter.fulfilled, (state, action) => {
       state.filterContent = action.payload?.results || [];
     }),
       builder.addCase(applyFilter.rejected, (state, action) => {
+        console.log(action.error.message);
+      });
+
+    // filter
+    builder.addCase(loadDetailInfo.fulfilled, (state, action) => {
+      state.detailInfo = action.payload;
+    }),
+      builder.addCase(loadDetailInfo.rejected, (state, action) => {
         console.log(action.error.message);
       });
   },
@@ -55,5 +72,5 @@ export const contentSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 // export const {  } = contentSlice.actions;
-export { loadHomePage, applyFilter };
+export { loadHomePage, applyFilter, loadDetailInfo };
 export default contentSlice.reducer;

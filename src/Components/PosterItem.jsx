@@ -4,7 +4,7 @@ import { posterItemType } from "../constants";
 import { useDispatch } from "react-redux";
 import { setMiniMeta } from "../features/selected/selectedSlice";
 
-function PosterItem({ item, type }) {
+function PosterItem({ item, type = posterItemType.filter }) {
   const dispatch = useDispatch();
 
   const [isHover, setIsHover] = useState(false);

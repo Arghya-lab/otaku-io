@@ -12,12 +12,16 @@ export const mapEpisodes = (episodes = [], selectedInx) => {
   return episodes.slice(startEpId, endEpId !== -1 ? endEpId : undefined);
 };
 
-export const EpSelectableList = (episodes = []) => {
-  const totalSelectable = Math.ceil(episodes.length / limit);
-  let list = Array(totalSelectable).fill(0);
+export const epSelectableList = (episodes = []) => {
+  const lastEpNo = episodes[episodes.length - 1]?.number || episodes.length;
+
+  const totalSelectable = Math.ceil(lastEpNo / limit);
+  const list = Array(totalSelectable).fill(0);
 
   return list.map((_, id) => ({
-    name: `${id * limit + 1} - ${(id + 1) * limit}`,
+    name: `${id * limit + 1} - ${
+      (id + 1) * limit <= lastEpNo ? (id + 1) * limit : lastEpNo
+    }`,
     value: id,
   }));
 };

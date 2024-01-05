@@ -33,6 +33,8 @@ const getTrending = async (params) =>
 const getRecentEpisodes = async (params) =>
   await instance.get("meta/anilist/recent-episodes", { params });
 
+const getRandom = async () => await instance.get("/meta/anilist/random-anime");
+
 // Query Parameters for getDetails:  dub, provider
 const getDetails = async (id, params) => {
   const fetchFiller =
@@ -44,8 +46,6 @@ const getDetails = async (id, params) => {
   }
   return await instance.get(`meta/anilist/info/${id}`, { params });
 };
-
-const getRandom = async () => await instance.get("/meta/anilist/random-anime");
 
 const getUpcoming = async () =>
   await axios.get(import.meta.env.VITE_UPCOMING_ANIME_URL, {
@@ -63,6 +63,10 @@ const getImdbData = async (params) =>
     },
   });
 
+// getStreamingLinks:  episodeId required
+const getStreamingLinks = async (episodeId) =>
+  await instance.get(`meta/anilist/watch/${episodeId}`);
+
 const animeApi = {
   search,
   advancedSearch,
@@ -73,6 +77,7 @@ const animeApi = {
   getRandom,
   getUpcoming,
   getImdbData,
+  getStreamingLinks
 };
 
 export default animeApi;

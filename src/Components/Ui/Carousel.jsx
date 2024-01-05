@@ -7,7 +7,7 @@ function Carousel() {
 
   const items = trending
     .slice(0, 6)
-    .map((data, id) => <img key={id} src={data?.cover} />);
+    .map((data, id) => <img key={id} className="w-full h-72 bg-cover" src={data?.cover} />);
 
   const info = trending.slice(0, 6).map((data) => ({
     description: data?.description || "",

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { Triangle } from "lucide-react";
+import { Play } from "lucide-react";
 import SimpleBar from "simplebar-react";
 
 function MetaMiniPreview() {
@@ -52,10 +52,8 @@ function MetaMiniPreview() {
           }}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}>
-          <p className="text-xl font-medium ">Watch</p>
-          <div className="rotate-90">
-            <Triangle strokeWidth={3} size={20} />
-          </div>
+          <p className="text-xl font-medium">Watch</p>
+          <Play strokeWidth={3} size={20} />
         </div>
       </div>
     </div>

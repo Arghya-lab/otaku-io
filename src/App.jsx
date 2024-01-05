@@ -4,6 +4,7 @@ import HomePage from "./Pages/HomePage";
 import DiscoverPage from "./Pages/DiscoverPage";
 import DetailViewPage from "./Pages/DetailViewPage";
 import Test from "./Pages/Test";
+import VideoPlayerPage from "./Pages/VideoPlayerPage";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Route path="/" element={<HomePage />} />
       <Route path="/discover" element={<DiscoverPage />} />
       <Route path="/detail/:id" element={<DetailViewPage />} />
+      <Route path="/watch/:id/:name" element={<VideoPlayerPage />} />
       <Route path="/test" element={<Test />} />
     </Routes>
   );

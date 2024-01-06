@@ -1,5 +1,6 @@
 import { Box, Search } from "lucide-react";
 import UserBtn from "./Ui/UserBtn";
+import MinMaximizeBtn from "./Ui/MinMaximizeBtn";
 
 function TopNavbar() {
   return (
@@ -21,7 +22,10 @@ function TopNavbar() {
           <Search size={24} className="opacity-90 text-slate-300" />
         </div>
       </div>
-      <UserBtn />
+      <div className="flex gap-1">
+        <UserBtn />
+        <MinMaximizeBtn />
+      </div>
     </div>
   );
 }

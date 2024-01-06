@@ -1,23 +1,19 @@
 import AliceCarousel from "react-alice-carousel";
 import { useSelector } from "react-redux";
-// import { adjustHue, setLightness } from "polished";
 
 function Carousel() {
   const { trending } = useSelector((state) => state.content);
 
-  const items = trending
-    .slice(0, 6)
-    .map((data, id) => <img key={id} className="w-full h-72 bg-cover" src={data?.cover} />);
+  const items = trending.slice(0, 6).map((data, id) => (
+    <div key={id} className="h-72 flex items-center">
+      <img className="w-full  bg-cover" src={data?.cover} />
+    </div>
+  ));
 
   const info = trending.slice(0, 6).map((data) => ({
     description: data?.description || "",
     color: data?.color || "#000",
   }));
-
-  // const textColor = (idx) => {
-  //   const color = info[idx]?.color ? info[idx]?.color : "#000";
-  //   return adjustHue(120, setLightness(0.7, color));
-  // };
 
   return (
     <div className="w-[calc(100vw-5rem-4rem)] mx-auto mb-8 opacity-80 shadow-2xl">

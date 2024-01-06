@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { Play } from "lucide-react";
 import SimpleBar from "simplebar-react";
 
 function MetaMiniPreview() {
+  const navigate = useNavigate();
   const { miniMeta } = useSelector((state) => state.selected);
 
   const [isHovered, setIsHovered] = useState(false);
@@ -44,14 +46,24 @@ function MetaMiniPreview() {
         {/* Watch btn */}
         <div
           role="button"
-          className="px-4 py-2 w-36 m-auto my-4 bg-white hover:text-[#aeaee4] hover:border-[#aeaee4] bg-opacity-20 border-2 rounded-[45px] flex justify-center gap-2"
+          className="px-4 py-2 w-36 m-auto my-4 bg-white hover:text-[#aeaee4] hover:border-[#aeaee4] bg-opacity-20 border-2 rounded-[45px] flex items-center justify-center gap-2"
           style={{
             color: isHovered ? miniMeta?.color || "#fff" : "#fff",
             borderColor: isHovered ? miniMeta?.color || "#fff" : "#fff",
             transition: "color 0.3s, border-color 0.3s",
           }}
           onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}>
+          onMouseLeave={() => setIsHovered(false)}
+          onClick={() => {
+            if (miniMeta?.id) {
+              const title =
+                miniMeta?.title?.english ||
+                miniMeta?.title?.romaji ||
+                miniMeta?.title?.native ||
+                miniMeta?.title?.userPreferred;
+              navigate(`/detail/${miniMeta.id}/${title}`);
+            }
+          }}>
           <p className="text-xl font-medium">Watch</p>
           <Play strokeWidth={3} size={20} />
         </div>

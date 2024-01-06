@@ -1,5 +1,5 @@
-import { Cog, Compass, Home, LibraryBig } from "lucide-react";
 import { useState } from "react";
+import { Cog, Compass, Home, LibraryBig } from "lucide-react";
 
 function SideNavbar() {
   const [hoverBtn, setHoverBtn] = useState(null);

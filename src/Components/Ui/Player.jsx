@@ -1,10 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactPlayer from "react-player/lazy";
 import PlayerControl from "./PlayerControl";
+import { useParams } from "react-router-dom";
+import animeApi from "../../Api/animeApi";
 
 function Player() {
+  const { name } = useParams();
+  const [sources, setSources] = useState([]);
+  const [playBackQuality, setPlayBackQuality] = useState("auto");
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await animeApi.getStreamingLinks(name);
+        // console.log(res.data);
+        setSources(res.data?.sources);
+        setPlayBackQuality(res.data?.sources[0]?.quality);
+      } catch (error) {
+        console.error(error.message);
+      }
+    })();
+  }, [name]);
+
   const [playerState, setPlayerState] = useState({
-    // url: null,
+    url: null,
     pip: false,
     playing: false,
     // controls: false,
@@ -14,21 +33,22 @@ function Player() {
     played: 0, //  value -> 0-1
     duration: 0,
     loaded: 0,
-
     // playbackRate: 1.0,
     // loop: false,
   });
 
-  // setInterval(() => {
-  //   console.log(playerState);
-  // }, 10000);
+  useEffect(() => {
+    const objId = sources.findIndex((u) => u?.quality == playBackQuality);
+    const selectedUrl = sources[objId]?.url;
+    setPlayerState((prev) => ({ ...prev, url: selectedUrl }));
+  }, [playBackQuality, sources]);
 
   return (
     <div id="Player" className="relative">
       <ReactPlayer
         // controls
         // playsinline
-        url="https://www107.vipanicdn.net/streamhls/395c00c8e81e269aa76202288b5c4727/ep.1.1703922413.360.m3u8"
+        url={playerState?.url}
         width="100%"
         height="100%"
         pip={playerState?.pip}
@@ -68,6 +88,9 @@ function Player() {
       <PlayerControl
         playerState={playerState}
         setPlayerState={setPlayerState}
+        sources={sources}
+        playBackQuality={playBackQuality}
+        setPlayBackQuality={setPlayBackQuality}
       />
     </div>
   );

@@ -3,15 +3,24 @@ import PropType from "prop-types";
 import { posterItemType } from "../constants";
 import { useDispatch } from "react-redux";
 import { setMiniMeta } from "../features/selected/selectedSlice";
+import { useNavigate } from "react-router-dom";
 
 function PosterItem({ item, type = posterItemType.filter }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [isHover, setIsHover] = useState(false);
 
   const handleClick = () => {
     if (type === posterItemType.general) {
-      return;
+      if (item?.id) {
+        const title =
+          item?.title?.english ||
+          item?.title?.romaji ||
+          item?.title?.native ||
+          item?.title?.userPreferred;
+        navigate(`/detail/${item.id}/${title}`);
+      }
     } else if (type === posterItemType.filter) {
       dispatch(setMiniMeta(item));
     }

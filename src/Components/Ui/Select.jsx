@@ -91,7 +91,7 @@ function Select({ name, color = "#141e30", list, selected, onChange }) {
 
 Select.propTypes = {
   name: PropType.string,
-  color: PropType.string.isRequired,
+  color: PropType.string,
   list: PropType.array.isRequired,
   selected: PropType.object.isRequired,
   onChange: PropType.func.isRequired,

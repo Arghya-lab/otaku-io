@@ -1,9 +1,13 @@
-import TopNavbar from "../Components/TopNavbar";
 import MetaPreviewContainer from "../Components/MetaPreviewContainer";
 import EpStreamSheet from "../Components/EpStreamSheet";
+import { useSelector } from "react-redux";
+import UserBtn from "../Components/Ui/UserBtn";
+import BackBtn from "../Components/Ui/BackBtn";
+import MinMaximizeBtn from "../Components/Ui/MinMaximizeBtn";
 
 function DetailViewPage() {
-  const url = "https://images.metahub.space/background/medium/tt0388629/img";
+  const { imdbInfo } = useSelector((state) => state.content);
+  const url = `https://images.metahub.space/background/medium/${imdbInfo?.imdbID}/img`;
 
   return (
     <div
@@ -19,14 +23,13 @@ function DetailViewPage() {
         <div className="bg-black w-full h-full opacity-70"></div>
       </div>
       {/* Navbar */}
-      {/* <div className="w-screen px-5 h-20 flex items-center justify-between">
+      <div className="flex-1 w-screen px-5 h-20 flex items-center justify-between">
         <BackBtn />
         <div className="flex gap-4">
-          <MaximizeBtn />
+          <MinMaximizeBtn />
           <UserBtn />
         </div>
-      </div> */}
-      <TopNavbar />
+      </div>
       {/* Body */}
       <div className="flex">
         <div className="flex-1 ml-16 mt-4">

@@ -11,8 +11,6 @@ import { mapEpisodes } from "../utils/mapEpisodes";
 import { epSelectableList } from "../utils/mapEpisodes";
 import { loadDetailInfo } from "../features/content/contentSlice";
 
-const color = "#e4a15d";
-
 function EpStreamSheet() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -26,17 +24,19 @@ function EpStreamSheet() {
   const [selectedEpRangeIdx, setSelectedEpRangeIdx] = useState(0);
   const [episodes, setEpisodes] = useState([]);
 
-  useEffect(() => {      
-      setEpisodes(mapEpisodes(detailInfo?.episodes, selectedEpRangeIdx));
+  useEffect(() => {
+    setEpisodes(mapEpisodes(detailInfo?.episodes, selectedEpRangeIdx));
   }, [selectedEpRangeIdx, detailInfo]);
 
   useEffect(() => {
     dispatch(loadDetailInfo({ id, params: { provider: "gogoanime" } }));
   }, [id, dispatch]);
 
-  const handleEpBtnClick = (episode) => {
-    if (episode?.id) {
-      navigate(`/watch/${detailInfo?.id}/${episode?.id}`, { state: { episode } });
+  const handleClick = (ep) => {
+    if (ep?.id) {
+      navigate(`/watch/${detailInfo?.id}/${ep?.id}`, {
+        state: { episode: ep },
+      });
     }
   };
 
@@ -44,10 +44,10 @@ function EpStreamSheet() {
     <>
       <div>
         {/* radio dub / sub btn */}
-        <div className="pb-6 max-w-md flex items-center justify-between">
+        <div className="pb-6 max-w-2xl flex items-center justify-between">
           <div className="flex gap-1 capitalize items-center text-slate-200">
             <Radio
-              color={color}
+              color={detailInfo?.color}
               enabled={enabledDub}
               setEnabled={setEnabledDub}
             />
@@ -55,7 +55,7 @@ function EpStreamSheet() {
           </div>
           <Select
             // name={"providers"}
-            color={color}
+            color={detailInfo?.color}
             list={providerList}
             selected={providerList[0]}
             onChange={(data) => {
@@ -72,19 +72,20 @@ function EpStreamSheet() {
               role="button"
               className="px-4 py-2 w-36 m-auto my-4 bg-white hover:text-[#aeaee4] hover:border-[#aeaee4] bg-opacity-20 border-2 rounded-[45px] flex justify-center gap-2"
               style={{
-                color: isHovered ? color || "#fff" : "#fff",
-                borderColor: isHovered ? color || "#fff" : "#fff",
+                color: isHovered ? detailInfo?.color || "#fff" : "#fff",
+                borderColor: isHovered ? detailInfo?.color || "#fff" : "#fff",
                 transition: "color 0.3s, border-color 0.3s",
               }}
               onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}>
+              onMouseLeave={() => setIsHovered(false)}
+              onClick={() => handleClick(detailInfo?.episodes[0])}>
               <p className="text-xl font-medium">Watch</p>
               <Play strokeWidth={3} size={20} />
             </div>
           ) : (
             <>
               <Select
-                color={color}
+                color={detailInfo?.color}
                 list={epSelectableList(detailInfo?.episodes)}
                 selected={
                   epSelectableList(detailInfo?.episodes)[selectedEpRangeIdx]
@@ -105,8 +106,8 @@ function EpStreamSheet() {
                     <EpBtn
                       key={id}
                       episode={episode}
-                      color={color}
-                      handleClick={handleEpBtnClick}
+                      color={detailInfo?.color}
+                      handleClick={() => handleClick(episode)}
                     />
                   ))}
                 </div>

@@ -2,7 +2,7 @@ import axios from "axios";
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_CONSUMET_BASE_URL,
-  timeout: 8000,
+  timeout: 15000,
 });
 
 // Api search functions
@@ -54,7 +54,7 @@ const getUpcoming = async () =>
     },
   });
 
-// Query Parameters for getImdbData:  apikey, t, i
+// Query Parameters for getImdbData: t, i
 const getImdbData = async (params) =>
   await axios.get(import.meta.env.VITE_OMDB_BASE_URL, {
     params: {

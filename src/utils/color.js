@@ -1,6 +1,6 @@
 import chroma from "chroma-js";
 
-export const shade = (color, value, opacity=1 ) => {
+export const shade = (color, value=0, opacity=1 ) => {
   // value should be -4.5 to 4.5 log scale
 
   // Note that for hue-less colors (black, white, and grays), the hue component will be NaN

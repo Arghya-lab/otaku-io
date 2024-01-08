@@ -1,11 +1,12 @@
-import { useState } from "react";
 import PropType from "prop-types";
-import { posterItemType } from "../constants";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { setMiniMeta } from "../features/selected/selectedSlice";
 import { useNavigate } from "react-router-dom";
+import { posterItemType } from "../constants";
+import { setMiniMeta } from "../features/selected/selectedSlice";
+import { shade } from "../utils/color";
 
-function PosterItem({ item, type = posterItemType.filter }) {
+function PosterItem({ item, type = posterItemType.general }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -29,39 +30,45 @@ function PosterItem({ item, type = posterItemType.filter }) {
   return (
     <div
       role="button"
-      className="p-3 w-[calc(100%/5)] flex flex-col"
-      onPointerEnter={() => setIsHover(true)}
-      onPointerLeave={() => setIsHover(false)}
+      className="p-1.5 xxs:p-3 xs:p-4 w-full"
+      onPointerEnter={() => {
+        setIsHover(true);
+      }}
+      onPointerLeave={() => {
+        setIsHover(false);
+      }}
       onClick={handleClick}>
       <div
-        className={`pt-64 relative overflow-hidden rounded-xl ring-[3px] ${
+        className={`pt-[calc(100%*1.464)] w-full relative overflow-hidden rounded-xl ring-[3px] ${
           isHover ? "ring-slate-50" : "ring-transparent"
         }`}>
         <div
-          className={`absolute top-0 transition-transform duration-200 ease-in transform-gpu ${
+          className={`h-[calc(100%*1.464)] absolute top-0 -z-10 overflow-hidden transition-transform duration-200 ease-in transform-gpu ${
             isHover ? "scale-110" : null
           }`}>
           <img
-            title={item?.title?.english}
-            className="h-64 object-cover"
+            className="object-cover object-center h-full w-full"
             src={item?.image}
           />
         </div>
       </div>
       <div
-        className="h-16 text-sm font-medium flex items-center"
-        style={{ color: isHover ? item?.color || "00ffff" : "#FFFFFF" }}>
+        className="h-16 text-sm font-medium flex items-center overflow-visible"
+        style={{
+          color: isHover ? shade(item?.color || "00ffff", -2) : "#FFFFFF",
+        }}>
         <p className="px-2 w-full line-clamp-2 text-center">
-          {item?.title?.userPreferred}
+          {item?.title?.english || item?.title?.userPreferred || item?.title?.romaji || item?.title?.native}
         </p>
       </div>
     </div>
+    // </div>
   );
 }
 
 PosterItem.propTypes = {
   item: PropType.object.isRequired,
-  type: PropType.string.isRequired,
+  type: PropType.string,
 };
 
 export default PosterItem;

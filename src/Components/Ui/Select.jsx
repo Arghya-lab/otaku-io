@@ -13,15 +13,15 @@ function Select({ name, color = "#141e30", list, selected, onChange }) {
   return (
     <div>
       {name && (
-        <div>
+        <div className="pl-4">
           <p className="text-white capitalize">{name}</p>
         </div>
       )}
       <Listbox value={selected} onChange={onChange}>
         {({ open }) => (
-          <div className="relative mt-2">
+          <div className="relative pt-1">
             <Listbox.Button
-              className="relative w-52 py-1.5 pl-3 pr-10 text-left cursor-pointer rounded-[45px] text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white bg-opacity-20"
+              className="relative min-w-44 max-w-52 py-1.5 pl-3 pr-10 text-left cursor-pointer rounded-[45px] text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white bg-opacity-20"
               style={{ backgroundColor: shade(color, 0, 0.15) }}>
               <span className="ml-3 block truncate text-slate-200">
                 {selected?.name}

@@ -1,15 +1,36 @@
 import { useState } from "react";
 import { Cog, Compass, Home, LibraryBig } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function SideNavbar() {
+  const navigate = useNavigate();
+
+  const pathName = useLocation().pathname;
+  const initialSelectedBtn =
+    pathName === "/"
+      ? "Home"
+      : pathName === "/discover"
+      ? "Discover"
+      : pathName === "/library"
+      ? "Library"
+      : pathName === "/setting"
+      ? "Setting"
+      : "";
+  const [selectedBtn, setSelectedBtn] = useState(initialSelectedBtn);
   const [hoverBtn, setHoverBtn] = useState(null);
-  const [selectedBtn, setSelectedBtn] = useState("Home");
 
   const handleBtnClick = (name) => {
     setSelectedBtn(name);
+    if (name === "Home") {
+      navigate("/");
+    } else {
+      navigate(`/${name.toLowerCase()}`);
+    }
   };
   return (
-    <div className="w-20 flex flex-col items-center justify-start">
+    <div
+      className="xs:w-20 h-20 xs:h-auto absolute xs:top-20 left-0 right-0 xs:right-auto bottom-0 z-10 flex xs:flex-col items-center justify-around xs:justify-start"
+      >
       <div
         className={`side-nav-btn ${
           hoverBtn === "Home"
@@ -26,7 +47,9 @@ function SideNavbar() {
         />
         <p
           className={`text-xs pt-1 opacity-0 ${
-            hoverBtn === "Home" ? "opacity-100" : null
+            hoverBtn === "Home" || window.innerWidth < 640
+              ? "opacity-100"
+              : null
           }`}>
           Home
         </p>
@@ -47,7 +70,9 @@ function SideNavbar() {
         />
         <p
           className={`text-xs pt-1 opacity-0 ${
-            hoverBtn === "Discover" ? "opacity-100" : null
+            hoverBtn === "Discover" || window.innerWidth < 640
+              ? "opacity-100"
+              : null
           }`}>
           Discover
         </p>
@@ -68,7 +93,9 @@ function SideNavbar() {
         />
         <p
           className={`text-xs pt-1 opacity-0 ${
-            hoverBtn === "Library" ? "opacity-100" : null
+            hoverBtn === "Library" || window.innerWidth < 640
+              ? "opacity-100"
+              : null
           }`}>
           Library
         </p>
@@ -89,7 +116,9 @@ function SideNavbar() {
         />
         <p
           className={`text-xs pt-1 opacity-0 ${
-            hoverBtn === "Setting" ? "opacity-100" : null
+            hoverBtn === "Setting" || window.innerWidth < 640
+              ? "opacity-100"
+              : null
           }`}>
           Setting
         </p>

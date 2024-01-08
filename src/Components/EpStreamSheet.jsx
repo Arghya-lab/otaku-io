@@ -17,7 +17,6 @@ function EpStreamSheet() {
 
   const dispatch = useDispatch();
   const { detailInfo } = useSelector((state) => state.content);
-
   const [isHovered, setIsHovered] = useState(false);
 
   const [enabledDub, setEnabledDub] = useState(true);
@@ -41,10 +40,10 @@ function EpStreamSheet() {
   };
 
   return (
-    <>
+    <div>
       <div>
         {/* radio dub / sub btn */}
-        <div className="pb-6 max-w-2xl flex items-center justify-between">
+        <div className="pb-6 flex items-center justify-between">
           <div className="flex gap-1 capitalize items-center text-slate-200">
             <Radio
               color={detailInfo?.color}
@@ -94,7 +93,7 @@ function EpStreamSheet() {
                   setSelectedEpRangeIdx(data.value);
                 }}
               />
-              <SimpleBar className="h-[545px] pr-2 mt-3">
+              <SimpleBar className="pr-2 mt-3">
                 <div
                   style={{
                     display: "grid",
@@ -116,7 +115,7 @@ function EpStreamSheet() {
           )}
         </div>
       )}
-    </>
+    </div>
   );
 }
 

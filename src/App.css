@@ -1,6 +1,11 @@
 @import "react-alice-carousel/lib/alice-carousel.css";
 @import "simplebar-react/dist/simplebar.min.css";
 
+body, #root {
+  height: 100%;
+  width: 100%;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -16,19 +21,19 @@
   border-radius: 0.75rem;
 }
 
+.alice-carousel__stage-item {
+  width: auto;
+}
+
 .alice-carousel__slide-info {
-  position: absolute;
   top: unset;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  margin: 0.75rem;
+  left: -0.75rem;
+  right: -0.75rem;
   display: inline-block;
-  border-radius: 0.75rem;
-  padding: 10px;
-  font-size: 0.75rem;
+  /* font-size: 0.75rem; */
   line-height: 1rem;
   font-weight: 300;
   color: unset;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0);
 }
+

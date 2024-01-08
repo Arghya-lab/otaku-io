@@ -2,12 +2,15 @@ import PropType from "prop-types";
 import { ChevronRight } from "lucide-react";
 import PosterItem from "./PosterItem";
 import { posterItemType } from "../constants";
+import usePosterItemCount from "../hooks/usePosterItemCount";
 
 function PosterBoard({ name, content }) {
+   const posterItemCount = usePosterItemCount()
+
   return (
-    <div className="mt-4 mb-8 mx-4">
+    <div className="mt-4 pb-8 px-2 xxs:px-4">
       {/* Header */}
-      <div className="mb-1 px-4 flex items-center justify-between text-slate-100">
+      <div className="mb-1 px-3 xxs:px-4 flex items-center justify-between text-slate-100">
         <p className="text-2xl capitalize">{name}</p>
         {/* See all btn */}
         <div
@@ -18,8 +21,10 @@ function PosterBoard({ name, content }) {
         </div>
       </div>
       {/* Poster container */}
-      <div className="flex flex-row justify-evenly items-center">
-        {content.slice(0, 7).map((item, id) => (
+      <div
+        className="grid"
+        style={{ gridTemplateColumns: `repeat(${posterItemCount}, 1fr)` }}>
+        {content.slice(0, posterItemCount).map((item, id) => (
           <PosterItem key={id} item={item} type={posterItemType.general} />
         ))}
       </div>

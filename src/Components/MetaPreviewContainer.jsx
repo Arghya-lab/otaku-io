@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import SimpleBar from "simplebar-react";
 import Chip from "./Ui/Chip";
 import ChipBtn from "./Ui/ChipBtn";
 import { loadImdbInfo, resetImdbInfo } from "../features/content/contentSlice";
@@ -27,7 +26,7 @@ function MetaPreviewContainer() {
   }, [title, dispatch]);
 
   return (
-    <SimpleBar className="h-[587px] pr-2">
+    <div>
       {imdbInfo?.imdbID ? (
         <img
           className="h-32 object-contain object-center"
@@ -158,7 +157,7 @@ function MetaPreviewContainer() {
           />
         </div>
       </div>
-    </SimpleBar>
+    </div>
   );
 }
 

@@ -11,17 +11,17 @@ function MetaMiniPreview() {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div className="w-[416px] p-8 mx-4 mb-4 relative">
-      <div className="absolute left-0 right-4 top-0 bottom-0 rounded-xl  bg-[#141e30]  overflow-hidden">
+    <div className="w-[424px] h-[100vh-5rem-1rem] p-8 ml-4 mb-4 relative">
+      <div className="absolute left-0 right-0 top-0 bottom-0 rounded-l-xl bg-[#141e30] overflow-hidden">
         <img
           className="h-full w-full object-cover opacity-30 blur"
           src={miniMeta?.image}
         />
       </div>
 
-      <div className="absolute left-0 right-4 top-0 bottom-0 p-8 text-slate-200">
+      <div className="absolute left-0 right-0 top-0 bottom-0 p-8 text-slate-200">
         {/* Meta data */}
-        <SimpleBar className="h-[500px]">
+        <SimpleBar className="h-[calc(100vh-5rem-4rem-4rem)]">
           {/* <img
             title={miniMeta?.title?.userPreferred}
             className="h-24 w-2/3 m-auto object-contain"
@@ -46,7 +46,7 @@ function MetaMiniPreview() {
         {/* Watch btn */}
         <div
           role="button"
-          className="px-4 py-2 w-36 m-auto my-4 bg-white hover:text-[#aeaee4] hover:border-[#aeaee4] bg-opacity-20 border-2 rounded-[45px] flex items-center justify-center gap-2"
+          className="px-4 py-2 max-w-md m-auto my-4 bg-white hover:text-[#aeaee4] hover:border-[#aeaee4] bg-opacity-20 border-2 rounded-[45px] flex items-center justify-center gap-2"
           style={{
             color: isHovered ? miniMeta?.color || "#fff" : "#fff",
             borderColor: isHovered ? miniMeta?.color || "#fff" : "#fff",

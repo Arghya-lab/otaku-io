@@ -12,7 +12,7 @@ const loadHomePage = createAsyncThunk("content/loadHomePage", async () => {
 });
 
 const applyFilter = createAsyncThunk("content/applyFilter", async (params) => {
-  const res = await animeApi.advancedSearch(params);
+  const res = await animeApi.advancedSearch({ ...params, page: 1 });
   return res.data;
 });
 
@@ -38,6 +38,9 @@ const initialState = {
   popular: [],
   // additional popular content related info like currentPage, hasNextPage
   filterContent: [],
+  hasMoreFilterContent: true,
+  currentFilterContentPage:1,
+
   detailInfo: {},
   imdbInfo: {},
 };
@@ -66,7 +69,9 @@ export const contentSlice = createSlice({
 
     // filter
     builder.addCase(applyFilter.fulfilled, (state, action) => {
-      state.filterContent = action.payload?.results || [];
+      state.filterContent = [...state.filterContent, ...action.payload?.results|| []];
+      state.hasMoreFilterContent = action.payload?.hasNextPage || false;
+      state.currentFilterContentPage = action.payload?.currentPage;
     }),
       builder.addCase(applyFilter.rejected, (state, action) => {
         console.log(action.error.message);

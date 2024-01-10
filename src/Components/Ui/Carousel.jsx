@@ -30,7 +30,7 @@ function Carousel() {
         autoPlay={true}
         autoPlayStrategy={"none"}
         infinite={true}
-        animationDuration={1000}
+        animationDuration={4000}
         autoPlayInterval={1000}
         disableSlideInfo={false}
         disableButtonsControls={true}

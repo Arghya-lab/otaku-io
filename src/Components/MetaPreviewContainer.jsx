@@ -12,6 +12,7 @@ function MetaPreviewContainer() {
   const { detailInfo, imdbInfo } = useSelector((state) => state.content);
 
   const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     setIsLoading(
       Boolean(
@@ -111,7 +112,7 @@ function MetaPreviewContainer() {
             <p className="capitalize text-slate-50 opacity-50 font-medium text-lg">
               genres
             </p>
-            <div className="flex flex-wrap items-center mt-2 mb-8 ml-4">
+            <div className="flex flex-wrap gap-2 items-center mt-2 mb-8 ml-4">
               {detailInfo?.genres.map((genre, id) => (
                 <ChipBtn key={id} name={genre} color={detailInfo?.color} />
               ))}
@@ -125,7 +126,7 @@ function MetaPreviewContainer() {
             </p>
             <div className="flex flex-wrap items-center mt-2 mb-8 ml-4">
               {detailInfo?.studios.map((studio, id) => (
-                <ChipBtn key={id} name={studio} color={detailInfo?.color} />
+                <Chip key={id} value={studio} color={detailInfo?.color} />
               ))}
             </div>
           </div>

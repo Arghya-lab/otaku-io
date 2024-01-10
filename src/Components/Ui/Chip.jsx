@@ -1,15 +1,17 @@
 import PropType from "prop-types";
 import { shade } from "../../utils/color";
 
-function Chip({ name, value, color="#fff" }) {
-  if (!name || !value) {
-    return (<></>)
+function Chip({ name, value, color = "#fff" }) {
+  if (!name && !value) {
+    return <></>;
   }
   return (
     <div
       className="w-fit px-3 py-1 rounded-xl text-slate-100"
       style={{ backgroundColor: shade(color, -1, 0.2) }}>
-      <span className="capitalize font-nunito text-lg">{name} : </span>
+      {name && (
+        <span className="capitalize font-nunito text-lg">{name} : </span>
+      )}
       <span className="font-sans">{value}</span>
     </div>
   );

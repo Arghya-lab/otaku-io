@@ -14,15 +14,11 @@ function HomePage() {
   }, []);
 
   return (
-    <div
-      className="relative h-screen"
-      style={{
-        background: "linear-gradient(to right,  #141e30, #243b55)",
-      }}>
-        <TopNavbar />
-        <SideNavbar />
-        <HomeContentContainer />
-      </div>
+    <div className="relative h-100%">
+      <TopNavbar />
+      <SideNavbar />
+      <HomeContentContainer />
+    </div>
   );
 }
 

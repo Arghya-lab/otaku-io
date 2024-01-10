@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Cog, Compass, Home, LibraryBig } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Cog, Compass, Home, LibraryBig } from "lucide-react";
 
 function SideNavbar() {
   const navigate = useNavigate();
@@ -28,9 +28,7 @@ function SideNavbar() {
     }
   };
   return (
-    <div
-      className="xs:w-20 h-20 xs:h-auto absolute xs:top-20 left-0 right-0 xs:right-auto bottom-0 z-10 flex xs:flex-col items-center justify-around xs:justify-start bg-transparent"
-      >
+    <div className="xs:w-20 h-16 xs:h-auto fixed xs:top-20 left-0 right-0 xs:right-auto bottom-0 z-10 flex xs:flex-col items-center justify-around xs:justify-start bg-[#141e30] bg-opacity-95 xs:bg-transparent">
       <div
         className={`side-nav-btn ${
           hoverBtn === "Home"

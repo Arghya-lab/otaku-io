@@ -15,7 +15,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ["Poppins", ...defaultTheme.fontFamily.sans],
-        nunito: ['Nunito Sans', ...defaultTheme.fontFamily.sans],
+        nunito: ["Nunito Sans", ...defaultTheme.fontFamily.sans],
       },
       screens: {
         "2xl": "1900px",

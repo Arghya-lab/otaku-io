@@ -11,7 +11,7 @@ function ChipBtn({ name = "", color = "#fff" }) {
       style={{
         backgroundColor: isHovered ? shade(color, -2, 0.1) : "unset",
         // color: isHovered ? shade(color, -2)  : "white",
-        borderColor: isHovered ? shade(color, 0) : "transparent",
+        borderColor: isHovered ? shade(color, 0) : shade(color, 0, 0.4),
         transition: "color 0.3s, border-color 0.3s",
       }}
       role="button"

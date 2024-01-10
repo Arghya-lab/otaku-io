@@ -11,8 +11,10 @@ import {
   statusList,
 } from "../../searchFilter";
 import { shade } from "../../utils/color";
+import useScroll from "../../hooks/useScroll";
 
 function Filter({ color = "#141e30" }) {
+  const scrolled = useScroll();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -30,7 +32,10 @@ function Filter({ color = "#141e30" }) {
   }, []);
 
   return (
-    <div className="p-4 h-24 flex items-center gap-4">
+    <div
+      className={`p-4 h-24 fixed top-[calc(4rem-0.5px)] w-full z-40 flex items-center gap-4 backdrop-blur ${
+        scrolled ? `bg-[${"#141e30"}] bg-opacity-40` : "bg-transparent"
+      }`}>
       <Select
         name={"format"}
         list={formatList}

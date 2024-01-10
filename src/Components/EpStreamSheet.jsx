@@ -43,7 +43,7 @@ function EpStreamSheet() {
     <div>
       <div>
         {/* radio dub / sub btn */}
-        <div className="pb-6 flex items-center justify-between">
+        <div className="pb-4 flex items-center justify-between">
           <div className="flex gap-1 capitalize items-center text-slate-200">
             <Radio
               color={detailInfo?.color}

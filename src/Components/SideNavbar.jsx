@@ -29,7 +29,7 @@ function SideNavbar() {
   };
   return (
     <div
-      className="xs:w-20 h-20 xs:h-auto absolute xs:top-20 left-0 right-0 xs:right-auto bottom-0 z-10 flex xs:flex-col items-center justify-around xs:justify-start"
+      className="xs:w-20 h-20 xs:h-auto absolute xs:top-20 left-0 right-0 xs:right-auto bottom-0 z-10 flex xs:flex-col items-center justify-around xs:justify-start bg-transparent"
       >
       <div
         className={`side-nav-btn ${

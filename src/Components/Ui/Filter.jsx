@@ -1,6 +1,6 @@
 import PropType from "prop-types";
 import { useEffect, useState, Fragment } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSearchParams } from "react-router-dom";
 import { Dialog, Transition } from "@headlessui/react";
 import { FilterIcon } from "lucide-react";
 import Select from "./Select";
@@ -10,15 +10,11 @@ import {
   sortList,
   statusList,
 } from "../../searchFilter";
-import { changeFilter } from "../../features/filter/filterSlice";
-import { applyFilter } from "../../features/content/contentSlice";
-import { setMiniMeta } from "../../features/selected/selectedSlice";
 import { shade } from "../../utils/color";
 
 function Filter({ color = "#141e30" }) {
-  const dispatch = useDispatch();
-  const { selected } = useSelector((state) => state.filter);
-  
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [windowWidth, setWindowWidth] = useState(null);
 
@@ -33,31 +29,26 @@ function Filter({ color = "#141e30" }) {
     };
   }, []);
 
-  useEffect(() => {
-    let params = {};
-    for (const key in selected) {
-      if (selected[key].value !== undefined) {
-        if (key === "sort" || key === "genres") {
-          params[key] = JSON.stringify([selected[key].value]);
-        } else {
-          params[key] = selected[key].value;
-        }
-      }
-    }
-    dispatch(applyFilter(params)).then((promiseResult) => {
-      const filterFirstResult = promiseResult?.payload?.results[0];
-      dispatch(setMiniMeta(filterFirstResult));
-    });
-  }, [selected, dispatch]);
-
   return (
     <div className="p-4 h-24 flex items-center gap-4">
       <Select
         name={"format"}
         list={formatList}
-        selected={selected["format"]}
+        selected={
+          formatList[
+            formatList.findIndex(
+              (item) => item.value == searchParams.get("format")
+            )
+          ]
+        }
         onChange={(data) => {
-          dispatch(changeFilter({ type: "format", data }));
+          if (data?.value) {
+            searchParams.set("format", data.value);
+            setSearchParams(searchParams);
+          } else {
+            searchParams.delete("format");
+            setSearchParams(searchParams);
+          }
         }}
       />
       {windowWidth < 1000 ? (
@@ -106,33 +97,95 @@ function Filter({ color = "#141e30" }) {
                       <Select
                         name={"format"}
                         list={formatList}
-                        selected={selected["format"]}
+                        selected={
+                          formatList[
+                            formatList.findIndex(
+                              (item) => item.value == searchParams.get("format")
+                            )
+                          ]
+                        }
                         onChange={(data) => {
-                          dispatch(changeFilter({ type: "format", data }));
+                          if (data?.value) {
+                            searchParams.set("format", data.value);
+                            setSearchParams(searchParams);
+                          } else {
+                            searchParams.delete("format");
+                            setSearchParams(searchParams);
+                          }
                         }}
                       />
                       <Select
                         name={"genres"}
                         list={genreList}
-                        selected={selected["genres"]}
+                        selected={
+                          searchParams.get("genres")
+                            ? genreList[
+                                genreList.findIndex(
+                                  (item) =>
+                                    item.value ==
+                                    JSON.parse(searchParams.get("genres"))[0]
+                                )
+                              ]
+                            : genreList[0]
+                        }
                         onChange={(data) => {
-                          dispatch(changeFilter({ type: "genres", data }));
+                          if (data?.value) {
+                            searchParams.set(
+                              "genres",
+                              JSON.stringify([data.value])
+                            );
+                            setSearchParams(searchParams);
+                          } else {
+                            searchParams.delete("genres");
+                            setSearchParams(searchParams);
+                          }
                         }}
                       />
                       <Select
                         name={"sort"}
                         list={sortList}
-                        selected={selected["sort"]}
+                        selected={
+                          searchParams.get("sort")
+                            ? sortList[
+                                sortList.findIndex(
+                                  (item) =>
+                                    item.value ==
+                                    JSON.parse(searchParams.get("sort"))[0]
+                                )
+                              ]
+                            : sortList[0]
+                        }
                         onChange={(data) => {
-                          dispatch(changeFilter({ type: "sort", data }));
+                          if (data?.value) {
+                            searchParams.set(
+                              "sort",
+                              JSON.stringify([data.value])
+                            );
+                            setSearchParams(searchParams);
+                          } else {
+                            searchParams.delete("sort");
+                            setSearchParams(searchParams);
+                          }
                         }}
                       />
                       <Select
                         name={"status"}
                         list={statusList}
-                        selected={selected["status"]}
+                        selected={
+                          statusList[
+                            statusList.findIndex(
+                              (item) => item.value == searchParams.get("status")
+                            )
+                          ]
+                        }
                         onChange={(data) => {
-                          dispatch(changeFilter({ type: "status", data }));
+                          if (data?.value) {
+                            searchParams.set("status", data.value);
+                            setSearchParams(searchParams);
+                          } else {
+                            searchParams.delete("status");
+                            setSearchParams(searchParams);
+                          }
                         }}
                       />
                     </Dialog.Panel>
@@ -147,25 +200,67 @@ function Filter({ color = "#141e30" }) {
           <Select
             name={"genres"}
             list={genreList}
-            selected={selected["genres"]}
+            selected={
+              searchParams.get("genres")
+                ? genreList[
+                    genreList.findIndex(
+                      (item) =>
+                        item.value == JSON.parse(searchParams.get("genres"))[0]
+                    )
+                  ]
+                : genreList[0]
+            }
             onChange={(data) => {
-              dispatch(changeFilter({ type: "genres", data }));
+              if (data?.value) {
+                searchParams.set("genres", JSON.stringify([data.value]));
+                setSearchParams(searchParams);
+              } else {
+                searchParams.delete("genres");
+                setSearchParams(searchParams);
+              }
             }}
           />
           <Select
             name={"sort"}
             list={sortList}
-            selected={selected["sort"]}
+            selected={
+              searchParams.get("sort")
+                ? sortList[
+                    sortList.findIndex(
+                      (item) =>
+                        item.value == JSON.parse(searchParams.get("sort"))[0]
+                    )
+                  ]
+                : sortList[0]
+            }
             onChange={(data) => {
-              dispatch(changeFilter({ type: "sort", data }));
+              if (data?.value) {
+                searchParams.set("sort", JSON.stringify([data.value]));
+                setSearchParams(searchParams);
+              } else {
+                searchParams.delete("sort");
+                setSearchParams(searchParams);
+              }
             }}
           />
           <Select
             name={"status"}
             list={statusList}
-            selected={selected["status"]}
+            selected={
+              statusList[
+                statusList.findIndex(
+                  (item) => item.value == searchParams.get("status")
+                )
+              ]
+            }
             onChange={(data) => {
-              dispatch(changeFilter({ type: "status", data }));
+              if (data?.value) {
+                searchParams.set("status", data.value);
+                setSearchParams(searchParams);
+              } else {
+                searchParams.delete("status");
+                setSearchParams(searchParams);
+              }
             }}
           />
         </>

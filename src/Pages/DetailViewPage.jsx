@@ -24,7 +24,7 @@ function DetailViewPage() {
         {/* <img className="opacity-30 object-cover" src={url} /> */}
         <div className="bg-black w-full h-full opacity-70"></div>
       </div>
-      <SimpleBar className="h-screen">
+      <SimpleBar className="h-full">
         <div className="">
           {/* Navbar */}
           {/* <div className="flex-1 w-full px-5 h-20 flex items-center justify-between">

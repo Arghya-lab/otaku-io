@@ -10,6 +10,7 @@ export const formatList = [
 ];
 
 export const sortList = [
+  { value: undefined, name: "None" },
   { value: "POPULARITY_DESC", name: "Popularity Desc" },
   { value: "POPULARITY", name: "Popularity Asc" },
   { value: "TRENDING_DESC", name: "Trending  Desc" },
@@ -24,7 +25,6 @@ export const sortList = [
   { value: "SCORE", name: "Score Asc" },
   { value: "TITLE_ROMAJI", name: "Alphabetically" },
   { value: "TITLE_ROMAJI_DESC", name: "Alphabetically Desc" },
-  { value: undefined, name: "None" },
 ];
 
 export const genreList = [
@@ -48,10 +48,10 @@ export const genreList = [
 ];
 
 export const statusList = [
+  { value: undefined, name: "None" },
   { value: "FINISHED", name: "Finished" },
   { value: "RELEASING", name: "Releasing" },
   { value: "NOT_YET_RELEASED", name: "Not Yet Released" },
   { value: "CANCELLED", name: "Cancelled" },
   { value: "HIATUS", name: "Hiatus" },
-  { value: undefined, name: "None" },
 ];

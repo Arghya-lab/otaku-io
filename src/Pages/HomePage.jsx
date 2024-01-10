@@ -15,16 +15,14 @@ function HomePage() {
 
   return (
     <div
-      className=""
+      className="relative h-screen"
       style={{
         background: "linear-gradient(to right,  #141e30, #243b55)",
       }}>
-      <div className="h-screen relative">
         <TopNavbar />
         <SideNavbar />
         <HomeContentContainer />
       </div>
-    </div>
   );
 }
 

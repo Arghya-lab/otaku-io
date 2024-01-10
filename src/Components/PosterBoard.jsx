@@ -3,9 +3,19 @@ import { ChevronRight } from "lucide-react";
 import PosterItem from "./PosterItem";
 import { posterItemType } from "../constants";
 import usePosterItemCount from "../hooks/usePosterItemCount";
+import { useNavigate } from "react-router-dom";
 
 function PosterBoard({ name, content }) {
-   const posterItemCount = usePosterItemCount()
+  const navigate = useNavigate();
+  const posterItemCount = usePosterItemCount();
+
+  const handleSeeAllClick = () => {
+    navigate(
+      `/discover?sort=${JSON.stringify([
+        name === "trending" ? "TRENDING_DESC" : "POPULARITY_DESC",
+      ])}`
+    );
+  };
 
   return (
     <div className="mt-4 pb-8 px-2 xxs:px-4">
@@ -15,7 +25,8 @@ function PosterBoard({ name, content }) {
         {/* See all btn */}
         <div
           role="button"
-          className="p-2 pl-4 rounded-[45px] flex flex-row gap-2 items-center opacity-60 hover:bg-slate-600 hover:opacity-100 hover:text-slate-100">
+          className="p-2 pl-4 rounded-[45px] flex flex-row gap-2 items-center opacity-65 text-slate-300  bg-white bg-opacity-0 hover:bg-opacity-10 hover:opacity-100 hover:text-slate-100"
+          onClick={handleSeeAllClick}>
           <p className="text-[15px]">See All</p>
           <ChevronRight size={24} />
         </div>

@@ -12,7 +12,8 @@ const loadHomePage = createAsyncThunk("content/loadHomePage", async () => {
 });
 
 const applyFilter = createAsyncThunk("content/applyFilter", async (params) => {
-  const res = await animeApi.advancedSearch({ ...params, page: 1 });
+  const res = await animeApi.advancedSearch(params);
+  console.log(res.data);
   return res.data;
 });
 
@@ -38,8 +39,8 @@ const initialState = {
   popular: [],
   // additional popular content related info like currentPage, hasNextPage
   filterContent: [],
-  hasMoreFilterContent: true,
-  currentFilterContentPage:1,
+  hasMoreFilterContent: false,
+  currentFilterContentPage: 0,
 
   detailInfo: {},
   imdbInfo: {},
@@ -51,6 +52,11 @@ export const contentSlice = createSlice({
   reducers: {
     resetImdbInfo: (state) => {
       state.imdbInfo = {};
+    },
+    clearFilterData: (state) => {
+      state.filterContent = [];
+      state.hasMoreFilterContent = false;
+      state.currentFilterContentPage = 0;
     },
   },
   extraReducers: (builder) => {
@@ -69,7 +75,10 @@ export const contentSlice = createSlice({
 
     // filter
     builder.addCase(applyFilter.fulfilled, (state, action) => {
-      state.filterContent = [...state.filterContent, ...action.payload?.results|| []];
+      state.filterContent = [
+        ...state.filterContent,
+        ...(action.payload?.results || []),
+      ];
       state.hasMoreFilterContent = action.payload?.hasNextPage || false;
       state.currentFilterContentPage = action.payload?.currentPage;
     }),
@@ -97,6 +106,6 @@ export const contentSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { resetImdbInfo } = contentSlice.actions;
+export const { resetImdbInfo, clearFilterData } = contentSlice.actions;
 export { loadHomePage, applyFilter, loadDetailInfo, loadImdbInfo };
 export default contentSlice.reducer;

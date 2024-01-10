@@ -261,6 +261,7 @@ const PlayerControl = forwardRef(
                     onClick={() => {
                       setPlayerState((prev) => ({ ...prev, pip: false }));
                       screenfull.request(document.getElementById("Player"));
+
                       setIsPlayerFullScreen(true);
                     }}
                   />

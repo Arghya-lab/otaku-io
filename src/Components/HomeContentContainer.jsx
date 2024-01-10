@@ -8,7 +8,7 @@ function HomeContentContainer() {
 
   return (
     <div className="overflow-y-auto absolute top-20 bottom-20 xs:bottom-0 left-0 xs:left-20 right-0 z-20">
-      <SimpleBar className="h-[calc(100vh-5rem)]">
+      <SimpleBar className="h-full">
         <Carousel />
         <PosterBoard name={"trending"} content={trending} />
         <PosterBoard name={"popular"} content={popular} />

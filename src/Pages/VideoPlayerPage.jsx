@@ -27,10 +27,10 @@ function VideoPlayerPage() {
         <div className="px-3.5 xxs:px-6 xs:px-12 mb-8 mt-2 flex flex-col md:w-3/4 md:min-w-[700px] lg:min-w-[900px]">
           <Player />
           <div className="pb-4 md:pb-18 lg:pb-12">
-            <p className="py-4 px-2 font-bold font-nunito text-xl text-slate-100">
+            <p className="py-4 px-2 font-bold font-nunito text-xl text-neutral-900 dark:text-slate-100">
               {episode?.title}
             </p>
-            <p className="text-slate-100">{episode?.description}</p>
+            <p className="text-neutral-900 dark:text-slate-100">{episode?.description}</p>
           </div>
           <EpStreamSheet />
         </div>

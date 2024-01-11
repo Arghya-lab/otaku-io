@@ -1,35 +1,41 @@
 import { Fragment } from "react";
 import PropType from "prop-types";
+import { useSelector } from "react-redux";
 import SimpleBar from "simplebar-react";
 import { Listbox, Transition } from "@headlessui/react";
 import { Check, ChevronDown } from "lucide-react";
-import { shade } from "../../utils/color";
+import chroma from "chroma-js";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-function Select({ name, color = "#141e30", list, selected, onChange }) {
+function Select({ name, color, list, selected, onChange }) {
+  const { theme } = useSelector((state) => state.preference);
   return (
     <div>
       {name && (
         <div className="pl-4">
-          <p className="text-white capitalize">{name}</p>
+          <p className="text-neutral-900 dark:text-slate-100 capitalize">{name}</p>
         </div>
       )}
       <Listbox value={selected} onChange={onChange}>
         {({ open }) => (
           <div className="relative pt-1">
             <Listbox.Button
-              className="relative min-w-44 max-w-52 py-1.5 pl-3 pr-10 text-left cursor-pointer rounded-[45px] text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white bg-opacity-20"
-              style={{ backgroundColor: shade(color, 0, 0.15) }}>
-              <span className="ml-3 block truncate text-slate-200">
+              className="relative min-w-44 max-w-52 py-1.5 pl-3 pr-10 text-left cursor-pointer rounded-[45px] text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-black dark:bg-white bg-opacity-20"
+              style={{
+                backgroundColor: chroma(color || theme.primaryColor)
+                  .darken(1.75)
+                  .alpha(0.7),
+              }}>
+              <span className="ml-3 block truncate text-neutral-900 dark:text-slate-200">
                 {selected?.name}
               </span>
               <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
                 <ChevronDown
                   strokeWidth={2.75}
-                  className="h-5 w-5 text-gray-300"
+                  className="h-5 w-5 text-neutral-700 dark:text-gray-300"
                 />
               </span>
             </Listbox.Button>

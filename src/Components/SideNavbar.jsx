@@ -1,9 +1,14 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Cog, Compass, Home, LibraryBig } from "lucide-react";
+import chroma from "chroma-js";
+import { useSelector } from "react-redux";
+import useWindowSize from "../hooks/useWindowSize";
 
 function SideNavbar() {
   const navigate = useNavigate();
+  const { windowWidth } = useWindowSize();
+  const { theme } = useSelector((state) => state.preference);
 
   const pathName = useLocation().pathname;
   const initialSelectedBtn =
@@ -28,11 +33,17 @@ function SideNavbar() {
     }
   };
   return (
-    <div className="xs:w-20 h-16 xs:h-auto fixed xs:top-20 left-0 right-0 xs:right-auto bottom-0 z-10 flex xs:flex-col items-center justify-around xs:justify-start bg-[#141e30] bg-opacity-95 xs:bg-transparent">
+    <div
+      className="xs:w-20 h-16 xs:h-auto fixed xs:top-[calc(4rem-0.5px)] left-0 right-0 xs:right-auto bottom-0 z-10 flex xs:flex-col items-center justify-around xs:justify-start"
+      style={
+        windowWidth < 640
+          ? { backgroundColor: chroma(theme.primaryColor).darken(0.25) }
+          : null
+      }>
       <div
         className={`side-nav-btn ${
           hoverBtn === "Home"
-            ? "hover:bg-slate-800 hover:opacity-100 hover:text-slate-300"
+            ? "bg-black dakr:bg-white bg-opacity-10 opacity-100 text-neutral-900 dark:text-slate-100"
             : null
         } ${selectedBtn === "Home" ? "opacity-90" : "opacity-50"}`}
         onPointerEnter={() => setHoverBtn("Home")}
@@ -41,7 +52,9 @@ function SideNavbar() {
         <Home
           size={30}
           strokeWidth={1.75}
-          className={selectedBtn === "Home" ? "text-orange-500" : null}
+          style={
+            selectedBtn === "Home" ? { color: theme.secondaryColor } : null
+          }
         />
         <p
           className={`text-xs pt-1 opacity-0 ${
@@ -55,7 +68,7 @@ function SideNavbar() {
       <div
         className={`side-nav-btn ${
           hoverBtn === "Discover"
-            ? "hover:bg-slate-800 hover:opacity-100 hover:text-slate-300"
+            ? "bg-black dakr:bg-white bg-opacity-10 opacity-100 text-neutral-900 dark:text-slate-100"
             : null
         } ${selectedBtn === "Discover" ? "opacity-90" : "opacity-50"}`}
         onPointerEnter={() => setHoverBtn("Discover")}
@@ -64,7 +77,9 @@ function SideNavbar() {
         <Compass
           size={30}
           strokeWidth={1.75}
-          className={selectedBtn === "Discover" ? "text-orange-500" : null}
+          style={
+            selectedBtn === "Discover" ? { color: theme.secondaryColor } : null
+          }
         />
         <p
           className={`text-xs pt-1 opacity-0 ${
@@ -78,7 +93,7 @@ function SideNavbar() {
       <div
         className={`side-nav-btn ${
           hoverBtn === "Library"
-            ? "hover:bg-slate-800 hover:opacity-100 hover:text-slate-300"
+            ? "bg-black dakr:bg-white bg-opacity-10 opacity-100 text-neutral-900 dark:text-slate-100"
             : null
         } ${selectedBtn === "Library" ? "opacity-90" : "opacity-50"}`}
         onPointerEnter={() => setHoverBtn("Library")}
@@ -87,7 +102,9 @@ function SideNavbar() {
         <LibraryBig
           size={30}
           strokeWidth={1.75}
-          className={selectedBtn === "Library" ? "text-orange-500" : null}
+          style={
+            selectedBtn === "Library" ? { color: theme.secondaryColor } : null
+          }
         />
         <p
           className={`text-xs pt-1 opacity-0 ${
@@ -101,7 +118,7 @@ function SideNavbar() {
       <div
         className={`side-nav-btn ${
           hoverBtn === "Setting"
-            ? "hover:bg-slate-800 hover:opacity-100 hover:text-slate-300"
+            ? "bg-black dakr:bg-white bg-opacity-10 opacity-100 text-neutral-900 dark:text-slate-100"
             : null
         } ${selectedBtn === "Setting" ? "opacity-90" : "opacity-50"}`}
         onPointerEnter={() => setHoverBtn("Setting")}
@@ -110,7 +127,9 @@ function SideNavbar() {
         <Cog
           size={30}
           strokeWidth={1.75}
-          className={selectedBtn === "Setting" ? "text-orange-500" : null}
+          style={
+            selectedBtn === "Setting" ? { color: theme.secondaryColor } : null
+          }
         />
         <p
           className={`text-xs pt-1 opacity-0 ${

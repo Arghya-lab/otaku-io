@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import PropType from "prop-types";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Play } from "lucide-react";
@@ -11,7 +12,7 @@ import { mapEpisodes } from "../utils/mapEpisodes";
 import { epSelectableList } from "../utils/mapEpisodes";
 import { loadDetailInfo } from "../features/content/contentSlice";
 
-function EpStreamSheet() {
+function EpStreamSheet({ modeResponsiveness = true }) {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -43,8 +44,13 @@ function EpStreamSheet() {
     <div>
       <div>
         {/* radio dub / sub btn */}
-        <div className="pb-4 flex items-center justify-between">
-          <div className="flex gap-1 capitalize items-center text-slate-200">
+        <div className="pb-4 max-w-lg flex items-center justify-between">
+          <div
+            className={`flex gap-1 capitalize items-center ${
+              modeResponsiveness
+                ? "text-neutral-800 dark:text-slate-300"
+                : "text-slate-300"
+            }`}>
             <Radio
               color={detailInfo?.color}
               enabled={enabledDub}
@@ -69,7 +75,9 @@ function EpStreamSheet() {
           {detailInfo?.episodes.length === 1 ? (
             <div
               role="button"
-              className="px-4 py-2 w-36 m-auto my-4 bg-white hover:text-[#aeaee4] hover:border-[#aeaee4] bg-opacity-20 border-2 rounded-[45px] flex justify-center gap-2"
+              className={`px-4 py-2 w-36 m-auto my-4 ${
+                modeResponsiveness ? "bg-black dark:bg-white" : "bg-white"
+              } bg-opacity-20 border-2 rounded-[45px] flex justify-center gap-2`}
               style={{
                 color: isHovered ? detailInfo?.color || "#fff" : "#fff",
                 borderColor: isHovered ? detailInfo?.color || "#fff" : "#fff",
@@ -106,6 +114,7 @@ function EpStreamSheet() {
                       key={id}
                       episode={episode}
                       color={detailInfo?.color}
+                      modeResponsiveness={modeResponsiveness}
                       handleClick={() => handleClick(episode)}
                     />
                   ))}
@@ -118,5 +127,9 @@ function EpStreamSheet() {
     </div>
   );
 }
+
+EpStreamSheet.propTypes = {
+  modeResponsiveness: PropType.bool,
+};
 
 export default EpStreamSheet;

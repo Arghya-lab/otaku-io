@@ -40,7 +40,7 @@ function PosterItem({ item, type = posterItemType.general }) {
       onClick={handleClick}>
       <div
         className={`pt-[calc(100%*1.464)] w-full relative overflow-hidden rounded-xl ring-[3px] ${
-          isHover ? "ring-slate-50" : "ring-transparent"
+          isHover ? "ring-neutral-800 dark:ring-slate-50" : "ring-transparent"
         }`}>
         <div
           className={`h-[calc(100%*1.464)] absolute top-0 -z-10 overflow-hidden transition-transform duration-200 ease-in transform-gpu ${
@@ -52,13 +52,14 @@ function PosterItem({ item, type = posterItemType.general }) {
           />
         </div>
       </div>
-      <div
-        className="h-16 text-sm font-medium flex items-center overflow-visible"
-        style={{
-          color: isHover ? shade(item?.color || "00ffff", -2) : "#FFFFFF",
-        }}>
-        <p className="px-2 w-full line-clamp-2 text-center">
-          {item?.title?.english || item?.title?.userPreferred || item?.title?.romaji || item?.title?.native}
+      <div className="h-16 text-sm font-medium flex items-center overflow-visible">
+        <p
+          className="px-2 w-full line-clamp-2 text-center text-neutral-950 dark:text-white"
+          style={isHover ? item?.color? {color: shade(item?.color, -2)} : null : null}>
+          {item?.title?.english ||
+            item?.title?.userPreferred ||
+            item?.title?.romaji ||
+            item?.title?.native}
         </p>
       </div>
     </div>

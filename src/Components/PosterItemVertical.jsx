@@ -21,7 +21,7 @@ function PosterItemVertical({ item, type = posterItemType.filter }) {
     <div
       role="button"
       className={`p-3 mr-4 max-w-md flex flex-row rounded-xl ${
-        isHover ? "bg-white bg-opacity-5" : "bg-transparent"
+        isHover ? "bg-black dark:bg-white bg-opacity-5" : "bg-transparent"
       }`}
       onPointerEnter={() => setIsHover(true)}
       onPointerLeave={() => setIsHover(false)}
@@ -43,14 +43,14 @@ function PosterItemVertical({ item, type = posterItemType.filter }) {
           />
         </div>
       </div>
-      <div className="flex-1 py-2 px-4 text-slate-100">
+      <div className="flex-1 py-2 px-4 text-neutral-900 dark:text-slate-100">
         <p className="px-6 font-nunito font-semibold w-full text-center pb-2 line-clamp-2 overflow-x-ellipsis">
           {item?.title?.english ||
             item?.title?.userPreferred ||
             item?.title?.romaji ||
             item?.title?.native}
         </p>
-        <div className="text-slate-200 text-sm">
+        <div className="text-neutral-800 dark:text-slate-300 text-sm">
           {item?.rating && (
             <div>
               <span>Rating : </span>

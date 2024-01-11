@@ -21,17 +21,15 @@ function Carousel() {
   }));
 
   return (
-    <div
-      className="mb-8 opacity-80 shadow-2xl pb-36 pt-4 px-8 2xl:pb-52"
-      style={{}}>
+    <div className="opacity-80 shadow-2xl mb-44 mt-4 mx-8 2xl:mb-52 bg-transparent">
       <AliceCarousel
         mouseTracking
         items={items}
         autoPlay={true}
         autoPlayStrategy={"none"}
         infinite={true}
-        animationDuration={4000}
-        autoPlayInterval={1000}
+        animationDuration={2000}
+        autoPlayInterval={4000}
         disableSlideInfo={false}
         disableButtonsControls={true}
         disableDotsControls={true}

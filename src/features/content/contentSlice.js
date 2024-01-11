@@ -13,7 +13,6 @@ const loadHomePage = createAsyncThunk("content/loadHomePage", async () => {
 
 const applyFilter = createAsyncThunk("content/applyFilter", async (params) => {
   const res = await animeApi.advancedSearch(params);
-  console.log(res.data);
   return res.data;
 });
 

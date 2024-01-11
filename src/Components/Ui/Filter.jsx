@@ -1,8 +1,9 @@
-import PropType from "prop-types";
 import { useEffect, useState, Fragment } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Dialog, Transition } from "@headlessui/react";
 import { FilterIcon } from "lucide-react";
+import { useSelector } from "react-redux";
+import chroma from "chroma-js";
 import Select from "./Select";
 import {
   formatList,
@@ -10,12 +11,12 @@ import {
   sortList,
   statusList,
 } from "../../searchFilter";
-import { shade } from "../../utils/color";
 import useScroll from "../../hooks/useScroll";
 
-function Filter({ color = "#141e30" }) {
+function Filter() {
   const scrolled = useScroll();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { theme } = useSelector((state) => state.preference);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [windowWidth, setWindowWidth] = useState(null);
@@ -33,9 +34,12 @@ function Filter({ color = "#141e30" }) {
 
   return (
     <div
-      className={`p-4 h-24 fixed top-[calc(4rem-0.5px)] w-full z-40 flex items-center gap-4 backdrop-blur ${
-        scrolled ? `bg-[${"#141e30"}] bg-opacity-40` : "bg-transparent"
-      }`}>
+      className="p-4 h-24 fixed top-[calc(4rem-0.5px)] w-full z-40 flex items-center gap-4 backdrop-blur"
+      style={{
+        backgroundColor: scrolled
+          ? `${chroma(theme.primaryColor).darken().alpha(0.6)}`
+          : "transparent",
+      }}>
       <Select
         name={"format"}
         list={formatList}
@@ -65,7 +69,11 @@ function Filter({ color = "#141e30" }) {
             <div
               role="button"
               className="h-9 px-4 rounded-[45px] shadow-sm bg-white bg-opacity-20 flex items-center justify-center"
-              style={{ backgroundColor: shade(color, 0, 0.15) }}
+              style={{
+                backgroundColor: chroma(theme.primaryColor)
+                  .darken(1.75)
+                  .alpha(0.7),
+              }}
               onClick={() => setIsModalOpen(!isModalOpen)}>
               <FilterIcon size={18} color="#fff" fill="#fff" />
             </div>
@@ -98,7 +106,7 @@ function Filter({ color = "#141e30" }) {
                     leaveTo="opacity-0 scale-95">
                     <Dialog.Panel
                       className="w-5/6 max-w-64 transform overflow-hidden rounded-2xl p-6 text-left align-middle shadow-xl transition-all flex flex-col gap-4"
-                      style={{ backgroundColor: color }}>
+                      style={{ backgroundColor: theme.primaryColor }}>
                       <Select
                         name={"format"}
                         list={formatList}
@@ -273,9 +281,5 @@ function Filter({ color = "#141e30" }) {
     </div>
   );
 }
-
-Filter.propTypes = {
-  color: PropType.string,
-};
 
 export default Filter;

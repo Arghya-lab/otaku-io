@@ -20,6 +20,7 @@ function DiscoverContentContainer() {
 
   const { filterContent, hasMoreFilterContent, currentFilterContentPage } =
     useSelector((state) => state.content);
+  const { theme } = useSelector((state) => state.preference);
 
   const filterQuery = Object.fromEntries(searchParams.entries());
 
@@ -33,7 +34,6 @@ function DiscoverContentContainer() {
   }, [searchParam]);
 
   const handleFetchMoreFilterData = () => {
-    console.log("trigger");
     dispatch(
       applyFilter({ ...filterQuery, page: currentFilterContentPage + 1 })
     );
@@ -45,40 +45,38 @@ function DiscoverContentContainer() {
         {/* Selectable input container */}
         <Filter />
         {/* Meta items container */}
-        <div className="">
-          <InfiniteScroll
-            className="h-full"
-            dataLength={filterContent.length} //This is important field to render the next data
-            next={handleFetchMoreFilterData}
-            hasMore={hasMoreFilterContent}
-            loader={
-              <div className="w-28 m-auto">
-                <LineWave
-                  visible={true}
-                  height="200"
-                  width="200"
-                  color="#4fa94d"
-                />
-              </div>
-            }
-            endMessage={
-              <p style={{ textAlign: "center" }}>nothing to show more</p>
-            }>
-            <div
-              className="px-2 xxs:px-4 grid"
-              style={{
-                gridTemplateColumns: `repeat( ${posterItemCount}, 1fr)`,
-              }}>
-              {filterContent.map((item, id) => (
-                <PosterItem
-                  key={id}
-                  item={item}
-                  // type={posterItemType.filter}
-                />
-              ))}
+        <InfiniteScroll
+          className="h-full"
+          dataLength={filterContent.length} //This is important field to render the next data
+          next={handleFetchMoreFilterData}
+          hasMore={hasMoreFilterContent}
+          loader={
+            <div className="w-28 m-auto">
+              <LineWave
+                visible={true}
+                height="200"
+                width="200"
+                color={theme.secondaryColor}
+              />
             </div>
-          </InfiniteScroll>
-        </div>
+          }
+          endMessage={
+            <p style={{ textAlign: "center" }}>nothing to show more</p>
+          }>
+          <div
+            className="px-2 xxs:px-4 grid"
+            style={{
+              gridTemplateColumns: `repeat( ${posterItemCount}, 1fr)`,
+            }}>
+            {filterContent.map((item, id) => (
+              <PosterItem
+                key={id}
+                item={item}
+                // type={posterItemType.filter}
+              />
+            ))}
+          </div>
+        </InfiniteScroll>
       </div>
       {/* {windowWidth>1000 && (
       <MetaMiniPreview />)} */}

@@ -26,7 +26,7 @@ function TopNavbar() {
         className="opacity-40 text-neutral-700 dark:text-slate-300"
       /> */}
       <div className="w-9 h-9">
-        <img className="scale-150" src="http://localhost:5173/logo.png" />
+        <img className="scale-150" src="/logo.png" />
       </div>
       <div className="h-12 w-full xxs:w-2/3 max-w-2xl rounded-[45px] bg-white bg-opacity-10 hover:bg-opacity-15 shadow-sm flex flex-row items-center">
         <input

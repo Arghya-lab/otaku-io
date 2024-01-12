@@ -1,13 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+  
+  isEnabledDub: true,
   theme: {
-    id: 12,
-    name: "Delicate",
-    type: "light",
-    primaryColor: "#e9e4f0",
-    secondaryColor: "#3f3d56",
-    bgImg: "linear-gradient(to top, #d3cce3, #e9e4f0)",
+    id: 23,
+    name: "Twilight Horizon",
+    type: "dark",
+    primaryColor: "#141e30",
+    secondaryColor: "#ff6f61",
+    bgImg: "linear-gradient(to right, #141e30, #243b55)",
   },
 };
 
@@ -16,7 +18,7 @@ export const preferenceSlice = createSlice({
   initialState,
   reducers: {
     setTheme: (state, action) => {
-      state.mode = action.payload;
+      state.theme = action.payload;
     },
   },
 });

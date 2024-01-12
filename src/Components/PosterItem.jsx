@@ -40,7 +40,7 @@ function PosterItem({ item, type = posterItemType.general }) {
       onClick={handleClick}>
       <div
         className={`pt-[calc(100%*1.464)] w-full relative overflow-hidden rounded-xl ring-[3px] ${
-          isHover ? "ring-neutral-800 dark:ring-slate-50" : "ring-transparent"
+          isHover ? "ring-slate-50" : "ring-transparent"
         }`}>
         <div
           className={`h-[calc(100%*1.464)] absolute top-0 -z-10 overflow-hidden transition-transform duration-200 ease-in transform-gpu ${

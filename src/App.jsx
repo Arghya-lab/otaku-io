@@ -1,12 +1,12 @@
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import HomePage from "./Pages/HomePage";
 import DiscoverPage from "./Pages/DiscoverPage";
 import DetailViewPage from "./Pages/DetailViewPage";
 import VideoPlayerPage from "./Pages/VideoPlayerPage";
-import Test from "./Pages/Test";
-import { useSelector } from "react-redux";
-import { useEffect } from "react";
+import SettingPage from "./Pages/SettingPage";
 
 function App() {
   const { theme } = useSelector((state) => state.preference);
@@ -29,7 +29,7 @@ function App() {
         <Route path="/discover" element={<DiscoverPage />} />
         <Route path="/detail/:id/:title" element={<DetailViewPage />} />
         <Route path="/watch/:id/:name" element={<VideoPlayerPage />} />
-        <Route path="/test" element={<Test />} />
+        <Route path="/setting" element={<SettingPage />} />
       </Routes>
     </div>
   );

@@ -54,6 +54,7 @@ function Player() {
   };
 
   useEffect(() => {
+    console.log(sources);
     const objId = sources.findIndex((u) => u?.quality == playBackQuality);
     const selectedUrl = sources[objId]?.url;
     loadVideo(selectedUrl);
@@ -71,7 +72,7 @@ function Player() {
   return (
     <div
       id="Player"
-      className="relative"
+      className="relative w-full h-full"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onTouchStart={handleMouseMove}>
@@ -86,11 +87,6 @@ function Player() {
         playing={playerState?.playing}
         volume={playerState?.volume}
         muted={playerState?.muted}
-        onReady={() => console.log("onReady")}
-        onStart={() => console.log("onStart")}
-        onPlay={() => {
-          console.log("play start");
-        }}
         onDuration={(v) => setPlayerState((prev) => ({ ...prev, duration: v }))}
         onProgress={(value) => {
           if (count > 3) {
@@ -106,6 +102,11 @@ function Player() {
             loaded: value.loaded,
             played: value.played,
           }));
+        }}
+        onReady={() => console.log("onReady")}
+        onStart={() => console.log("onStart")}
+        onPlay={() => {
+          console.log("play start");
         }}
         onBuffer={() => console.log("onBuffer")}
         // onPlaybackRateChange={this.handleOnPlaybackRateChange}

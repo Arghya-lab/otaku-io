@@ -6,7 +6,7 @@ function HomeContentContainer() {
   const { trending, popular } = useSelector((state) => state.content);
 
   return (
-    <div className="xs:pl-20">
+    <div className="xs:pl-20 pb-16 xs:pb-0">
       <Carousel />
       <PosterBoard name={"trending"} content={trending} />
       <PosterBoard name={"popular"} content={popular} />

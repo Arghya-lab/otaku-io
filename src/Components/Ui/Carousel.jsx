@@ -21,7 +21,7 @@ function Carousel() {
   }));
 
   return (
-    <div className="opacity-80 shadow-2xl mb-44 mt-4 mx-8 2xl:mb-52 bg-transparent">
+    <div className="opacity-80 shadow-2xl mb-44 mt-4 mx-4 xs:mx-8 2xl:mb-52 bg-transparent">
       <AliceCarousel
         mouseTracking
         items={items}

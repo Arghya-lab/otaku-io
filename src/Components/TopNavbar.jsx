@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { Box, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import chroma from "chroma-js";
 import UserBtn from "./Ui/UserBtn";
 import MinMaximizeBtn from "./Ui/MinMaximizeBtn";
@@ -21,11 +21,14 @@ function TopNavbar() {
           : "transparent",
       }}>
       {/* for detail view page & video viewing add back btn */}
-      <Box
+      {/* <Box
         size={36}
         className="opacity-40 text-neutral-700 dark:text-slate-300"
-      />
-      <div className="h-12 w-full xxs:w-2/3 max-w-2xl rounded-[45px] bg-black dark:bg-white bg-opacity-10 hover:bg-opacity-15 shadow-sm flex flex-row items-center">
+      /> */}
+      <div className="w-9 h-9">
+        <img className="scale-150" src="http://localhost:5173/logo.png" />
+      </div>
+      <div className="h-12 w-full xxs:w-2/3 max-w-2xl rounded-[45px] bg-white bg-opacity-10 hover:bg-opacity-15 shadow-sm flex flex-row items-center">
         <input
           size="1"
           autoCorrect="off"

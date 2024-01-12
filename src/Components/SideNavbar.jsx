@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Cog, Compass, Home, LibraryBig } from "lucide-react";
-import chroma from "chroma-js";
 import { useSelector } from "react-redux";
+import chroma from "chroma-js";
+import { Cog, Compass, Home, LibraryBig } from "lucide-react";
 import useWindowSize from "../hooks/useWindowSize";
 
 function SideNavbar() {
@@ -43,7 +43,7 @@ function SideNavbar() {
       <div
         className={`side-nav-btn ${
           hoverBtn === "Home"
-            ? "bg-black dakr:bg-white bg-opacity-10 opacity-100 text-neutral-900 dark:text-slate-100"
+            ? "bg-white bg-opacity-10 opacity-100 text-neutral-900 dark:text-slate-100"
             : null
         } ${selectedBtn === "Home" ? "opacity-90" : "opacity-50"}`}
         onPointerEnter={() => setHoverBtn("Home")}
@@ -68,7 +68,7 @@ function SideNavbar() {
       <div
         className={`side-nav-btn ${
           hoverBtn === "Discover"
-            ? "bg-black dakr:bg-white bg-opacity-10 opacity-100 text-neutral-900 dark:text-slate-100"
+            ? "bg-white bg-opacity-10 opacity-100 text-neutral-900 dark:text-slate-100"
             : null
         } ${selectedBtn === "Discover" ? "opacity-90" : "opacity-50"}`}
         onPointerEnter={() => setHoverBtn("Discover")}
@@ -93,7 +93,7 @@ function SideNavbar() {
       <div
         className={`side-nav-btn ${
           hoverBtn === "Library"
-            ? "bg-black dakr:bg-white bg-opacity-10 opacity-100 text-neutral-900 dark:text-slate-100"
+            ? "bg-white bg-opacity-10 opacity-100 text-neutral-900 dark:text-slate-100"
             : null
         } ${selectedBtn === "Library" ? "opacity-90" : "opacity-50"}`}
         onPointerEnter={() => setHoverBtn("Library")}
@@ -118,7 +118,7 @@ function SideNavbar() {
       <div
         className={`side-nav-btn ${
           hoverBtn === "Setting"
-            ? "bg-black dakr:bg-white bg-opacity-10 opacity-100 text-neutral-900 dark:text-slate-100"
+            ? "bg-white bg-opacity-10 opacity-100 text-neutral-900 dark:text-slate-100"
             : null
         } ${selectedBtn === "Setting" ? "opacity-90" : "opacity-50"}`}
         onPointerEnter={() => setHoverBtn("Setting")}

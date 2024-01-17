@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import AccountSection from "./AccountSection";
 import Radio from "./Ui/Radio";
 import ThemeSelectModal from "./ThemeSelectModal";
-import AccountSection from "./accountSection";
 
 function SettingContainer() {
   const { isEnabledDub, theme } = useSelector((state) => state.preference);

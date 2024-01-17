@@ -14,7 +14,9 @@ function AccountSection() {
     <div>
       {!status ? (
         <div>
-          <p className="text-neutral-700 dark:text-slate-300">Connect your account for save your preferences in cloud.</p>
+          <p className="text-neutral-700 dark:text-slate-300">
+            Connect your account for save your preferences in cloud.
+          </p>
           <span
             className="hover:underline cursor-pointer font-nunito"
             style={{ color: theme.secondaryColor }}
@@ -38,9 +40,13 @@ function AccountSection() {
       ) : (
         <div>
           <p></p>
-          <p className="text-neutral-700 dark:text-slate-300">{userData?.providerUid}</p>
-          <span className="hover:underline cursor-pointer font-nunito"
-            style={{ color: theme.secondaryColor }} onClick={() => dispatch(logout())}>
+          <p className="text-neutral-700 dark:text-slate-300">
+            {userData?.providerUid}
+          </p>
+          <span
+            className="hover:underline cursor-pointer font-nunito"
+            style={{ color: theme.secondaryColor }}
+            onClick={() => dispatch(logout())}>
             Logout
           </span>
         </div>

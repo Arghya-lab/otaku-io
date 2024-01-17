@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import HomePage from "./Pages/HomePage";
@@ -7,9 +7,18 @@ import DiscoverPage from "./Pages/DiscoverPage";
 import DetailViewPage from "./Pages/DetailViewPage";
 import VideoPlayerPage from "./Pages/VideoPlayerPage";
 import SettingPage from "./Pages/SettingPage";
+import LoginPage from "./Pages/LoginPage";
+import SignupPage from "./Pages/SignupPage";
+import { getUser } from "./features/auth/authSlice";
 
 function App() {
+  const dispatch = useDispatch();
   const { theme } = useSelector((state) => state.preference);
+
+  useEffect(() => {
+    dispatch(getUser())
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (theme?.type === "dark") {
@@ -26,6 +35,8 @@ function App() {
         style={{ background: theme.bgImg }}></div>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
         <Route path="/discover" element={<DiscoverPage />} />
         <Route path="/detail/:id/:title" element={<DetailViewPage />} />
         <Route path="/watch/:id/:name" element={<VideoPlayerPage />} />

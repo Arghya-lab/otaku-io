@@ -1,16 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { themeTypes } from "../../themes";
 
 const initialState = {
-  
   isEnabledDub: true,
-  theme: {
-    id: 23,
-    name: "Twilight Horizon",
-    type: "dark",
-    primaryColor: "#141e30",
-    secondaryColor: "#ff6f61",
-    bgImg: "linear-gradient(to right, #141e30, #243b55)",
-  },
+  theme: themeTypes[22],
 };
 
 export const preferenceSlice = createSlice({

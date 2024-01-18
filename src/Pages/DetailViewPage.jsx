@@ -5,11 +5,7 @@ import { TailSpin } from "react-loader-spinner";
 import TopNavbar from "../Components/TopNavbar";
 import MetaPreviewContainer from "../Components/MetaPreviewContainer";
 import EpStreamSheet from "../Components/EpStreamSheet";
-import {
-  loadDetailInfo,
-  loadImdbInfo,
-  resetDetailInfo,
-} from "../features/content/contentSlice";
+import { loadDetailInfo, loadImdbInfo } from "../features/content/contentSlice";
 
 function DetailViewPage() {
   const { title, id } = useParams();
@@ -18,19 +14,32 @@ function DetailViewPage() {
   const { imdbInfo, detailInfoLoaded, imdbInfoLoaded } = useSelector(
     (state) => state.content
   );
-  const { theme } = useSelector((state) => state.preference);
-
+  const { isDubEnabled, theme } = useSelector((state) => state.preference);
+  const [enabledDub, setEnabledDub] = useState(isDubEnabled);
   const [isLoaded, setIsLoaded] = useState(false);
+
+  const handleChangeSubOrDub = () => {
+    dispatch(
+      loadDetailInfo({
+        id,
+        params: { dub: !enabledDub, provider: "gogoanime" },
+      })
+    ).then(() => setEnabledDub(!enabledDub));
+  };
 
   useEffect(() => {
     setIsLoaded(detailInfoLoaded && imdbInfoLoaded);
   }, [detailInfoLoaded, imdbInfoLoaded]);
 
   useEffect(() => {
-    dispatch(resetDetailInfo());
     dispatch(loadImdbInfo({ t: decodeURIComponent(title) }));
-    dispatch(loadDetailInfo({ id, params: { provider: "gogoanime" } }));
-  }, [title, id, dispatch]);
+    dispatch(
+      loadDetailInfo({
+        id,
+        params: { dub: isDubEnabled, provider: "gogoanime" },
+      })
+    );
+  }, [id, title, isDubEnabled, dispatch]);
 
   if (!isLoaded) {
     return (
@@ -68,7 +77,11 @@ function DetailViewPage() {
             <div
               className="mx-4 xxs:mx-8 xs:mx-16 my-8 h-full p-8 px-4 bg-black bg-opacity-20 rounded-xl"
               style={{ backdropFilter: "blur(15px)" }}>
-              <EpStreamSheet modeResponsiveness={false} />
+              <EpStreamSheet
+                modeResponsiveness={false}
+                enabledDub={enabledDub}
+                setEnabledDub={handleChangeSubOrDub}
+              />
             </div>
           </div>
         </div>

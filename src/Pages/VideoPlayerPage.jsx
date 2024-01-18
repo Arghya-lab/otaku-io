@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
 import Player from "../Components/Ui/Player";
@@ -13,12 +13,26 @@ function VideoPlayerPage() {
 
   const dispatch = useDispatch();
   const { detailInfo } = useSelector((state) => state.content);
+  const { isDubEnabled } = useSelector((state) => state.preference);
+  const [enabledDub, setEnabledDub] = useState(isDubEnabled);
+
+  const handleChangeSubOrDub = () => {
+    dispatch(
+      loadDetailInfo({
+        id,
+        params: { dub: !enabledDub, provider: "gogoanime" },
+      })
+    ).then(() => setEnabledDub(!enabledDub));
+  };
 
   useEffect(() => {
-    if (Object.keys(detailInfo).length == 0) {
-      dispatch(loadDetailInfo({ id, params: { provider: "gogoanime" } }));
-    }
-  }, [detailInfo, id, dispatch]);
+    dispatch(
+      loadDetailInfo({
+        id,
+        params: { dub: isDubEnabled, provider: "gogoanime" },
+      })
+    );
+  }, [id, isDubEnabled, dispatch]);
 
   return (
     <div className="max-w-[1600px] m-auto">
@@ -34,7 +48,10 @@ function VideoPlayerPage() {
               {episode?.description}
             </p>
           </div>
-          <EpStreamSheet />
+          <EpStreamSheet
+            enabledDub={enabledDub}
+            setEnabledDub={handleChangeSubOrDub}
+          />
         </div>
         {detailInfo?.recommendations && (
           <div className="flex-1 flex flex-col px-2 xxs:px-6 xs:px-12 md:p-0">

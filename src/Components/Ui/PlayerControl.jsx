@@ -18,6 +18,7 @@ import {
 import { secToMinSec } from "../../utils/time";
 import VideoLoadedBar from "./VideoLoadedBar";
 import VolumeController from "./VolumeController";
+import { useSelector } from "react-redux";
 
 const PlayerControl = forwardRef(
   (
@@ -31,6 +32,7 @@ const PlayerControl = forwardRef(
     },
     ref
   ) => {
+    const { videoSeekSeconds } = useSelector((state) => state.preference);
     const [isRemainingTime, setIsRemainingTime] = useState(false);
     const [isPlayerFullScreen, setIsPlayerFullScreen] = useState(false);
 
@@ -43,9 +45,13 @@ const PlayerControl = forwardRef(
           playing: false,
         }));
       } else if (e.key === "ArrowRight" || e.keyCode === 39) {
-        playerRef.current.seekTo(playerRef.current.getCurrentTime() + 10);
+        playerRef.current.seekTo(
+          playerRef.current.getCurrentTime() + videoSeekSeconds
+        );
       } else if (e.key === "ArrowLeft" || e.keyCode === 37) {
-        playerRef.current.seekTo(playerRef.current.getCurrentTime() - 10);
+        playerRef.current.seekTo(
+          playerRef.current.getCurrentTime() - videoSeekSeconds
+        );
       } else if (e.key === "f" || e.keyCode === 70) {
         setPlayerState((prev) => ({ ...prev, pip: false }));
         screenfull.request(document.getElementById("Player"));
@@ -166,7 +172,7 @@ const PlayerControl = forwardRef(
                 className="px-1 xs:px-3 rotate-[-30]"
                 onClick={() =>
                   playerRef.current.seekTo(
-                    playerRef.current.getCurrentTime() - 10
+                    playerRef.current.getCurrentTime() - videoSeekSeconds
                   )
                 }>
                 <Undo className="h-4 w-4 xs:h-6 xs:w-6" color="#fff" />
@@ -176,7 +182,7 @@ const PlayerControl = forwardRef(
                 className="px-1 xs:px-3 rotate-[30]"
                 onClick={() =>
                   playerRef.current.seekTo(
-                    playerRef.current.getCurrentTime() + 10
+                    playerRef.current.getCurrentTime() + videoSeekSeconds
                   )
                 }>
                 <Redo className="h-4 w-4 xs:h-6 xs:w-6" color="#fff" />

@@ -1,4 +1,5 @@
 import { Client, Account, ID } from "appwrite";
+import preferences from "./preferences";
 
 export class AuthService {
   client = new Client();
@@ -19,6 +20,7 @@ export class AuthService {
       userName
     );
     if (newUser) {
+      await preferences.initializePreference(newUser.$id);
       return await this.loginUser({ email, password });
     } else {
       throw new Error("Error occurred while creating a new user.");
@@ -26,11 +28,14 @@ export class AuthService {
   }
 
   async loginUser({ email, password }) {
-    return await this.account.createEmailSession(email, password);
+    await this.account.createEmailSession(email, password);
+    return await this.getCurrentUser();
   }
 
   async getCurrentUser() {
-    return await this.account.get();
+    const user = await this.account.get();
+    const preference = await preferences.getPreferences(user.$id);
+    return { user, preference };
   }
 
   async logoutUser() {

@@ -7,7 +7,7 @@ import PosterItem from "./PosterItem";
 // import MetaMiniPreview from "./MetaMiniPreview";
 // import { posterItemType } from "../constants";
 import usePosterItemCount from "../hooks/usePosterItemCount";
-import Filter from "./Ui/Filter";
+import Filter from "./Filter";
 import { applyFilter, clearFilterData } from "../features/content/contentSlice";
 import { setMiniMeta } from "../features/selected/selectedSlice";
 

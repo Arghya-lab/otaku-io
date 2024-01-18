@@ -1,19 +1,25 @@
 import { useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player/lazy";
 import PlayerControl from "./PlayerControl";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import animeApi from "../../Api/animeApi";
+import { useSelector } from "react-redux";
 
 let count = 0;
 
 function Player() {
   const { name } = useParams();
+  const navigate = useNavigate();
 
   const playerRef = useRef(null);
   const controlRef = useRef(null);
 
   const [sources, setSources] = useState([]);
   const [playBackQuality, setPlayBackQuality] = useState("auto");
+  const { detailInfo } = useSelector((state) => state.content);
+  const { isAutoPlayEnabled, isAutoNextEnabled } = useSelector(
+    (state) => state.preference
+  );
 
   useEffect(() => {
     (async () => {
@@ -46,18 +52,34 @@ function Player() {
     setPlayerState((prev) => ({
       ...prev,
       url,
-      playing: true,
+      playing: isAutoPlayEnabled,
       played: 0,
       loaded: 0,
       pip: false,
     }));
   };
 
+  const handleEnded = () => {
+    if (isAutoNextEnabled) {
+      const currentEpIdx = detailInfo.episodes.findIndex(
+        (ep) => ep.id === decodeURIComponent(name)
+      );
+      const nextEp = detailInfo.episodes[currentEpIdx + 1];
+      if (nextEp?.id) {
+        navigate(`/watch/${detailInfo?.id}/${nextEp.id}`, {
+          state: { episode: nextEp },
+        });
+      }
+    } else {
+      setPlayerState({ ...playerState, playing: false });
+    }
+  };
+
   useEffect(() => {
-    console.log(sources);
     const objId = sources.findIndex((u) => u?.quality == playBackQuality);
     const selectedUrl = sources[objId]?.url;
     loadVideo(selectedUrl);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playBackQuality, sources]);
 
   const handleMouseMove = () => {
@@ -111,7 +133,7 @@ function Player() {
         onBuffer={() => console.log("onBuffer")}
         // onPlaybackRateChange={this.handleOnPlaybackRateChange}
         onSeek={(e) => console.log("onSeek", e)}
-        // onEnded={this.handleEnded}
+        onEnded={handleEnded}
         onError={(e) => console.log("onError", e)}
         onPlaybackQualityChange={(e) =>
           console.log("onPlaybackQualityChange", e)

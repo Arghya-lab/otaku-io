@@ -1,16 +1,20 @@
 import PropType from "prop-types";
 import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { themeTypes } from "../themes";
+import { useDispatch, useSelector } from "react-redux";
 import Tippy from "@tippyjs/react";
-import { useDispatch } from "react-redux";
-import { setTheme } from "../features/preference/preferenceSlice";
+import { Check } from "lucide-react";
+import { themeTypes } from "../themes";
+import { changeTheme } from "../features/preference/preferenceSlice";
 
 function ThemeSelectModal({ isOpen, handleClose }) {
   const dispatch = useDispatch();
+  const { preferenceId, theme } = useSelector((state) => state.preference);
 
   const handleChangeTheme = (theme) => {
-    dispatch(setTheme(theme));
+    dispatch(changeTheme({ preferenceId, themeId: theme.id })).then(
+      handleClose
+    );
   };
 
   return (
@@ -43,23 +47,32 @@ function ThemeSelectModal({ isOpen, handleClose }) {
                   Select your theme
                 </Dialog.Title>
                 <div className="pt-4 flex flex-wrap ">
-                  {themeTypes.map((theme) => (
+                  {themeTypes.map((themeItem) => (
                     <div
-                      key={theme.id}
-                      onClick={() => handleChangeTheme(theme)}>
+                      key={themeItem.id}
+                      onClick={() => handleChangeTheme(themeItem)}>
                       <Tippy
                         content={
                           <div className="bg-white dark:bg-black text-neutral-900 dark:text-neutral-100 rounded-xl px-2">
-                            {theme.name}
+                            {themeItem.name}
                           </div>
                         }>
                         <div
-                          className="w-12 h-12 rounded-full cursor-pointer border-2 m-2"
+                          className="w-12 h-12 rounded-full cursor-pointer border-2 m-2 flex items-center justify-center"
                           style={{
-                            background: theme.bgImg,
-                            borderColor: theme.secondaryColor,
-                          }}
-                        />
+                            background: themeItem.bgImg,
+                            borderColor: themeItem.secondaryColor,
+                          }}>
+                          {themeItem.id == theme.id && (
+                            <Check
+                              className={
+                                themeItem.type === "light"
+                                  ? "text-neutral-700"
+                                  : "text-slate-200"
+                              }
+                            />
+                          )}
+                        </div>
                       </Tippy>
                     </div>
                   ))}

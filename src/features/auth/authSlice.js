@@ -30,39 +30,43 @@ export const authSlice = createSlice({
   extraReducers: (builder) => {
     // Initial home page load
     builder.addCase(signup.fulfilled, (state, action) => {
-      state.userData = action.payload;
+      const { user } = action.payload;
+      state.userData = user;
       state.status = true;
-    }),
-      builder.addCase(signup.rejected, (state, action) => {
-        console.error(action.error.message);
-      });
+    });
+    builder.addCase(signup.rejected, (state, action) => {
+      console.error(action.error.message);
+    });
 
     builder.addCase(login.fulfilled, (state, action) => {
-      state.userData = action.payload;
+      const { user } = action.payload;
+      state.userData = user;
       state.status = true;
-    }),
-      builder.addCase(login.rejected, (state, action) => {
-        console.error(action.error.message);
-      });
+    });
+    builder.addCase(login.rejected, (state, action) => {
+      console.error(action.error.message);
+    });
 
     builder.addCase(logout.fulfilled, (state) => {
+      state.userData = null;
       state.status = false;
-    }),
-      builder.addCase(logout.rejected, (state, action) => {
-        console.error(action.error.message);
-      });
+    });
+    builder.addCase(logout.rejected, (state, action) => {
+      console.error(action.error.message);
+    });
 
     builder.addCase(getUser.fulfilled, (state, action) => {
-      state.userData = action.payload;
+      const { user } = action.payload;
+      state.userData = user;
       state.status = true;
-    }),
-      builder.addCase(getUser.rejected, (state, action) => {
-        console.error(action.error.message);
-      });
+    });
+    // builder.addCase(getUser.rejected, (state, action) => {
+    //   console.error(action.error.message);
+    // });
   },
 });
 
 // Action creators are generated for each case reducer function
-// export const { resetImdbInfo } = authSlice.actions;
+// export const {  } = authSlice.actions;
 export { signup, login, logout, getUser };
 export default authSlice.reducer;

@@ -4,14 +4,9 @@ import { Dialog, Transition } from "@headlessui/react";
 import { FilterIcon } from "lucide-react";
 import { useSelector } from "react-redux";
 import chroma from "chroma-js";
-import Select from "./Select";
-import {
-  formatList,
-  genreList,
-  sortList,
-  statusList,
-} from "../../searchFilter";
-import useScroll from "../../hooks/useScroll";
+import Select from "./Ui/Select";
+import { formatList, genreList, sortList, statusList } from "../searchFilter";
+import useScroll from "../hooks/useScroll";
 
 function Filter() {
   const scrolled = useScroll();

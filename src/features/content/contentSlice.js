@@ -19,7 +19,7 @@ const applyFilter = createAsyncThunk("content/applyFilter", async (params) => {
 const loadDetailInfo = createAsyncThunk(
   "content/loadDetailInfo",
   async ({ id, params }) => {
-    const res = await animeApi.getDetails(id, { dub: true, ...params });
+    const res = await animeApi.getDetails(id, params);
     return res.data;
   }
 );
@@ -51,12 +51,6 @@ export const contentSlice = createSlice({
   name: "content",
   initialState,
   reducers: {
-    resetDetailInfo: (state) => {
-      state.imdbInfo = {};
-      state.detailInfoLoaded = false;
-      state.imdbInfo = {};
-      state.imdbInfoLoaded = false;
-    },
     clearFilterData: (state) => {
       state.filterContent = [];
       state.hasMoreFilterContent = false;
@@ -72,10 +66,10 @@ export const contentSlice = createSlice({
       state.popular = popular?.results || [];
 
       state.isHomePageLoaded = true;
-    }),
-      builder.addCase(loadHomePage.rejected, (state, action) => {
-        console.log(action.error.message);
-      });
+    });
+    builder.addCase(loadHomePage.rejected, (state, action) => {
+      console.error(action.error.message);
+    });
 
     // filter
     builder.addCase(applyFilter.fulfilled, (state, action) => {
@@ -85,33 +79,39 @@ export const contentSlice = createSlice({
       ];
       state.hasMoreFilterContent = action.payload?.hasNextPage || false;
       state.currentFilterContentPage = action.payload?.currentPage;
-    }),
-      builder.addCase(applyFilter.rejected, (state, action) => {
-        console.log(action.error.message);
-      });
+    });
+    builder.addCase(applyFilter.rejected, (state, action) => {
+      console.error(action.error.message);
+    });
 
     // loadDetailInfo of an anime
+    builder.addCase(loadDetailInfo.pending, (state) => {
+      state.detailInfoLoaded = false;
+    });
     builder.addCase(loadDetailInfo.fulfilled, (state, action) => {
       state.detailInfo = action.payload;
       state.detailInfoLoaded = true;
-    }),
-      builder.addCase(loadDetailInfo.rejected, (state, action) => {
-        console.log(action.error.message);
-      });
+    });
+    builder.addCase(loadDetailInfo.rejected, (state, action) => {
+      console.error(action.error.message);
+    });
     // loadImdbInfo of an anime
+    builder.addCase(loadImdbInfo.pending, (state) => {
+      state.imdbInfoLoaded = false;
+    });
     builder.addCase(loadImdbInfo.fulfilled, (state, action) => {
       if (!(action.payload?.Response == "False" || action.payload?.Error)) {
         state.imdbInfo = action.payload;
       }
       state.imdbInfoLoaded = true;
-    }),
-      builder.addCase(loadImdbInfo.rejected, (state, action) => {
-        console.log(action.error.message);
-      });
+    });
+    builder.addCase(loadImdbInfo.rejected, (state, action) => {
+      console.error(action.error.message);
+    });
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { resetDetailInfo, clearFilterData } = contentSlice.actions;
+export const { clearFilterData } = contentSlice.actions;
 export { loadHomePage, applyFilter, loadDetailInfo, loadImdbInfo };
 export default contentSlice.reducer;

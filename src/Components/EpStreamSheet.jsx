@@ -11,13 +11,16 @@ import { providerList } from "../constants";
 import { mapEpisodes } from "../utils/mapEpisodes";
 import { epSelectableList } from "../utils/mapEpisodes";
 
-function EpStreamSheet({ modeResponsiveness = true }) {
+function EpStreamSheet({
+  modeResponsiveness = true,
+  enabledDub,
+  setEnabledDub,
+}) {
   const navigate = useNavigate();
 
   const { detailInfo } = useSelector((state) => state.content);
   const [isHovered, setIsHovered] = useState(false);
 
-  const [enabledDub, setEnabledDub] = useState(true);
   const [selectedEpRangeIdx, setSelectedEpRangeIdx] = useState(0);
   const [episodes, setEpisodes] = useState([]);
 
@@ -27,7 +30,7 @@ function EpStreamSheet({ modeResponsiveness = true }) {
 
   const handleClick = (ep) => {
     if (ep?.id) {
-      navigate(`/watch/${detailInfo?.id}/${ep?.id}`, {
+      navigate(`/watch/${detailInfo?.id}/${ep.id}`, {
         state: { episode: ep },
       });
     }
@@ -123,6 +126,8 @@ function EpStreamSheet({ modeResponsiveness = true }) {
 
 EpStreamSheet.propTypes = {
   modeResponsiveness: PropType.bool,
+  enabledDub: PropType.bool.isRequired,
+  setEnabledDub: PropType.func.isRequired,
 };
 
 export default EpStreamSheet;

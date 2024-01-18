@@ -93,6 +93,7 @@ export const contentSlice = createSlice({
       state.detailInfoLoaded = true;
     });
     builder.addCase(loadDetailInfo.rejected, (state, action) => {
+      state.detailInfoLoaded = true;
       console.error(action.error.message);
     });
     // loadImdbInfo of an anime
@@ -106,6 +107,7 @@ export const contentSlice = createSlice({
       state.imdbInfoLoaded = true;
     });
     builder.addCase(loadImdbInfo.rejected, (state, action) => {
+      state.imdbInfoLoaded = true;
       console.error(action.error.message);
     });
   },

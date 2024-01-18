@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import PropType from "prop-types";
-import { useNavigate, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { Play } from "lucide-react";
 import SimpleBar from "simplebar-react";
 import Radio from "../Components/Ui/Radio";
@@ -10,13 +10,10 @@ import EpBtn from "../Components/Ui/EpBtn";
 import { providerList } from "../constants";
 import { mapEpisodes } from "../utils/mapEpisodes";
 import { epSelectableList } from "../utils/mapEpisodes";
-import { loadDetailInfo } from "../features/content/contentSlice";
 
 function EpStreamSheet({ modeResponsiveness = true }) {
-  const { id } = useParams();
   const navigate = useNavigate();
 
-  const dispatch = useDispatch();
   const { detailInfo } = useSelector((state) => state.content);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -27,10 +24,6 @@ function EpStreamSheet({ modeResponsiveness = true }) {
   useEffect(() => {
     setEpisodes(mapEpisodes(detailInfo?.episodes, selectedEpRangeIdx));
   }, [selectedEpRangeIdx, detailInfo]);
-
-  useEffect(() => {
-    dispatch(loadDetailInfo({ id, params: { provider: "gogoanime" } }));
-  }, [id, dispatch]);
 
   const handleClick = (ep) => {
     if (ep?.id) {

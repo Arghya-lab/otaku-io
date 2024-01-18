@@ -9,7 +9,7 @@ import TopNavbar from "../Components/TopNavbar";
 
 function VideoPlayerPage() {
   const { id } = useParams();
-  const { episode } = useLocation().state;
+  const episode = useLocation().state?.episode;
 
   const dispatch = useDispatch();
   const { detailInfo } = useSelector((state) => state.content);
@@ -30,7 +30,9 @@ function VideoPlayerPage() {
             <p className="py-4 px-2 font-bold font-nunito text-xl text-neutral-900 dark:text-slate-100">
               {episode?.title}
             </p>
-            <p className="text-neutral-900 dark:text-slate-100">{episode?.description}</p>
+            <p className="text-neutral-900 dark:text-slate-100">
+              {episode?.description}
+            </p>
           </div>
           <EpStreamSheet />
         </div>

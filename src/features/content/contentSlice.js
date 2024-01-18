@@ -42,15 +42,20 @@ const initialState = {
   currentFilterContentPage: 0,
 
   detailInfo: {},
+  detailInfoLoaded: false,
   imdbInfo: {},
+  imdbInfoLoaded: false,
 };
 
 export const contentSlice = createSlice({
   name: "content",
   initialState,
   reducers: {
-    resetImdbInfo: (state) => {
+    resetDetailInfo: (state) => {
       state.imdbInfo = {};
+      state.detailInfoLoaded = false;
+      state.imdbInfo = {};
+      state.imdbInfoLoaded = false;
     },
     clearFilterData: (state) => {
       state.filterContent = [];
@@ -88,6 +93,7 @@ export const contentSlice = createSlice({
     // loadDetailInfo of an anime
     builder.addCase(loadDetailInfo.fulfilled, (state, action) => {
       state.detailInfo = action.payload;
+      state.detailInfoLoaded = true;
     }),
       builder.addCase(loadDetailInfo.rejected, (state, action) => {
         console.log(action.error.message);
@@ -97,6 +103,7 @@ export const contentSlice = createSlice({
       if (!(action.payload?.Response == "False" || action.payload?.Error)) {
         state.imdbInfo = action.payload;
       }
+      state.imdbInfoLoaded = true;
     }),
       builder.addCase(loadImdbInfo.rejected, (state, action) => {
         console.log(action.error.message);
@@ -105,6 +112,6 @@ export const contentSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { resetImdbInfo, clearFilterData } = contentSlice.actions;
+export const { resetDetailInfo, clearFilterData } = contentSlice.actions;
 export { loadHomePage, applyFilter, loadDetailInfo, loadImdbInfo };
 export default contentSlice.reducer;

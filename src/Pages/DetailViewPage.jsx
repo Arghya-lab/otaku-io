@@ -1,36 +1,80 @@
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { TailSpin } from "react-loader-spinner";
 import TopNavbar from "../Components/TopNavbar";
 import MetaPreviewContainer from "../Components/MetaPreviewContainer";
 import EpStreamSheet from "../Components/EpStreamSheet";
+import {
+  loadDetailInfo,
+  loadImdbInfo,
+  resetDetailInfo,
+} from "../features/content/contentSlice";
 
 function DetailViewPage() {
-  const { imdbInfo } = useSelector((state) => state.content);
-  const url = `https://images.metahub.space/background/medium/${imdbInfo?.imdbID}/img`;
+  const { title, id } = useParams();
+  const dispatch = useDispatch();
 
-  return (
-    <div className="w-full relative">
-      <div
-        className="fixed -z-10 w-screen h-screen bg-cover bg-[#0f0d20]"
-        style={{ backgroundImage: `url(${url})` }}>
-        {/* <img className="opacity-30 object-cover" src={url} /> */}
-        <div className="bg-black w-full h-full opacity-70"></div>
-      </div>
+  const { imdbInfo, detailInfoLoaded, imdbInfoLoaded } = useSelector(
+    (state) => state.content
+  );
+  const { theme } = useSelector((state) => state.preference);
+
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    setIsLoaded(detailInfoLoaded && imdbInfoLoaded);
+  }, [detailInfoLoaded, imdbInfoLoaded]);
+
+  useEffect(() => {
+    dispatch(resetDetailInfo());
+    dispatch(loadImdbInfo({ t: decodeURIComponent(title) }));
+    dispatch(loadDetailInfo({ id, params: { provider: "gogoanime" } }));
+  }, [title, id, dispatch]);
+
+  if (!isLoaded) {
+    return (
       <div>
         <TopNavbar />
-        {/* Body */}
-        <div className="w-full mt-20">
-          <div className="pt-4 px-4 xxs:px-8 xs:px-16 sm:pr-48 md:pr-80 lg:pr-[416px]">
-            <MetaPreviewContainer />
-          </div>
-          <div
-            className="mx-4 xxs:mx-8 xs:mx-16 my-8 h-full p-8 px-4 bg-black bg-opacity-20 rounded-xl"
-            style={{ backdropFilter: "blur(15px)" }}>
-            <EpStreamSheet modeResponsiveness={false} />
+        <div className="w-full pt-48 flex items-center justify-center">
+          <TailSpin
+            visible={true}
+            height="80"
+            width="80"
+            color={theme.secondaryColor}
+            ariaLabel="tail-spin-loading"
+            radius="1"
+          />
+        </div>
+      </div>
+    );
+  } else {
+    return (
+      <div className="w-full relative">
+        <div
+          className="fixed -z-10 w-screen h-screen bg-cover bg-transparent"
+          style={{
+            backgroundImage: `url(https://images.metahub.space/background/medium/${imdbInfo?.imdbID}/img)`,
+          }}>
+          <div className="bg-black w-full h-full opacity-70"></div>
+        </div>
+        <div>
+          <TopNavbar />
+          {/* Body */}
+          <div className="w-full mt-20">
+            <div className="pt-4 px-4 xxs:px-8 xs:px-16 sm:pr-48 md:pr-80 lg:pr-[416px]">
+              <MetaPreviewContainer />
+            </div>
+            <div
+              className="mx-4 xxs:mx-8 xs:mx-16 my-8 h-full p-8 px-4 bg-black bg-opacity-20 rounded-xl"
+              style={{ backdropFilter: "blur(15px)" }}>
+              <EpStreamSheet modeResponsiveness={false} />
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
 
 export default DetailViewPage;

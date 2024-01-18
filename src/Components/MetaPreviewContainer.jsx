@@ -1,40 +1,21 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Chip from "./Ui/Chip";
 import ChipBtn from "./Ui/ChipBtn";
-import { loadImdbInfo, resetImdbInfo } from "../features/content/contentSlice";
 
 function MetaPreviewContainer() {
-  const { title } = useParams();
-  const dispatch = useDispatch();
-
   const { detailInfo, imdbInfo } = useSelector((state) => state.content);
-
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    setIsLoading(
-      Boolean(
-        Object.keys(detailInfo).length != 0 && Object.keys(imdbInfo).length
-      )
-    );
-  }, [detailInfo, imdbInfo]);
-
-  useEffect(() => {
-    dispatch(resetImdbInfo());
-    dispatch(loadImdbInfo({ t: decodeURIComponent(title) }));
-  }, [title, dispatch]);
 
   return (
     <div>
       {imdbInfo?.imdbID ? (
         <img
-          className="h-32 object-contain object-center"
+          className="object-contain object-center"
+          height={128}
+          width={256}
           src={`https://images.metahub.space/logo/medium/${imdbInfo?.imdbID}/img`}
         />
       ) : (
-        <div className="h-32 text-6xl font-extrabold font-nunito text-white">
+        <div className="min-h-32 text-6xl font-extrabold font-nunito text-white">
           {detailInfo?.title?.english ||
             detailInfo?.title?.native ||
             detailInfo?.title?.romaji}

@@ -1,5 +1,6 @@
 import { Client, Account, ID } from "appwrite";
 import preferences from "./preferences";
+import conf from "../conf/conf";
 
 export class AuthService {
   client = new Client();
@@ -7,8 +8,8 @@ export class AuthService {
 
   constructor() {
     this.client
-      .setProject(import.meta.env.VITE_APPWRITE_PROJECT_ID)
-      .setEndpoint(import.meta.env.VITE_APPWRITE_END_POINT);
+      .setProject(conf.appwriteProjectId)
+      .setEndpoint(conf.appwriteEndPoint);
     this.account = new Account(this.client);
   }
 

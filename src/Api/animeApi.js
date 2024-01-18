@@ -1,7 +1,8 @@
 import axios from "axios";
+import conf from "../conf/conf";
 
 const instance = axios.create({
-  baseURL: import.meta.env.VITE_CONSUMET_BASE_URL,
+  baseURL: conf.consumetBaseUrl,
   timeout: 15000,
 });
 
@@ -48,7 +49,7 @@ const getDetails = async (id, params) => {
 };
 
 const getUpcoming = async () =>
-  await axios.get(import.meta.env.VITE_UPCOMING_ANIME_URL, {
+  await axios.get(conf.upcomingAnimeUrl, {
     params: {
       filter: "upcoming",
     },
@@ -56,9 +57,9 @@ const getUpcoming = async () =>
 
 // Query Parameters for getImdbData: t, i
 const getImdbData = async (params) =>
-  await axios.get(import.meta.env.VITE_OMDB_BASE_URL, {
+  await axios.get(conf.ombdBaseUrl, {
     params: {
-      apikey: import.meta.env.VITE_OMDB_API_KEY,
+      apikey: conf.omdbApiKey,
       ...params,
     },
   });
@@ -77,7 +78,7 @@ const animeApi = {
   getRandom,
   getUpcoming,
   getImdbData,
-  getStreamingLinks
+  getStreamingLinks,
 };
 
 export default animeApi;

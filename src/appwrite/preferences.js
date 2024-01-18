@@ -1,4 +1,5 @@
 import { Client, Databases, ID, Query } from "appwrite";
+import conf from "../conf/conf";
 
 export class Preferences {
   client = new Client();
@@ -6,15 +7,15 @@ export class Preferences {
 
   constructor() {
     this.client
-      .setProject(import.meta.env.VITE_APPWRITE_PROJECT_ID)
-      .setEndpoint(import.meta.env.VITE_APPWRITE_END_POINT);
+      .setProject(conf.appwriteProjectId)
+      .setEndpoint(conf.appwriteEndPoint);
     this.databases = new Databases(this.client);
   }
 
   async initializePreference(userId) {
     const data = await this.databases.createDocument(
-      import.meta.env.VITE_APPWRITE_DATABASE_ID,
-      import.meta.env.VITE_APPWRITE_PREFERENCES_COLLECTION_ID,
+      conf.appwriteDbId,
+      conf.appwritePreferenceCollectionId,
       ID.unique(),
       { userId }
     );
@@ -23,8 +24,8 @@ export class Preferences {
 
   async getPreferences(userId) {
     const data = await this.databases.listDocuments(
-      import.meta.env.VITE_APPWRITE_DATABASE_ID,
-      import.meta.env.VITE_APPWRITE_PREFERENCES_COLLECTION_ID,
+      conf.appwriteDbId,
+      conf.appwritePreferenceCollectionId,
       [Query.equal("userId", userId)]
     );
     if (data.total === 0) {
@@ -36,8 +37,8 @@ export class Preferences {
 
   async changeLanguagePref({ preferenceId, isDubEnabled }) {
     return await this.databases.updateDocument(
-      import.meta.env.VITE_APPWRITE_DATABASE_ID,
-      import.meta.env.VITE_APPWRITE_PREFERENCES_COLLECTION_ID,
+      conf.appwriteDbId,
+      conf.appwritePreferenceCollectionId,
       preferenceId,
       { isDub: isDubEnabled }
     );
@@ -45,8 +46,8 @@ export class Preferences {
 
   async changeTheme({ preferenceId, themeId }) {
     return await this.databases.updateDocument(
-      import.meta.env.VITE_APPWRITE_DATABASE_ID,
-      import.meta.env.VITE_APPWRITE_PREFERENCES_COLLECTION_ID,
+      conf.appwriteDbId,
+      conf.appwritePreferenceCollectionId,
       preferenceId,
       { themeId }
     );
@@ -54,8 +55,8 @@ export class Preferences {
 
   async changeAutoPlay({ preferenceId, autoPlay }) {
     return await this.databases.updateDocument(
-      import.meta.env.VITE_APPWRITE_DATABASE_ID,
-      import.meta.env.VITE_APPWRITE_PREFERENCES_COLLECTION_ID,
+      conf.appwriteDbId,
+      conf.appwritePreferenceCollectionId,
       preferenceId,
       { autoPlay }
     );
@@ -63,8 +64,8 @@ export class Preferences {
 
   async changeAutoNext({ preferenceId, autoNext }) {
     return await this.databases.updateDocument(
-      import.meta.env.VITE_APPWRITE_DATABASE_ID,
-      import.meta.env.VITE_APPWRITE_PREFERENCES_COLLECTION_ID,
+      conf.appwriteDbId,
+      conf.appwritePreferenceCollectionId,
       preferenceId,
       { autoNext }
     );
@@ -72,8 +73,8 @@ export class Preferences {
 
   async changeSeekSeconds({ preferenceId, seekSeconds }) {
     return await this.databases.updateDocument(
-      import.meta.env.VITE_APPWRITE_DATABASE_ID,
-      import.meta.env.VITE_APPWRITE_PREFERENCES_COLLECTION_ID,
+      conf.appwriteDbId,
+      conf.appwritePreferenceCollectionId,
       preferenceId,
       { seekSeconds }
     );

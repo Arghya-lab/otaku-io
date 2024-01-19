@@ -4,11 +4,12 @@ import PlayerControl from "./PlayerControl";
 import { useNavigate, useParams } from "react-router-dom";
 import animeApi from "../../Api/animeApi";
 import { useSelector } from "react-redux";
+import watched from "../../appwrite/watched";
 
 let count = 0;
 
 function Player() {
-  const { name } = useParams();
+  const { name, id, epNo } = useParams();
   const navigate = useNavigate();
 
   const playerRef = useRef(null);
@@ -17,22 +18,12 @@ function Player() {
   const [sources, setSources] = useState([]);
   const [playBackQuality, setPlayBackQuality] = useState("auto");
   const { detailInfo } = useSelector((state) => state.content);
+  const { userData } = useSelector((state) => state.auth);
   const { isAutoPlayEnabled, isAutoNextEnabled } = useSelector(
     (state) => state.preference
   );
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await animeApi.getStreamingLinks(name);
-        setSources(res.data?.sources);
-        setPlayBackQuality(res.data?.sources[0]?.quality);
-      } catch (error) {
-        console.error(error.message);
-      }
-    })();
-  }, [name]);
-
+  const [markWatchedTill, setMarkWatchedTill] = useState(0);
   const [playerState, setPlayerState] = useState({
     url: null,
     pip: false,
@@ -59,6 +50,24 @@ function Player() {
     }));
   };
 
+  const handleSeekToUnwatched = async () => {
+    const previouslyWatchedTill = await watched.getWatchedTill(userData.$id, {
+      animeId: id,
+      episodeNo: Number(epNo),
+    });
+    if (previouslyWatchedTill) {
+      playerRef.current.seekTo(previouslyWatchedTill * playerState.duration);
+    }
+  };
+
+  const setWatched = async () => {
+    await watched.setWatched(userData.$id, {
+      animeId: id,
+      episodeNo: Number(epNo),
+      watchedTill: playerState.played,
+    });
+  };
+
   const handleEnded = () => {
     if (isAutoNextEnabled) {
       const currentEpIdx = detailInfo.episodes.findIndex(
@@ -76,11 +85,37 @@ function Player() {
   };
 
   useEffect(() => {
+    (async () => {
+      try {
+        const res = await animeApi.getStreamingLinks(name);
+        setSources(res.data?.sources);
+        setPlayBackQuality(res.data?.sources[0]?.quality);
+      } catch (error) {
+        console.error(error.message);
+      }
+    })();
+    // check if already played if played then seek to that part
+  }, [name]);
+
+  useEffect(() => {
     const objId = sources.findIndex((u) => u?.quality == playBackQuality);
     const selectedUrl = sources[objId]?.url;
+    setWatched();
     loadVideo(selectedUrl);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playBackQuality, sources]);
+
+  useEffect(() => {
+    const handlePlaybackProgress = () => {
+      const { played } = playerState;
+      if (played >= markWatchedTill + 0.1) {
+        setMarkWatchedTill(played);
+        setWatched();
+      }
+    };
+    handlePlaybackProgress();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [playerState.played]);
 
   const handleMouseMove = () => {
     controlRef.current.style.visibility = "visible";
@@ -126,7 +161,10 @@ function Player() {
           }));
         }}
         onReady={() => console.log("onReady")}
-        onStart={() => console.log("onStart")}
+        onStart={() => {
+          setWatched();
+          handleSeekToUnwatched();
+        }}
         onPlay={() => {
           console.log("play start");
         }}

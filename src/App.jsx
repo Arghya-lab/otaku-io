@@ -16,8 +16,8 @@ function App() {
   const { theme } = useSelector((state) => state.preference);
 
   useEffect(() => {
-    dispatch(getUser())
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    dispatch(getUser());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/discover" element={<DiscoverPage />} />
         <Route path="/detail/:id/:title" element={<DetailViewPage />} />
-        <Route path="/watch/:id/:name" element={<VideoPlayerPage />} />
+        <Route path="/watch/:id/:epNo/:name" element={<VideoPlayerPage />} />
         <Route path="/setting" element={<SettingPage />} />
       </Routes>
     </div>

@@ -10,5 +10,9 @@ const conf = {
   appwritePreferenceCollectionId: String(
     import.meta.env.VITE_APPWRITE_PREFERENCES_COLLECTION_ID
   ),
+  appwriteWatchedCollectionId: String(
+    import.meta.env.VITE_APPWRITE_WATCHED_COLLECTION_ID
+  ),
 };
+
 export default conf;

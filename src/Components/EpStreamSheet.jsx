@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import PropType from "prop-types";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Play } from "lucide-react";
 import SimpleBar from "simplebar-react";
@@ -10,27 +10,40 @@ import EpBtn from "../Components/Ui/EpBtn";
 import { providerList } from "../constants";
 import { mapEpisodes } from "../utils/mapEpisodes";
 import { epSelectableList } from "../utils/mapEpisodes";
+import watched from "../appwrite/watched";
 
 function EpStreamSheet({
   modeResponsiveness = true,
   enabledDub,
   setEnabledDub,
 }) {
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const { detailInfo } = useSelector((state) => state.content);
+  const { userData } = useSelector((state) => state.auth);
   const [isHovered, setIsHovered] = useState(false);
 
   const [selectedEpRangeIdx, setSelectedEpRangeIdx] = useState(0);
   const [episodes, setEpisodes] = useState([]);
+  const [watchedEp, setWatchedEp] = useState([]);
 
   useEffect(() => {
     setEpisodes(mapEpisodes(detailInfo?.episodes, selectedEpRangeIdx));
   }, [selectedEpRangeIdx, detailInfo]);
 
+  useEffect(() => {
+    (async () => {
+      if (userData.$id) {
+        const eps = await watched.getAnimeWatchedEps(userData.$id, id);
+        setWatchedEp(eps);
+      }
+    })();
+  }, [userData, id]);
+
   const handleClick = (ep) => {
     if (ep?.id) {
-      navigate(`/watch/${detailInfo?.id}/${ep.id}`, {
+      navigate(`/watch/${detailInfo?.id}/${ep.number}/${ep.id}`, {
         state: { episode: ep },
       });
     }
@@ -110,6 +123,7 @@ function EpStreamSheet({
                       key={id}
                       episode={episode}
                       color={detailInfo?.color}
+                      watched={watchedEp.includes(episode?.number)}
                       modeResponsiveness={modeResponsiveness}
                       handleClick={() => handleClick(episode)}
                     />

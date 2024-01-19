@@ -2,8 +2,10 @@ import { useState } from "react";
 import PropType from "prop-types";
 import { useSelector } from "react-redux";
 import { shade } from "../../utils/color";
+import { useParams } from "react-router-dom";
 
-function EpBtn({ color, episode, modeResponsiveness, handleClick }) {
+function EpBtn({ color, episode, watched, modeResponsiveness, handleClick }) {
+  const watching = Boolean(useParams().epNo == episode?.number);
   const { theme } = useSelector((state) => state.preference);
 
   const [isHovered, setIsHovered] = useState(false);
@@ -18,11 +20,19 @@ function EpBtn({ color, episode, modeResponsiveness, handleClick }) {
           : "text-slate-100"
       }`}
       style={{
-        backgroundColor: isHovered
+        backgroundColor: watching
+          ? shade(color, -1, 0.5)
+          : isHovered
           ? shade(color, -2, 0.1)
+          : watched
+          ? shade(color, -1, 0.1)
           : shade(color, -1, 0.2),
-        borderColor: isHovered
+        borderColor: watching
+          ? shade(color, -1, 1)
+          : isHovered
           ? shade(color, 0)
+          : watched
+          ? shade(color, 0, 0.4)
           : theme.type === "dark" && modeResponsiveness
           ? shade(color, -4, 0.4)
           : shade(color, 4, 0.4),
@@ -39,6 +49,7 @@ function EpBtn({ color, episode, modeResponsiveness, handleClick }) {
 EpBtn.propTypes = {
   color: PropType.string.isRequired,
   episode: PropType.object.isRequired,
+  watched: PropType.bool.isRequired,
   modeResponsiveness: PropType.bool,
   handleClick: PropType.func.isRequired,
 };

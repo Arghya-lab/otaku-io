@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import animeApi from "../../Api/animeApi";
 import { useSelector } from "react-redux";
 import watched from "../../appwrite/watched";
+import PlayerLoader from "./PlayerLoader";
 
 let count = 0;
 
@@ -29,15 +30,16 @@ function Player() {
     url: null,
     pip: false,
     playing: false,
-    // controls: false,
-    // light: false,
     volume: 0.8, //  value -> 0-1
     muted: false,
     played: 0, //  value -> 0-1
     duration: 0,
     loaded: 0,
+    // controls: false,
+    // light: false,
     // playbackRate: 1.0,
     // loop: false,
+    buffering: false,
   });
 
   const handleSeekToUnwatched = async () => {
@@ -119,6 +121,7 @@ function Player() {
 
   const handleMouseMove = () => {
     controlRef.current.style.visibility = "visible";
+    document.getElementById("root").style.cursor = "auto";
     count = 0;
   };
 
@@ -130,7 +133,7 @@ function Player() {
     <div
       id="Player"
       ref={playerContainerRef}
-      className="relative w-full h-full"
+      className="relative w-full aspect-[16/9]"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onTouchStart={handleMouseMove}>
@@ -140,12 +143,14 @@ function Player() {
         // playsinline
         url={playerState?.url}
         width="100%"
-        height="100%"
+        height="minContent"
         pip={playerState?.pip}
         playing={playerState?.playing}
         volume={playerState?.volume}
         muted={playerState?.muted}
-        onDuration={(v) => setPlayerState({ ...playerState, duration: v })}
+        onDuration={(duration) => {
+          setPlayerState({ ...playerState, duration });
+        }}
         onProgress={(value) => {
           if (count > 3) {
             controlRef.current.style.visibility = "hidden";
@@ -163,16 +168,18 @@ function Player() {
         }}
         onReady={() => console.log("onReady")}
         onStart={() => {
-          console.log("started");
           setWatched();
           handleSeekToUnwatched();
         }}
-        onPlay={() => {
-          console.log("play start");
-        }}
-        onBuffer={() => console.log("onBuffer")}
+        onPlay={() => console.log("play start")}
+        onBuffer={() => setPlayerState({ ...playerState, buffering: true })}
         // onPlaybackRateChange={this.handleOnPlaybackRateChange}
-        onSeek={(e) => console.log("onSeek", e)}
+        onSeek={(e) => {
+          console.log("onSeek", e);
+          if (playerState.buffering == true) {
+            setPlayerState({ ...playerState, buffering: false });
+          }
+        }}
         onEnded={handleEnded}
         onError={(e) => console.log("onError", e)}
         onPlaybackQualityChange={(e) =>
@@ -193,6 +200,9 @@ function Player() {
         playBackQuality={playBackQuality}
         setPlayBackQuality={setPlayBackQuality}
       />
+      <div className="flex items-center justify-center absolute bottom-0 left-0 right-0 top-0 z-10">
+        <PlayerLoader playerState={playerState} />
+      </div>
     </div>
   );
 }

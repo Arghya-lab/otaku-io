@@ -84,7 +84,7 @@ const PlayerControl = forwardRef(
     return (
       <div
         ref={ref}
-        className="flex items-center justify-center absolute bottom-0 left-0 right-0 top-0 text-white"
+        className="flex items-center justify-center absolute bottom-0 left-0 right-0 top-0 z-20 text-white"
         // style={{ gridTemplateColumns: repeat(2, 100px), gridAutoFlow: "column", }}
         onDoubleClick={() => {
           if (isPlayerFullScreen) {
@@ -96,39 +96,38 @@ const PlayerControl = forwardRef(
             setIsPlayerFullScreen(true);
           }
         }}>
-        <div className="w-full h-4/5 flex justify-center items-center">
-          <div
-            role="button"
-            onClick={() =>
-              setPlayerState({
-                ...playerState,
-                playing: !playerState?.playing,
-              })
-            }>
-            {playerState?.playing ? (
-              <Pause
-                className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
-                strokeWidth={1}
-                fill="#fff"
-                color="#fff"
-              />
-            ) : (
-              <Play
-                className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
-                strokeWidth={3}
-                fill="#fff"
-                color="#fff"
-              />
-            )}
+        {!playerState?.loaded == 0 && (
+          <div className="w-full h-4/5 flex justify-center items-center">
+            <div
+              role="button"
+              onClick={() =>
+                setPlayerState({
+                  ...playerState,
+                  playing: !playerState?.playing,
+                })
+              }>
+              {playerState?.playing ? (
+                !playerState?.buffering && (
+                  <Pause
+                    className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
+                    strokeWidth={1}
+                    fill="#fff"
+                    color="#fff"
+                  />
+                )
+              ) : (
+                <Play
+                  className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
+                  strokeWidth={3}
+                  fill="#fff"
+                  color="#fff"
+                />
+              )}
+            </div>
           </div>
-        </div>
-        <div className="text-lg px-4 pb-1 xxs:pb-2 xs:pb-4 text-white absolute left-0 right-0 bottom-0">
-          <VideoLoadedBar
-            played={playerState?.played}
-            loaded={playerState?.loaded}
-            playerRef={playerRef}
-          />
-          <div className="flex items-center justify-between">
+        )}
+        <div className="text-lg px-4 pb-1 xxs:pb-2 text-white absolute left-0 right-0 bottom-0">
+          <div className="flex items-center justify-between xs:pb-2">
             <div className="flex items-center">
               <div
                 role="button"
@@ -157,10 +156,10 @@ const PlayerControl = forwardRef(
                 playerState={playerState}
                 setPlayerState={setPlayerState}
               />
-              <div className="ml-2 xs:ml-4 text-xs xs:text-sm font-nunito">
-                <span
-                  role="button"
-                  onClick={() => setIsRemainingTime(!isRemainingTime)}>
+              <div
+                className="ml-2 xs:ml-4 text-xs xs:text-sm cursor-pointer font-nunito"
+                onClick={() => setIsRemainingTime(!isRemainingTime)}>
+                <span>
                   {
                     isRemainingTime
                       ? "-" +
@@ -284,6 +283,11 @@ const PlayerControl = forwardRef(
               </div>
             </div>
           </div>
+          <VideoLoadedBar
+            played={playerState?.played}
+            loaded={playerState?.loaded}
+            playerRef={playerRef}
+          />
         </div>
       </div>
     );

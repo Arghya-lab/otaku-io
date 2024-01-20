@@ -2,14 +2,14 @@ import { perSelectEpisodesAmount } from "../constants";
 
 const limit = perSelectEpisodesAmount;
 
-export const mapEpisodes = (episodes = [], selectedInx) => {
-  const startEp = selectedInx * limit + 1;
-  const endEp = (selectedInx + 1) * limit;
+export const mapEpisodes = (episodes = [], selectedIdx) => {
+  const startEp = selectedIdx * limit + 1;
+  const endEp = (selectedIdx + 1) * limit;
 
   const startEpId = episodes.findIndex((ep) => ep?.number >= startEp);
   const endEpId = episodes.findIndex((ep) => ep?.number >= endEp);
 
-  return episodes.slice(startEpId, endEpId !== -1 ? endEpId : undefined);
+  return episodes.slice(startEpId, endEpId !== -1 ? endEpId + 1 : undefined);
 };
 
 export const epSelectableList = (episodes = []) => {
@@ -24,4 +24,19 @@ export const epSelectableList = (episodes = []) => {
     }`,
     value: id,
   }));
+};
+
+export const getInitialEpRangeIdx = (epNo) => {
+  let initialSelectedIdx = 0;
+  let isFound = false;
+  while (!isFound) {
+    const startEpNo = initialSelectedIdx * limit + 1;
+    const endEpNo = (initialSelectedIdx + 1) * limit;
+    if (startEpNo <= epNo && endEpNo >= epNo) {
+      isFound = true;
+    } else {
+      initialSelectedIdx++;
+    }
+  }
+  return initialSelectedIdx;
 };

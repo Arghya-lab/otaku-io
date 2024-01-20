@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import SimpleBar from "simplebar-react";
 import { Listbox, Transition } from "@headlessui/react";
 import { Check, ChevronDown } from "lucide-react";
-import chroma from "chroma-js";
+import { shade } from "../../utils/color";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -16,7 +16,9 @@ function Select({ name, color, list, selected, onChange }) {
     <div>
       {name && (
         <div className="pl-4">
-          <p className="text-neutral-900 dark:text-slate-100 capitalize">{name}</p>
+          <p className="text-neutral-900 dark:text-slate-100 capitalize">
+            {name}
+          </p>
         </div>
       )}
       <Listbox value={selected} onChange={onChange}>
@@ -25,9 +27,10 @@ function Select({ name, color, list, selected, onChange }) {
             <Listbox.Button
               className="relative min-w-44 max-w-52 py-1.5 pl-3 pr-10 text-left cursor-pointer rounded-[45px] text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-black dark:bg-white bg-opacity-20"
               style={{
-                backgroundColor: chroma(color || theme.primaryColor)
-                  .darken(1.75)
-                  .alpha(0.7),
+                backgroundColor: shade(color || theme.primaryColor, 0, 0.2),
+                // backgroundColor: chroma(color || theme.primaryColor)
+                //   .darken(1.75)
+                //   .alpha(0.2),
               }}>
               <span className="ml-3 block truncate text-neutral-900 dark:text-slate-200">
                 {selected?.name}

@@ -3,13 +3,12 @@ import PropType from "prop-types";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Play } from "lucide-react";
-import SimpleBar from "simplebar-react";
 import Radio from "../Components/Ui/Radio";
 import Select from "../Components/Ui/Select";
 import EpBtn from "../Components/Ui/EpBtn";
 import { providerList } from "../constants";
-import { mapEpisodes } from "../utils/mapEpisodes";
-import { epSelectableList } from "../utils/mapEpisodes";
+import { getInitialEpRangeIdx, mapEpisodes } from "../utils/epRangeFunc";
+import { epSelectableList } from "../utils/epRangeFunc";
 import watched from "../appwrite/watched";
 
 function EpStreamSheet({
@@ -17,7 +16,7 @@ function EpStreamSheet({
   enabledDub,
   setEnabledDub,
 }) {
-  const { id } = useParams();
+  const { id, epNo } = useParams();
   const navigate = useNavigate();
 
   const { detailInfo } = useSelector((state) => state.content);
@@ -33,6 +32,12 @@ function EpStreamSheet({
   }, [selectedEpRangeIdx, detailInfo]);
 
   useEffect(() => {
+    if (detailInfo?.id && epNo) {
+      setSelectedEpRangeIdx(getInitialEpRangeIdx(epNo));
+    }
+  }, [detailInfo?.id, epNo]);
+
+  useEffect(() => {
     (async () => {
       if (userData?.$id) {
         const eps = await watched.getAnimeWatchedEps(userData.$id, id);
@@ -46,8 +51,13 @@ function EpStreamSheet({
       navigate(`/watch/${detailInfo?.id}/${ep.number}/${ep.id}`, {
         state: { episode: ep },
       });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
+
+  // if (!detailInfo?.episodes) {
+  //   return null;
+  // }
 
   return (
     <div>
@@ -79,61 +89,55 @@ function EpStreamSheet({
           />
         </div>
       </div>
-      {detailInfo?.episodes && (
-        <div>
-          {detailInfo?.episodes.length === 1 ? (
-            <div
-              role="button"
-              className={`px-4 py-2 w-36 m-auto my-4 ${
-                modeResponsiveness ? "bg-black dark:bg-white" : "bg-white"
-              } bg-opacity-20 border-2 rounded-[45px] flex justify-center gap-2`}
-              style={{
-                color: isHovered ? detailInfo?.color || "#fff" : "#fff",
-                borderColor: isHovered ? detailInfo?.color || "#fff" : "#fff",
-                transition: "color 0.3s, border-color 0.3s",
+      <div>
+        {detailInfo?.episodes.length === 1 ? (
+          <div
+            role="button"
+            className={`px-4 py-2 w-36 m-auto my-4 ${
+              modeResponsiveness ? "bg-black dark:bg-white" : "bg-white"
+            } bg-opacity-20 border-2 rounded-[45px] flex justify-center gap-2`}
+            style={{
+              color: isHovered ? detailInfo?.color || "#fff" : "#fff",
+              borderColor: isHovered ? detailInfo?.color || "#fff" : "#fff",
+              transition: "color 0.3s, border-color 0.3s",
+            }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            onClick={() => handleClick(detailInfo?.episodes[0])}>
+            <p className="text-xl font-medium">Watch</p>
+            <Play strokeWidth={3} size={20} />
+          </div>
+        ) : (
+          <>
+            <Select
+              color={detailInfo?.color}
+              list={epSelectableList(detailInfo?.episodes)}
+              selected={
+                epSelectableList(detailInfo?.episodes)[selectedEpRangeIdx]
+              }
+              onChange={(data) => {
+                setSelectedEpRangeIdx(data.value);
               }}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-              onClick={() => handleClick(detailInfo?.episodes[0])}>
-              <p className="text-xl font-medium">Watch</p>
-              <Play strokeWidth={3} size={20} />
+            />
+            <div
+              className="grid gap-4 mt-3 justify-center"
+              style={{
+                gridTemplateColumns: "repeat(auto-fit, minmax(3.5rem, 3.5rem))",
+              }}>
+              {episodes.map((episode, id) => (
+                <EpBtn
+                  key={id}
+                  episode={episode}
+                  color={detailInfo?.color}
+                  watched={watchedEp.includes(episode?.number)}
+                  modeResponsiveness={modeResponsiveness}
+                  handleClick={() => handleClick(episode)}
+                />
+              ))}
             </div>
-          ) : (
-            <>
-              <Select
-                color={detailInfo?.color}
-                list={epSelectableList(detailInfo?.episodes)}
-                selected={
-                  epSelectableList(detailInfo?.episodes)[selectedEpRangeIdx]
-                }
-                onChange={(data) => {
-                  setSelectedEpRangeIdx(data.value);
-                }}
-              />
-              <SimpleBar className="pr-2 mt-3">
-                <div
-                  style={{
-                    display: "grid",
-                    gap: "1rem",
-                    gridTemplateColumns:
-                      "repeat(auto-fit, minmax(3.5rem, 3.5rem))",
-                  }}>
-                  {episodes.map((episode, id) => (
-                    <EpBtn
-                      key={id}
-                      episode={episode}
-                      color={detailInfo?.color}
-                      watched={watchedEp.includes(episode?.number)}
-                      modeResponsiveness={modeResponsiveness}
-                      handleClick={() => handleClick(episode)}
-                    />
-                  ))}
-                </div>
-              </SimpleBar>
-            </>
-          )}
-        </div>
-      )}
+          </>
+        )}
+      </div>
     </div>
   );
 }

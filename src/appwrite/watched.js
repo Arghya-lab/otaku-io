@@ -12,14 +12,35 @@ export class Watched {
     this.databases = new Databases(this.client);
   }
 
-  // async setWatching(userId, { animeId, episodeNo} ){
-
-  // }
+  async setAnimeWatching(userId, { animeId, episodeNo = 1 }) {
+    const listedAnime = await this.databases.listDocuments(
+      conf.appwriteDbId,
+      conf.appwriteAnimeWatchingCollectionId,
+      [Query.equal("userId", userId), Query.equal("animeId", animeId)]
+    );
+    if (listedAnime.total != 0) {
+      // if a particular anime already present then update episode only
+      await this.databases.updateDocument(
+        conf.appwriteDbId,
+        conf.appwriteAnimeWatchingCollectionId,
+        listedAnime.documents[0].$id,
+        { episodeNo }
+      );
+    } else {
+      // initiate ep
+      await this.databases.createDocument(
+        conf.appwriteDbId,
+        conf.appwriteAnimeWatchingCollectionId,
+        ID.unique(),
+        { userId, animeId, episodeNo }
+      );
+    }
+  }
 
   async setWatchedTill(userId, { animeId, episodeNo, watchedTill = 0 }) {
     const listedEp = await this.databases.listDocuments(
       conf.appwriteDbId,
-      conf.appwriteWatchedCollectionId,
+      conf.appwriteWatchedEpCollectionId,
       [
         Query.equal("userId", userId),
         Query.equal("animeId", animeId),
@@ -31,16 +52,18 @@ export class Watched {
       if (listedEp.documents[0].watchedTill < watchedTill) {
         await this.databases.updateDocument(
           conf.appwriteDbId,
-          conf.appwriteWatchedCollectionId,
+          conf.appwriteWatchedEpCollectionId,
           listedEp.documents[0].$id,
           { watchedTill }
         );
       }
     } else {
+      // set the anime as watching
+      await this.setAnimeWatching(userId, { animeId, episodeNo });
       // initiate ep
       await this.databases.createDocument(
         conf.appwriteDbId,
-        conf.appwriteWatchedCollectionId,
+        conf.appwriteWatchedEpCollectionId,
         ID.unique(),
         { userId, animeId, episodeNo, watchedTill }
       );
@@ -50,7 +73,7 @@ export class Watched {
   async getWatchedTill(userId, { animeId, episodeNo }) {
     const data = await this.databases.listDocuments(
       conf.appwriteDbId,
-      conf.appwriteWatchedCollectionId,
+      conf.appwriteWatchedEpCollectionId,
       [
         Query.equal("userId", userId),
         Query.equal("animeId", animeId),
@@ -66,7 +89,7 @@ export class Watched {
   async getAnimeWatchedEps(userId, animeId) {
     const data = await this.databases.listDocuments(
       conf.appwriteDbId,
-      conf.appwriteWatchedCollectionId,
+      conf.appwriteWatchedEpCollectionId,
       [Query.equal("userId", userId), Query.equal("animeId", animeId)]
     );
     if (data.total != 0) {
@@ -75,21 +98,19 @@ export class Watched {
     return [];
   }
 
-  // async getWatchingAnimeList(userId) {
-  //   const data = await this.databases.listDocuments(
-  //     conf.appwriteDbId,
-  //     conf.appwriteWatchedCollectionId,
-  //     [
-  //       Query.equal("userId", userId),
-  //     ]
-  //   );
-  //   if (data.total != 0) {
-  //     // return data.documents
-  //     console.log(data.documents);
-  //   }
-  //   // return null;
-  //   console.log(null);
-  // }
+  async getWatchingAnimeList(userId) {
+    const data = await this.databases.listDocuments(
+      conf.appwriteDbId,
+      conf.appwriteAnimeWatchingCollectionId,
+      [Query.equal("userId", userId), Query.orderDesc("$updatedAt")],
+      Query.limit(10),
+      Query.offset(0)
+    );
+    if (data.total != 0) {
+      return data.documents;
+    }
+    return [];
+  }
 }
 
 const watched = new Watched();

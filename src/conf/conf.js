@@ -10,8 +10,11 @@ const conf = {
   appwritePreferenceCollectionId: String(
     import.meta.env.VITE_APPWRITE_PREFERENCES_COLLECTION_ID
   ),
-  appwriteWatchedCollectionId: String(
-    import.meta.env.VITE_APPWRITE_WATCHED_COLLECTION_ID
+  appwriteWatchedEpCollectionId: String(
+    import.meta.env.VITE_APPWRITE_WATCHED_EP_COLLECTION_ID
+  ),
+  appwriteAnimeWatchingCollectionId: String(
+    import.meta.env.VITE_APPWRITE_ANIME_WATCHING_COLLECTION_ID
   ),
 };
 

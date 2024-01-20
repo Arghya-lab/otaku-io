@@ -39,18 +39,8 @@ function Player() {
     // loop: false,
   });
 
-  const loadVideo = (url) => {
-    setPlayerState((prev) => ({
-      ...prev,
-      url,
-      playing: isAutoPlayEnabled,
-      played: 0,
-      loaded: 0,
-      pip: false,
-    }));
-  };
-
   const handleSeekToUnwatched = async () => {
+    console.log(epNo);
     const previouslyWatchedTill = await watched.getWatchedTill(userData.$id, {
       animeId: id,
       episodeNo: Number(epNo),
@@ -61,7 +51,7 @@ function Player() {
   };
 
   const setWatched = async () => {
-    await watched.setWatched(userData.$id, {
+    await watched.setWatchedTill(userData.$id, {
       animeId: id,
       episodeNo: Number(epNo),
       watchedTill: playerState.played,
@@ -98,9 +88,19 @@ function Player() {
   }, [name]);
 
   useEffect(() => {
+    const loadVideo = (url) => {
+      setPlayerState((prev) => ({
+        ...prev,
+        url,
+        playing: isAutoPlayEnabled,
+        played: 0,
+        loaded: 0,
+        pip: false,
+      }));
+    };
     const objId = sources.findIndex((u) => u?.quality == playBackQuality);
     const selectedUrl = sources[objId]?.url;
-    setWatched();
+    // setWatched();
     loadVideo(selectedUrl);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playBackQuality, sources]);
@@ -108,7 +108,7 @@ function Player() {
   useEffect(() => {
     const handlePlaybackProgress = () => {
       const { played } = playerState;
-      if (played >= markWatchedTill + 0.1) {
+      if (played >= markWatchedTill + 0.04) {
         setMarkWatchedTill(played);
         setWatched();
       }
@@ -162,6 +162,7 @@ function Player() {
         }}
         onReady={() => console.log("onReady")}
         onStart={() => {
+          console.log("started");
           setWatched();
           handleSeekToUnwatched();
         }}

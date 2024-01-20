@@ -30,6 +30,10 @@ const getPopular = async (params) =>
 const getTrending = async (params) =>
   await instance.get("meta/anilist/trending", { params });
 
+// Query Parameters for getAnimeById:
+const getAnimeById = async (id) =>
+  await instance.get("meta/anilist/advanced-search", { params: { id } });
+
 // Query Parameters for getRecentEpisodes:  page, perPage, provider
 const getRecentEpisodes = async (params) =>
   await instance.get("meta/anilist/recent-episodes", { params });
@@ -73,6 +77,7 @@ const animeApi = {
   advancedSearch,
   getPopular,
   getTrending,
+  getAnimeById,
   getRecentEpisodes,
   getDetails,
   getRandom,

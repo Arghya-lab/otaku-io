@@ -34,7 +34,7 @@ function EpStreamSheet({
 
   useEffect(() => {
     (async () => {
-      if (userData.$id) {
+      if (userData?.$id) {
         const eps = await watched.getAnimeWatchedEps(userData.$id, id);
         setWatchedEp(eps);
       }

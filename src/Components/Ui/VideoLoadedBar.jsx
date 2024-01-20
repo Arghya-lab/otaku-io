@@ -59,7 +59,7 @@ function VideoLoadedBar({ played, loaded, playerRef }) {
   };
 
   return (
-    <div className="mb-4 h-3 flex flex-col justify-center items-center">
+    <div className="mb-1 xs:mb-4 h-3 flex flex-col justify-center items-center">
       <div
         ref={sliderRef}
         className="relative h-1 w-full bg-white bg-opacity-60 rounded-sm cursor-pointer"

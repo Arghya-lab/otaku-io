@@ -1,5 +1,6 @@
 import { forwardRef, useEffect, useState } from "react";
 import PropType from "prop-types";
+import { useSelector } from "react-redux";
 import screenfull from "screenfull";
 import { Popover } from "@headlessui/react";
 import {
@@ -18,7 +19,6 @@ import {
 import { secToMinSec } from "../../utils/time";
 import VideoLoadedBar from "./VideoLoadedBar";
 import VolumeController from "./VolumeController";
-import { useSelector } from "react-redux";
 
 const PlayerControl = forwardRef(
   (
@@ -40,10 +40,10 @@ const PlayerControl = forwardRef(
       e.preventDefault();
 
       if (e.key === " " || e.keyCode === 32) {
-        setPlayerState((prev) => ({
-          ...prev,
-          playing: false,
-        }));
+        setPlayerState({
+          ...playerState,
+          playing: !playerState.playing,
+        });
       } else if (e.key === "ArrowRight" || e.keyCode === 39) {
         playerRef.current.seekTo(
           playerRef.current.getCurrentTime() + videoSeekSeconds
@@ -53,22 +53,22 @@ const PlayerControl = forwardRef(
           playerRef.current.getCurrentTime() - videoSeekSeconds
         );
       } else if (e.key === "f" || e.keyCode === 70) {
-        setPlayerState((prev) => ({ ...prev, pip: false }));
+        setPlayerState({ ...playerState, pip: false });
         screenfull.request(document.getElementById("Player"));
         setIsPlayerFullScreen(true);
       } else if (e.key === "Escape" || e.keyCode === 27) {
         screenfull.exit(document.getElementById("Player"));
         setIsPlayerFullScreen(false);
       } else if (e.key === "ArrowUp" || e.keyCode === 38) {
-        setPlayerState((prev) => ({
-          ...prev,
+        setPlayerState({
+          ...playerState,
           volume: playerState.volume + 0.1,
-        }));
+        });
       } else if (e.key === "ArrowDown" || e.keyCode === 40) {
-        setPlayerState((prev) => ({
-          ...prev,
+        setPlayerState({
+          ...playerState,
           volume: playerState.volume - 0.1,
-        }));
+        });
       }
     };
 
@@ -84,37 +84,45 @@ const PlayerControl = forwardRef(
     return (
       <div
         ref={ref}
-        className="flex flex-col gap-2 absolute bottom-0 left-0 right-0 top-0 text-white"
+        className="flex items-center justify-center absolute bottom-0 left-0 right-0 top-0 text-white"
         // style={{ gridTemplateColumns: repeat(2, 100px), gridAutoFlow: "column", }}
         onDoubleClick={() => {
           if (isPlayerFullScreen) {
             screenfull.exit(document.getElementById("Player"));
             setIsPlayerFullScreen(false);
           } else {
-            setPlayerState((prev) => ({ ...prev, pip: false }));
+            setPlayerState({ ...playerState, pip: false });
             screenfull.request(document.getElementById("Player"));
             setIsPlayerFullScreen(true);
           }
         }}>
-        <div
-          role="button"
-          className="w-full flex-1 flex justify-center items-center"
-          onClick={() =>
-            setPlayerState((prev) => ({
-              ...prev,
-              playing: !playerState?.playing,
-            }))
-          }>
-          {!playerState?.playing && (
-            <Play
-              className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
-              strokeWidth={3}
-              fill="#fff"
-              color="#fff"
-            />
-          )}
+        <div className="w-full h-4/5 flex justify-center items-center">
+          <div
+            role="button"
+            onClick={() =>
+              setPlayerState({
+                ...playerState,
+                playing: !playerState?.playing,
+              })
+            }>
+            {playerState?.playing ? (
+              <Pause
+                className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
+                strokeWidth={1}
+                fill="#fff"
+                color="#fff"
+              />
+            ) : (
+              <Play
+                className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
+                strokeWidth={3}
+                fill="#fff"
+                color="#fff"
+              />
+            )}
+          </div>
         </div>
-        <div className="text-lg px-4 pb-4 text-white">
+        <div className="text-lg px-4 pb-1 xxs:pb-2 xs:pb-4 text-white absolute left-0 right-0 bottom-0">
           <VideoLoadedBar
             played={playerState?.played}
             loaded={playerState?.loaded}
@@ -126,10 +134,10 @@ const PlayerControl = forwardRef(
                 role="button"
                 className="px-1 xs:px-2"
                 onClick={() =>
-                  setPlayerState((prev) => ({
-                    ...prev,
+                  setPlayerState({
+                    ...playerState,
                     playing: !playerState?.playing,
-                  }))
+                  })
                 }>
                 {playerState?.playing ? (
                   <Pause
@@ -241,10 +249,10 @@ const PlayerControl = forwardRef(
                 className="px-1 xs:px-3"
                 onClick={() => {
                   screenfull.exit(document.getElementById("Player"));
-                  setPlayerState((prev) => ({
-                    ...prev,
+                  setPlayerState({
+                    ...playerState,
                     pip: !playerState?.pip,
-                  }));
+                  });
 
                   setIsPlayerFullScreen(false);
                 }}>
@@ -265,8 +273,9 @@ const PlayerControl = forwardRef(
                     className="h-4 w-4 xs:h-6 xs:w-6"
                     color="#fff"
                     onClick={() => {
-                      setPlayerState((prev) => ({ ...prev, pip: false }));
+                      setPlayerState({ ...playerState, pip: false });
                       screenfull.request(document.getElementById("Player"));
+                      // screenfull.request(playerRef.current);
 
                       setIsPlayerFullScreen(true);
                     }}

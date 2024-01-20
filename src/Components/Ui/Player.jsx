@@ -12,6 +12,7 @@ function Player() {
   const { name, id, epNo } = useParams();
   const navigate = useNavigate();
 
+  const playerContainerRef = useRef(null);
   const playerRef = useRef(null);
   const controlRef = useRef(null);
 
@@ -40,7 +41,6 @@ function Player() {
   });
 
   const handleSeekToUnwatched = async () => {
-    console.log(epNo);
     const previouslyWatchedTill = await watched.getWatchedTill(userData.$id, {
       animeId: id,
       episodeNo: Number(epNo),
@@ -89,14 +89,14 @@ function Player() {
 
   useEffect(() => {
     const loadVideo = (url) => {
-      setPlayerState((prev) => ({
-        ...prev,
+      setPlayerState({
+        ...playerState,
         url,
         playing: isAutoPlayEnabled,
         played: 0,
         loaded: 0,
         pip: false,
-      }));
+      });
     };
     const objId = sources.findIndex((u) => u?.quality == playBackQuality);
     const selectedUrl = sources[objId]?.url;
@@ -129,6 +129,7 @@ function Player() {
   return (
     <div
       id="Player"
+      ref={playerContainerRef}
       className="relative w-full h-full"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -144,7 +145,7 @@ function Player() {
         playing={playerState?.playing}
         volume={playerState?.volume}
         muted={playerState?.muted}
-        onDuration={(v) => setPlayerState((prev) => ({ ...prev, duration: v }))}
+        onDuration={(v) => setPlayerState({ ...playerState, duration: v })}
         onProgress={(value) => {
           if (count > 3) {
             controlRef.current.style.visibility = "hidden";
@@ -154,11 +155,11 @@ function Player() {
           if (controlRef.current.style.visibility == "visible") {
             count++;
           }
-          setPlayerState((prev) => ({
-            ...prev,
+          setPlayerState({
+            ...playerState,
             loaded: value.loaded,
             played: value.played,
-          }));
+          });
         }}
         onReady={() => console.log("onReady")}
         onStart={() => {

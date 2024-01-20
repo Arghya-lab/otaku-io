@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import Carousel from "./Ui/Carousel";
 import PosterBoard from "./PosterBoard";
-import ContinueWatchingBoard from "./continueWatchingBoard";
+import ContinueWatchingBoard from "./ContinueWatchingBoard";
 
 function HomeContentContainer() {
   const { trending, popular } = useSelector((state) => state.content);

@@ -1,9 +1,15 @@
 import { useState } from "react";
 import PropType from "prop-types";
+import { useNavigate } from "react-router-dom";
 import { shade } from "../../utils/color";
 
 function ChipBtn({ name = "", color = "#fff" }) {
+  const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
+
+  const handleClick = () => {
+    navigate(`/discover?genres=${encodeURIComponent(JSON.stringify([name]))}`);
+  };
 
   return (
     <div
@@ -16,7 +22,8 @@ function ChipBtn({ name = "", color = "#fff" }) {
       }}
       role="button"
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}>
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={handleClick}>
       <span className="capitalize text-sm">{name}</span>
     </div>
   );

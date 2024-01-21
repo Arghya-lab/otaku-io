@@ -10,6 +10,7 @@ import SettingPage from "./Pages/SettingPage";
 import LoginPage from "./Pages/LoginPage";
 import SignupPage from "./Pages/SignupPage";
 import { getUser } from "./features/auth/authSlice";
+import LibraryPage from "./Pages/LibraryPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -38,6 +39,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/discover" element={<DiscoverPage />} />
+        <Route path="/library" element={<LibraryPage />} />
         <Route path="/detail/:id/:title" element={<DetailViewPage />} />
         <Route path="/watch/:id/:epNo/:name" element={<VideoPlayerPage />} />
         <Route path="/setting" element={<SettingPage />} />

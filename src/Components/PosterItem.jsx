@@ -1,6 +1,6 @@
 import PropType from "prop-types";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { posterItemType } from "../constants";
 import { setMiniMeta } from "../features/selected/selectedSlice";
@@ -10,6 +10,7 @@ function PosterItem({ item, type = posterItemType.general }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const { isDubEnabled } = useSelector((state) => state.preference);
   const [isHover, setIsHover] = useState(false);
 
   const handleClick = () => {
@@ -20,7 +21,7 @@ function PosterItem({ item, type = posterItemType.general }) {
           item?.title?.romaji ||
           item?.title?.native ||
           item?.title?.userPreferred;
-        navigate(`/detail/${item.id}/${title}`);
+        navigate(`/detail/${item.id}/${title}?dub=${isDubEnabled}`);
       }
     } else if (type === posterItemType.filter) {
       dispatch(setMiniMeta(item));
@@ -55,7 +56,13 @@ function PosterItem({ item, type = posterItemType.general }) {
       <div className="h-16 text-sm font-medium flex items-center overflow-visible">
         <p
           className="px-2 w-full line-clamp-2 text-center text-neutral-950 dark:text-white"
-          style={isHover ? item?.color? {color: shade(item?.color, -2)} : null : null}>
+          style={
+            isHover
+              ? item?.color
+                ? { color: shade(item?.color, -2) }
+                : null
+              : null
+          }>
           {item?.title?.english ||
             item?.title?.userPreferred ||
             item?.title?.romaji ||

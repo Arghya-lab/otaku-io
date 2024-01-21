@@ -79,6 +79,23 @@ export class Preferences {
       { seekSeconds }
     );
   }
+
+  async toggleBookMark(userId, animeId) {
+    const preference = await this.getPreferences(userId);
+    let bookmarks = preference?.bookmarks;
+    if (bookmarks.includes(animeId)) {
+      let indexToRemove = bookmarks.indexOf(animeId);
+      bookmarks.splice(indexToRemove, 1);
+    } else {
+      bookmarks = [...bookmarks, animeId];
+    }
+    return await this.databases.updateDocument(
+      conf.appwriteDbId,
+      conf.appwritePreferenceCollectionId,
+      preference.$id,
+      { bookmarks }
+    );
+  }
 }
 
 const preferences = new Preferences();

@@ -14,7 +14,7 @@ function TopNavbar() {
 
   return (
     <div
-      className="px-5 h-16 sticky -top-[0.5px] z-40 w-full flex items-center justify-between gap-2 backdrop-blur bg-opacity-50"
+      className="px-5 h-14 xxs:h-16 sticky -top-[0.5px] z-40 w-full flex items-center justify-between gap-2 backdrop-blur bg-opacity-50"
       style={{
         backgroundColor: scrolled
           ? `${chroma(theme.primaryColor).darken().alpha(0.6)}`
@@ -28,7 +28,7 @@ function TopNavbar() {
       <div className="w-9 h-9">
         <img className="scale-150" src="/logo.png" />
       </div>
-      <div className="h-12 w-full xxs:w-2/3 max-w-2xl rounded-[45px] bg-white bg-opacity-10 hover:bg-opacity-15 shadow-sm flex flex-row items-center">
+      <div className="h-10 xxs:h-12 w-full xxs:w-2/3 max-w-2xl rounded-[45px] bg-white bg-opacity-10 hover:bg-opacity-15 shadow-sm flex flex-row items-center">
         <input
           size="1"
           autoCorrect="off"

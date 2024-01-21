@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { TailSpin } from "react-loader-spinner";
 import TopNavbar from "../Components/TopNavbar";
@@ -10,21 +10,20 @@ import { loadDetailInfo, loadImdbInfo } from "../features/content/contentSlice";
 function DetailViewPage() {
   const { title, id } = useParams();
   const dispatch = useDispatch();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const { imdbInfo, detailInfoLoaded, imdbInfoLoaded } = useSelector(
     (state) => state.content
   );
-  const { isDubEnabled, theme } = useSelector((state) => state.preference);
-  const [enabledDub, setEnabledDub] = useState(isDubEnabled);
+  const { theme } = useSelector((state) => state.preference);
   const [isLoaded, setIsLoaded] = useState(false);
+  const isEnabledDub = JSON.parse(
+    searchParams.get("dub")?.toLowerCase() || false
+  );
 
-  const handleChangeSubOrDub = () => {
-    dispatch(
-      loadDetailInfo({
-        id,
-        params: { dub: !enabledDub, provider: "gogoanime" },
-      })
-    ).then(() => setEnabledDub(!enabledDub));
+  const handleToggleSubOrDub = () => {
+    searchParams.set("dub", !isEnabledDub);
+    setSearchParams(searchParams);
   };
 
   useEffect(() => {
@@ -36,10 +35,10 @@ function DetailViewPage() {
     dispatch(
       loadDetailInfo({
         id,
-        params: { dub: isDubEnabled, provider: "gogoanime" },
+        params: { dub: isEnabledDub, provider: "gogoanime" },
       })
     );
-  }, [id, title, isDubEnabled, dispatch]);
+  }, [id, title, isEnabledDub, dispatch]);
 
   if (!isLoaded) {
     return (
@@ -79,8 +78,8 @@ function DetailViewPage() {
               style={{ backdropFilter: "blur(15px)" }}>
               <EpStreamSheet
                 modeResponsiveness={false}
-                enabledDub={enabledDub}
-                setEnabledDub={handleChangeSubOrDub}
+                enabledDub={isEnabledDub}
+                setEnabledDub={handleToggleSubOrDub}
               />
             </div>
           </div>

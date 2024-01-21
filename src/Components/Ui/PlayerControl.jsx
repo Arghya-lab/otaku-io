@@ -19,6 +19,7 @@ import {
 import { secToMinSec } from "../../utils/time";
 import VideoLoadedBar from "./VideoLoadedBar";
 import VolumeController from "./VolumeController";
+// import useOrientation from "../../hooks/useOrientation";
 
 const PlayerControl = forwardRef(
   (
@@ -34,7 +35,6 @@ const PlayerControl = forwardRef(
   ) => {
     const { videoSeekSeconds } = useSelector((state) => state.preference);
     const [isRemainingTime, setIsRemainingTime] = useState(false);
-    const [isPlayerFullScreen, setIsPlayerFullScreen] = useState(false);
 
     const handleKeyPress = (e) => {
       e.preventDefault();
@@ -55,10 +55,16 @@ const PlayerControl = forwardRef(
       } else if (e.key === "f" || e.keyCode === 70) {
         setPlayerState({ ...playerState, pip: false });
         screenfull.request(document.getElementById("Player"));
-        setIsPlayerFullScreen(true);
+        setPlayerState({
+          ...playerState,
+          playerFullScreen: true,
+        });
       } else if (e.key === "Escape" || e.keyCode === 27) {
         screenfull.exit(document.getElementById("Player"));
-        setIsPlayerFullScreen(false);
+        setPlayerState({
+          ...playerState,
+          playerFullScreen: false,
+        });
       } else if (e.key === "ArrowUp" || e.keyCode === 38) {
         setPlayerState({
           ...playerState,
@@ -87,13 +93,19 @@ const PlayerControl = forwardRef(
         className="flex items-center justify-center absolute bottom-0 left-0 right-0 top-0 z-20 text-white"
         // style={{ gridTemplateColumns: repeat(2, 100px), gridAutoFlow: "column", }}
         onDoubleClick={() => {
-          if (isPlayerFullScreen) {
+          if (playerState.playerFullScreen) {
             screenfull.exit(document.getElementById("Player"));
-            setIsPlayerFullScreen(false);
+            setPlayerState({
+              ...playerState,
+              playerFullScreen: false,
+            });
           } else {
             setPlayerState({ ...playerState, pip: false });
             screenfull.request(document.getElementById("Player"));
-            setIsPlayerFullScreen(true);
+            setPlayerState({
+              ...playerState,
+              playerFullScreen: true,
+            });
           }
         }}>
         {!playerState?.loaded == 0 && (
@@ -253,18 +265,27 @@ const PlayerControl = forwardRef(
                     pip: !playerState?.pip,
                   });
 
-                  setIsPlayerFullScreen(false);
+                  setPlayerState({
+                    ...playerState,
+                    playerFullScreen: false,
+                  });
                 }}>
                 <Minimize2 className="h-4 w-4 xs:h-6 xs:w-6" color="#fff" />
               </div>
               <div role="button" className="px-1 xs:px-3">
-                {isPlayerFullScreen ? (
+                {playerState.playerFullScreen ? (
                   <Minimize
                     className="h-4 w-4 xs:h-6 xs:w-6"
                     color="#fff"
                     onClick={() => {
                       screenfull.exit(document.getElementById("Player"));
-                      setIsPlayerFullScreen(false);
+                      if (screen.orientation) {
+                        screen.orientation.unlock();
+                      }
+                      setPlayerState({
+                        ...playerState,
+                        playerFullScreen: false,
+                      });
                     }}
                   />
                 ) : (
@@ -274,9 +295,13 @@ const PlayerControl = forwardRef(
                     onClick={() => {
                       setPlayerState({ ...playerState, pip: false });
                       screenfull.request(document.getElementById("Player"));
-                      // screenfull.request(playerRef.current);
-
-                      setIsPlayerFullScreen(true);
+                      if (screen.orientation) {
+                        screen.orientation.lock("landscape");
+                      }
+                      setPlayerState({
+                        ...playerState,
+                        playerFullScreen: true,
+                      });
                     }}
                   />
                 )}

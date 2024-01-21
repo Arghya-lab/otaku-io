@@ -32,11 +32,12 @@ function ContinueWatchingPosterItem({ WatchingInfo }) {
       );
       if (lastWatchedEp?.id) {
         navigate(
-          `/watch/${detailData?.id}/${lastWatchedEp.number}/${lastWatchedEp.id}`,
+          `/watch/${detailData?.id}/${lastWatchedEp.number}/${lastWatchedEp.id}?dub=${isDubEnabled}`,
           {
             state: { episode: lastWatchedEp },
           }
         );
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     });
   };

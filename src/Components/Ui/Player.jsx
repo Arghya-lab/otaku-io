@@ -40,6 +40,7 @@ function Player() {
     // playbackRate: 1.0,
     // loop: false,
     buffering: false,
+    playerFullScreen: false,
   });
 
   const handleSeekToUnwatched = async () => {
@@ -80,13 +81,20 @@ function Player() {
     (async () => {
       try {
         const res = await animeApi.getStreamingLinks(name);
+        console.log(res.data);
         setSources(res.data?.sources);
         setPlayBackQuality(res.data?.sources[0]?.quality);
       } catch (error) {
         console.error(error.message);
       }
     })();
+
+    // before name change update watchTill
+    return () => {
+      setWatched();
+    };
     // check if already played if played then seek to that part
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [name]);
 
   useEffect(() => {
@@ -95,7 +103,7 @@ function Player() {
         ...playerState,
         url,
         playing: isAutoPlayEnabled,
-        played: 0,
+        played: playerState.played,
         loaded: 0,
         pip: false,
       });
@@ -132,76 +140,83 @@ function Player() {
   return (
     <div
       id="Player"
-      ref={playerContainerRef}
-      className="relative w-full aspect-[16/9]"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      onTouchStart={handleMouseMove}>
-      <ReactPlayer
-        ref={playerRef}
-        // controls
-        // playsinline
-        url={playerState?.url}
-        width="100%"
-        height="minContent"
-        pip={playerState?.pip}
-        playing={playerState?.playing}
-        volume={playerState?.volume}
-        muted={playerState?.muted}
-        onDuration={(duration) => {
-          setPlayerState({ ...playerState, duration });
-        }}
-        onProgress={(value) => {
-          if (count > 3) {
-            controlRef.current.style.visibility = "hidden";
-            document.getElementById("root").style.cursor = "none";
-            count = 0;
+      className={`w-full ${
+        playerState.playerFullScreen
+          ? "flex justify-center"
+          : "rounded-lg overflow-hidden"
+      }`}>
+      <div
+        ref={playerContainerRef}
+        className="relative max-w-full aspect-[16/9]"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        onTouchStart={handleMouseMove}>
+        <ReactPlayer
+          ref={playerRef}
+          // controls
+          // playsinline
+          url={playerState?.url}
+          width="100%"
+          height="minContent"
+          pip={playerState?.pip}
+          playing={playerState?.playing}
+          volume={playerState?.volume}
+          muted={playerState?.muted}
+          onDuration={(duration) => {
+            setPlayerState({ ...playerState, duration });
+          }}
+          onProgress={(value) => {
+            if (count > 3) {
+              controlRef.current.style.visibility = "hidden";
+              document.getElementById("root").style.cursor = "none";
+              count = 0;
+            }
+            if (controlRef.current.style.visibility == "visible") {
+              count++;
+            }
+            setPlayerState({
+              ...playerState,
+              loaded: value.loaded,
+              played: value.played,
+            });
+          }}
+          onReady={() => console.log("onReady")}
+          onStart={() => {
+            setWatched();
+            handleSeekToUnwatched();
+          }}
+          onPlay={() => console.log("play start")}
+          onBuffer={() => setPlayerState({ ...playerState, buffering: true })}
+          // onPlaybackRateChange={this.handleOnPlaybackRateChange}
+          onSeek={(e) => {
+            console.log("onSeek", e);
+            if (playerState.buffering == true) {
+              setPlayerState({ ...playerState, buffering: false });
+            }
+          }}
+          onEnded={handleEnded}
+          onError={(e) => console.log("onError", e)}
+          onPlaybackQualityChange={(e) =>
+            console.log("onPlaybackQualityChange", e)
           }
-          if (controlRef.current.style.visibility == "visible") {
-            count++;
-          }
-          setPlayerState({
-            ...playerState,
-            loaded: value.loaded,
-            played: value.played,
-          });
-        }}
-        onReady={() => console.log("onReady")}
-        onStart={() => {
-          setWatched();
-          handleSeekToUnwatched();
-        }}
-        onPlay={() => console.log("play start")}
-        onBuffer={() => setPlayerState({ ...playerState, buffering: true })}
-        // onPlaybackRateChange={this.handleOnPlaybackRateChange}
-        onSeek={(e) => {
-          console.log("onSeek", e);
-          if (playerState.buffering == true) {
-            setPlayerState({ ...playerState, buffering: false });
-          }
-        }}
-        onEnded={handleEnded}
-        onError={(e) => console.log("onError", e)}
-        onPlaybackQualityChange={(e) =>
-          console.log("onPlaybackQualityChange", e)
-        }
-        config={{
-          file: {
-            forceHLS: true, // change this
-          },
-        }}
-      />
-      <PlayerControl
-        ref={controlRef}
-        playerRef={playerRef}
-        playerState={playerState}
-        setPlayerState={setPlayerState}
-        sources={sources}
-        playBackQuality={playBackQuality}
-        setPlayBackQuality={setPlayBackQuality}
-      />
-      <div className="flex items-center justify-center absolute bottom-0 left-0 right-0 top-0 z-10">
-        <PlayerLoader playerState={playerState} />
+          config={{
+            file: {
+              forceHLS: true, // change this
+            },
+          }}
+        />
+        <PlayerControl
+          ref={controlRef}
+          playerRef={playerRef}
+          playerState={playerState}
+          setPlayerState={setPlayerState}
+          sources={sources}
+          playBackQuality={playBackQuality}
+          setPlayBackQuality={setPlayBackQuality}
+        />
+        <div className="flex items-center justify-center absolute bottom-0 left-0 right-0 top-0 z-10">
+          <PlayerLoader playerState={playerState} />
+        </div>
       </div>
     </div>
   );

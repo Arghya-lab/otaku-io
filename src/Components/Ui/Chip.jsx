@@ -2,8 +2,8 @@ import PropType from "prop-types";
 import { shade } from "../../utils/color";
 
 function Chip({ name, value, color = "#fff" }) {
-  if (!name && !value) {
-    return <></>;
+  if (!value) {
+    return null;
   }
   return (
     <div

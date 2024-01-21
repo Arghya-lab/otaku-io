@@ -1,26 +1,51 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { Bookmark } from "lucide-react";
 import Chip from "./Ui/Chip";
 import ChipBtn from "./Ui/ChipBtn";
+import { toggleBookMark } from "../features/preference/preferenceSlice";
 
 function MetaPreviewContainer() {
+  const { id } = useParams();
+
+  const { status, userData } = useSelector((state) => state.auth);
   const { detailInfo, imdbInfo } = useSelector((state) => state.content);
+  const { bookmarks } = useSelector((state) => state.preference);
+  const dispatch = useDispatch();
+
+  const handleToggleBookmark = () => {
+    if (status) {
+      (async () => {
+        dispatch(toggleBookMark({ userId: userData.$id, animeId: id }));
+      })();
+    }
+  };
 
   return (
     <div>
-      {imdbInfo?.imdbID ? (
-        <img
-          className="object-contain object-center"
-          height={128}
-          width={256}
-          src={`https://images.metahub.space/logo/medium/${imdbInfo?.imdbID}/img`}
-        />
-      ) : (
-        <div className="min-h-32 text-6xl font-extrabold font-nunito text-white">
-          {detailInfo?.title?.english ||
-            detailInfo?.title?.native ||
-            detailInfo?.title?.romaji}
+      <div className="flex items-center">
+        {imdbInfo?.imdbID ? (
+          <img
+            className="object-contain object-center"
+            height={128}
+            width={256}
+            src={`https://images.metahub.space/logo/medium/${imdbInfo?.imdbID}/img`}
+          />
+        ) : (
+          <div className="min-h-32 text-6xl font-extrabold font-nunito text-white">
+            {detailInfo?.title?.english ||
+              detailInfo?.title?.native ||
+              detailInfo?.title?.romaji}
+          </div>
+        )}
+        <div role="button" className="pl-20" onClick={handleToggleBookmark}>
+          {bookmarks.includes(id) ? (
+            <Bookmark size={36} color="#fff" fill="#fff" />
+          ) : (
+            <Bookmark size={36} color="#fff" />
+          )}
         </div>
-      )}
+      </div>
       <div className="my-8">
         <div className="flex flex-wrap gap-3 mb-4">
           <Chip

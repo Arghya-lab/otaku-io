@@ -40,12 +40,21 @@ const changeSeekSeconds = createAsyncThunk(
   }
 );
 
+const toggleBookMark = createAsyncThunk(
+  "preference/toggleBookMark",
+  async ({ userId, animeId }) => {
+    const preference = await preferences.toggleBookMark(userId, animeId);
+    return { preference };
+  }
+);
+
 const initialState = {
   preferenceId: null,
   isDubEnabled: false,
-  isAutoPlayEnabled: false,
-  isAutoNextEnabled: false,
+  isAutoPlayEnabled: true,
+  isAutoNextEnabled: true,
   videoSeekSeconds: 10,
+  bookmarks: [],
   theme: window.matchMedia("(prefers-color-scheme: dark)").matches
     ? themeTypes[1]
     : themeTypes[0],
@@ -97,6 +106,11 @@ export const preferenceSlice = createSlice({
     builder.addCase(changeSeekSeconds.rejected, (state, action) => {
       console.error(action.error.message);
     });
+    // change seek time
+    builder.addCase(toggleBookMark.fulfilled, handlePreferenceUpdate);
+    builder.addCase(toggleBookMark.rejected, (state, action) => {
+      console.error(action.error.message);
+    });
   },
 });
 
@@ -108,6 +122,7 @@ const handlePreferenceUpdate = (state, action) => {
   state.isAutoPlayEnabled = preference?.autoPlay;
   state.isAutoNextEnabled = preference?.autoNext;
   state.videoSeekSeconds = preference?.seekSeconds;
+  state.bookmarks = preference?.bookmarks || [];
   if (preference?.themeId) {
     state.theme = themeTypes.find((theme) => theme.id === preference?.themeId);
   }
@@ -121,6 +136,7 @@ export {
   changeAutoPlay,
   changeAutoNext,
   changeSeekSeconds,
+  toggleBookMark,
 };
 
 export default preferenceSlice.reducer;

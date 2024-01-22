@@ -11,6 +11,7 @@ const changeLanguagePref = createAsyncThunk(
     return { preference };
   }
 );
+
 const changeTheme = createAsyncThunk(
   "preference/changeTheme",
   async (value) => {
@@ -18,6 +19,7 @@ const changeTheme = createAsyncThunk(
     return { preference };
   }
 );
+
 const changeAutoPlay = createAsyncThunk(
   "preference/changeAutoPlay",
   async (value) => {
@@ -25,6 +27,7 @@ const changeAutoPlay = createAsyncThunk(
     return { preference };
   }
 );
+
 const changeAutoNext = createAsyncThunk(
   "preference/changeAutoNext",
   async (value) => {
@@ -32,6 +35,15 @@ const changeAutoNext = createAsyncThunk(
     return { preference };
   }
 );
+
+const changeAutoSkip = createAsyncThunk(
+  "preference/changeAutoSkip",
+  async (value) => {
+    const preference = await preferences.changeAutoSkip(value);
+    return { preference };
+  }
+);
+
 const changeSeekSeconds = createAsyncThunk(
   "preference/changeSeekSeconds",
   async (value) => {
@@ -53,6 +65,7 @@ const initialState = {
   isDubEnabled: false,
   isAutoPlayEnabled: true,
   isAutoNextEnabled: true,
+  isAutoSkipEnabled: false,
   videoSeekSeconds: 10,
   bookmarks: [],
   theme: window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -101,6 +114,11 @@ export const preferenceSlice = createSlice({
     builder.addCase(changeAutoNext.rejected, (state, action) => {
       console.error(action.error.message);
     });
+    // change auto skip
+    builder.addCase(changeAutoSkip.fulfilled, handlePreferenceUpdate);
+    builder.addCase(changeAutoSkip.rejected, (state, action) => {
+      console.error(action.error.message);
+    });
     // change seek time
     builder.addCase(changeSeekSeconds.fulfilled, handlePreferenceUpdate);
     builder.addCase(changeSeekSeconds.rejected, (state, action) => {
@@ -121,6 +139,7 @@ const handlePreferenceUpdate = (state, action) => {
   state.isDubEnabled = preference?.isDub;
   state.isAutoPlayEnabled = preference?.autoPlay;
   state.isAutoNextEnabled = preference?.autoNext;
+  state.isAutoSkipEnabled = preference?.autoSkip;
   state.videoSeekSeconds = preference?.seekSeconds;
   state.bookmarks = preference?.bookmarks || [];
   if (preference?.themeId) {
@@ -135,6 +154,7 @@ export {
   changeTheme,
   changeAutoPlay,
   changeAutoNext,
+  changeAutoSkip,
   changeSeekSeconds,
   toggleBookMark,
 };

@@ -1,7 +1,7 @@
-import { useRef, useState } from "react";
+import { Fragment, useRef, useState } from "react";
 import PropType from "prop-types";
 
-function VideoLoadedBar({ played, loaded, playerRef }) {
+function VideoLoadedBar({ playerState, playerRef }) {
   const [isSeeking, setIsSeeking] = useState(false);
   const sliderRef = useRef(null);
 
@@ -62,7 +62,7 @@ function VideoLoadedBar({ played, loaded, playerRef }) {
     <div className="mb-1 xs:mb-2 h-3 flex flex-col justify-center items-center">
       <div
         ref={sliderRef}
-        className="relative h-1 w-full bg-white bg-opacity-60 rounded-sm cursor-pointer"
+        className="relative h-1 w-full bg-white bg-opacity-60 rounded-sm cursor-pointer flex items-center"
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onTouchStart={handleTouchStart}
@@ -71,20 +71,84 @@ function VideoLoadedBar({ played, loaded, playerRef }) {
         onMouseLeave={handleSliderLeave}>
         <div
           className="h-full bg-red-500 rounded-sm absolute z-10"
-          style={{ width: `${played * 100}%` }}
+          style={{ width: `${playerState?.played * 100}%` }}
         />
         <div
-          className="h-full bg-white bg-opacity-70 rounded-sm absolute top-0 left-0 -z-0"
-          style={{ width: `${loaded * 100}%` }}
+          className="h-full bg-white bg-opacity-70 rounded-sm absolute top-0 left-0 -z-10"
+          style={{ width: `${playerState?.loaded * 100}%` }}
         />
+        {/* Skip indicator bar */}
+        {playerState.skipTimes.map((skipTime) => (
+          <Fragment key={skipTime.type}>
+            {skipTime.type === "intro" && (
+              <div
+                className={`h-1 bg-purple-500 bg-opacity-70 rounded-sm absolute z-20`}
+                style={{
+                  left: `${(100 * skipTime.startTime) / playerState.duration}%`,
+                  width: `${
+                    (100 * (skipTime.endTime - skipTime.startTime)) /
+                    playerState.duration
+                  }%`,
+                }}
+              />
+            )}
+            {skipTime.type === "outro" && (
+              <div
+                className={`h-1 bg-yellow-400 bg-opacity-70 rounded-sm absolute z-20`}
+                style={{
+                  left: `${(100 * skipTime.startTime) / playerState.duration}%`,
+                  width: `${
+                    (100 * (skipTime.endTime - skipTime.startTime)) /
+                    playerState.duration
+                  }%`,
+                }}
+              />
+            )}
+            {skipTime.type === "mix-intro" && (
+              <div
+                className={`h-1 bg-lime-400 bg-opacity-70 rounded-sm absolute z-20`}
+                style={{
+                  left: `${(100 * skipTime.startTime) / playerState.duration}%`,
+                  width: `${
+                    (100 * (skipTime.endTime - skipTime.startTime)) /
+                    playerState.duration
+                  }%`,
+                }}
+              />
+            )}
+            {skipTime.type === "mix-outro" && (
+              <div
+                className={`h-1 bg-orange-400 bg-opacity-70 rounded-sm absolute z-20`}
+                style={{
+                  left: `${(100 * skipTime.startTime) / playerState.duration}%`,
+                  width: `${
+                    (100 * (skipTime.endTime - skipTime.startTime)) /
+                    playerState.duration
+                  }%`,
+                }}
+              />
+            )}
+            {skipTime.type === "recap" && (
+              <div
+                className={`h-1 bg-blue-500 bg-opacity-70 rounded-sm absolute z-20`}
+                style={{
+                  left: `${(100 * skipTime.startTime) / playerState.duration}%`,
+                  width: `${
+                    (100 * (skipTime.endTime - skipTime.startTime)) /
+                    playerState.duration
+                  }%`,
+                }}
+              />
+            )}
+          </Fragment>
+        ))}
       </div>
     </div>
   );
 }
 
 VideoLoadedBar.propTypes = {
-  played: PropType.number.isRequired,
-  loaded: PropType.number.isRequired,
+  playerState: PropType.object.isRequired,
   playerRef: PropType.object.isRequired,
 };
 

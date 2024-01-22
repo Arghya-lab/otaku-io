@@ -19,6 +19,7 @@ import {
 import { secToMinSec } from "../../utils/time";
 import VideoLoadedBar from "./VideoLoadedBar";
 import VolumeController from "./VolumeController";
+import useWindowSize from "../../hooks/useWindowSize";
 // import useOrientation from "../../hooks/useOrientation";
 
 const PlayerControl = forwardRef(
@@ -35,36 +36,23 @@ const PlayerControl = forwardRef(
   ) => {
     const { videoSeekSeconds } = useSelector((state) => state.preference);
     const [isRemainingTime, setIsRemainingTime] = useState(false);
+    const { windowWidth } = useWindowSize();
 
     const handleKeyPress = (e) => {
       e.preventDefault();
 
       if (e.key === " " || e.keyCode === 32) {
-        setPlayerState({
-          ...playerState,
-          playing: !playerState.playing,
-        });
+        handleTogglePlayPause();
       } else if (e.key === "ArrowRight" || e.keyCode === 39) {
-        playerRef.current.seekTo(
-          playerRef.current.getCurrentTime() + videoSeekSeconds
-        );
+        handleSkipForward();
       } else if (e.key === "ArrowLeft" || e.keyCode === 37) {
-        playerRef.current.seekTo(
-          playerRef.current.getCurrentTime() - videoSeekSeconds
-        );
+        handleSkipBack();
       } else if (e.key === "f" || e.keyCode === 70) {
-        setPlayerState({ ...playerState, pip: false });
-        screenfull.request(document.getElementById("Player"));
-        setPlayerState({
-          ...playerState,
-          playerFullScreen: true,
-        });
+        handleFullScreen();
+      } else if (e.key === "p" || e.keyCode === 80) {
+        handlePIP();
       } else if (e.key === "Escape" || e.keyCode === 27) {
-        screenfull.exit(document.getElementById("Player"));
-        setPlayerState({
-          ...playerState,
-          playerFullScreen: false,
-        });
+        handleExitFullScreen();
       } else if (e.key === "ArrowUp" || e.keyCode === 38) {
         setPlayerState({
           ...playerState,
@@ -76,6 +64,57 @@ const PlayerControl = forwardRef(
           volume: playerState.volume - 0.1,
         });
       }
+    };
+
+    const handleTogglePlayPause = () =>
+      setPlayerState({
+        ...playerState,
+        playing: !playerState?.playing,
+      });
+    const handleSkipForward = () =>
+      playerRef.current.seekTo(
+        playerRef.current.getCurrentTime() + videoSeekSeconds
+      );
+
+    const handleSkipBack = () =>
+      playerRef.current.seekTo(
+        playerRef.current.getCurrentTime() - videoSeekSeconds
+      );
+
+    const handleFullScreen = () => {
+      setPlayerState({ ...playerState, pip: false });
+      screenfull.request(document.getElementById("Player"));
+      if (screen.orientation) {
+        screen.orientation.lock("landscape");
+      }
+      setPlayerState({
+        ...playerState,
+        playerFullScreen: true,
+      });
+    };
+
+    const handleExitFullScreen = () => {
+      screenfull.exit(document.getElementById("Player"));
+      if (screen.orientation) {
+        screen.orientation.unlock();
+      }
+      setPlayerState({
+        ...playerState,
+        playerFullScreen: false,
+      });
+    };
+
+    const handlePIP = () => {
+      screenfull.exit(document.getElementById("Player"));
+      setPlayerState({
+        ...playerState,
+        pip: !playerState?.pip,
+      });
+
+      setPlayerState({
+        ...playerState,
+        playerFullScreen: false,
+      });
     };
 
     useEffect(() => {
@@ -94,30 +133,22 @@ const PlayerControl = forwardRef(
         // style={{ gridTemplateColumns: repeat(2, 100px), gridAutoFlow: "column", }}
         onDoubleClick={() => {
           if (playerState.playerFullScreen) {
-            screenfull.exit(document.getElementById("Player"));
-            setPlayerState({
-              ...playerState,
-              playerFullScreen: false,
-            });
+            handleExitFullScreen();
           } else {
-            setPlayerState({ ...playerState, pip: false });
-            screenfull.request(document.getElementById("Player"));
-            setPlayerState({
-              ...playerState,
-              playerFullScreen: true,
-            });
+            handleFullScreen();
           }
         }}>
         {!playerState?.loaded == 0 && (
-          <div className="w-full h-4/5 flex justify-center items-center">
-            <div
-              role="button"
-              onClick={() =>
-                setPlayerState({
-                  ...playerState,
-                  playing: !playerState?.playing,
-                })
-              }>
+          <div className="w-full flex items-center justify-center gap-[15%]">
+            {windowWidth <= 640 && (
+              <div
+                role="button"
+                className="px-1 xs:px-3 rotate-[-45]"
+                onClick={handleSkipBack}>
+                <Undo className="h-8 w-8 xs:h-10 xs:w-10" color="#fff" />
+              </div>
+            )}
+            <div role="button" onClick={handleTogglePlayPause}>
               {playerState?.playing ? (
                 !playerState?.buffering && (
                   <Pause
@@ -136,6 +167,14 @@ const PlayerControl = forwardRef(
                 />
               )}
             </div>
+            {windowWidth <= 640 && (
+              <div
+                role="button"
+                className="px-1 xs:px-3 rotate-[45]"
+                onClick={handleSkipForward}>
+                <Redo className="h-8 w-8 xs:h-10 xs:w-10" color="#fff" />
+              </div>
+            )}
           </div>
         )}
         <div className="text-lg px-4 pb-1 xxs:pb-2 text-white absolute left-0 right-0 bottom-0">
@@ -144,12 +183,7 @@ const PlayerControl = forwardRef(
               <div
                 role="button"
                 className="px-1 xs:px-2"
-                onClick={() =>
-                  setPlayerState({
-                    ...playerState,
-                    playing: !playerState?.playing,
-                  })
-                }>
+                onClick={handleTogglePlayPause}>
                 {playerState?.playing ? (
                   <Pause
                     className="h-4 w-4 xs:h-6 xs:w-6"
@@ -186,27 +220,23 @@ const PlayerControl = forwardRef(
               </div>
             </div>
             <div className="flex items-center">
-              <div
-                role="button"
-                className="px-1 xs:px-3 rotate-[-30]"
-                onClick={() =>
-                  playerRef.current.seekTo(
-                    playerRef.current.getCurrentTime() - videoSeekSeconds
-                  )
-                }>
-                <Undo className="h-4 w-4 xs:h-6 xs:w-6" color="#fff" />
-              </div>
-              <div
-                role="button"
-                className="px-1 xs:px-3 rotate-[30]"
-                onClick={() =>
-                  playerRef.current.seekTo(
-                    playerRef.current.getCurrentTime() + videoSeekSeconds
-                  )
-                }>
-                <Redo className="h-4 w-4 xs:h-6 xs:w-6" color="#fff" />
-              </div>
-              <div role="button" className="px-1 xs:px-3 ">
+              {windowWidth > 640 && (
+                <>
+                  <div
+                    role="button"
+                    className="px-1 xs:px-3 rotate-[-30]"
+                    onClick={handleSkipBack}>
+                    <Undo className="h-6 w-6" color="#fff" />
+                  </div>
+                  <div
+                    role="button"
+                    className="px-1 xs:px-3 rotate-[30]"
+                    onClick={handleSkipForward}>
+                    <Redo className="h-6 w-6" color="#fff" />
+                  </div>
+                </>
+              )}
+              <div role="button" className="px-1.5 xs:px-3 ">
                 <Subtitles className="h-4 w-4 xs:h-6 xs:w-6" color="#fff" />
               </div>
               {/* <div role="button" className="px-3 "> */}
@@ -255,64 +285,27 @@ const PlayerControl = forwardRef(
                   </div>
                 </Popover.Panel>
               </Popover>
-              <div
-                role="button"
-                className="px-1 xs:px-3"
-                onClick={() => {
-                  screenfull.exit(document.getElementById("Player"));
-                  setPlayerState({
-                    ...playerState,
-                    pip: !playerState?.pip,
-                  });
-
-                  setPlayerState({
-                    ...playerState,
-                    playerFullScreen: false,
-                  });
-                }}>
+              <div role="button" className="px-1.5 xs:px-3" onClick={handlePIP}>
                 <Minimize2 className="h-4 w-4 xs:h-6 xs:w-6" color="#fff" />
               </div>
-              <div role="button" className="px-1 xs:px-3">
+              <div role="button" className="px-1.5 xs:px-3">
                 {playerState.playerFullScreen ? (
                   <Minimize
                     className="h-4 w-4 xs:h-6 xs:w-6"
                     color="#fff"
-                    onClick={() => {
-                      screenfull.exit(document.getElementById("Player"));
-                      if (screen.orientation) {
-                        screen.orientation.unlock();
-                      }
-                      setPlayerState({
-                        ...playerState,
-                        playerFullScreen: false,
-                      });
-                    }}
+                    onClick={handleExitFullScreen}
                   />
                 ) : (
                   <Expand
                     className="h-4 w-4 xs:h-6 xs:w-6"
                     color="#fff"
-                    onClick={() => {
-                      setPlayerState({ ...playerState, pip: false });
-                      screenfull.request(document.getElementById("Player"));
-                      if (screen.orientation) {
-                        screen.orientation.lock("landscape");
-                      }
-                      setPlayerState({
-                        ...playerState,
-                        playerFullScreen: true,
-                      });
-                    }}
+                    onClick={handleFullScreen}
                   />
                 )}
               </div>
             </div>
           </div>
-          <VideoLoadedBar
-            played={playerState?.played}
-            loaded={playerState?.loaded}
-            playerRef={playerRef}
-          />
+          <VideoLoadedBar playerState={playerState} playerRef={playerRef} />
         </div>
       </div>
     );

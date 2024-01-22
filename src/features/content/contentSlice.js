@@ -16,6 +16,14 @@ const applyFilter = createAsyncThunk("content/applyFilter", async (params) => {
   return res.data;
 });
 
+const applySearch = createAsyncThunk(
+  "content/applySearch",
+  async ({ query, params }) => {
+    const res = await animeApi.search(query, params);
+    return res.data;
+  }
+);
+
 const loadDetailInfo = createAsyncThunk(
   "content/loadDetailInfo",
   async ({ id, params }) => {
@@ -23,6 +31,7 @@ const loadDetailInfo = createAsyncThunk(
     return res.data;
   }
 );
+
 const loadImdbInfo = createAsyncThunk(
   "content/loadImdbInfo",
   async (params) => {
@@ -41,7 +50,11 @@ const initialState = {
   hasMoreFilterContent: false,
   currentFilterContentPage: 0,
 
-  detailInfo: {},
+  searchContent: [],
+  hasMoreSearchContent: false,
+  currentSearchContentPage: 0,
+
+  detailInfo: null,
   detailInfoLoaded: false,
   imdbInfo: {},
   imdbInfoLoaded: false,
@@ -55,6 +68,11 @@ export const contentSlice = createSlice({
       state.filterContent = [];
       state.hasMoreFilterContent = false;
       state.currentFilterContentPage = 0;
+    },
+    clearSearchData: (state) => {
+      state.searchContent = [];
+      state.hasMoreSearchContent = false;
+      state.currentSearchContentPage = 0;
     },
   },
   extraReducers: (builder) => {
@@ -81,6 +99,19 @@ export const contentSlice = createSlice({
       state.currentFilterContentPage = action.payload?.currentPage;
     });
     builder.addCase(applyFilter.rejected, (state, action) => {
+      console.error(action.error.message);
+    });
+
+    // search
+    builder.addCase(applySearch.fulfilled, (state, action) => {
+      state.searchContent = [
+        ...state.searchContent,
+        ...(action.payload?.results || []),
+      ];
+      state.hasMoreSearchContent = action.payload?.hasNextPage || false;
+      state.currentSearchContentPage = action.payload?.currentPage;
+    });
+    builder.addCase(applySearch.rejected, (state, action) => {
       console.error(action.error.message);
     });
 
@@ -114,6 +145,6 @@ export const contentSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { clearFilterData } = contentSlice.actions;
-export { loadHomePage, applyFilter, loadDetailInfo, loadImdbInfo };
+export const { clearFilterData, clearSearchData } = contentSlice.actions;
+export { loadHomePage, applyFilter, applySearch, loadDetailInfo, loadImdbInfo };
 export default contentSlice.reducer;

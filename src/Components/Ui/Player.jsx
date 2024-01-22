@@ -1,17 +1,23 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import ReactPlayer from "react-player/lazy";
+import screenfull from "screenfull";
 import PlayerControl from "./PlayerControl";
-import { useNavigate, useParams } from "react-router-dom";
 import animeApi from "../../Api/animeApi";
-import { useSelector } from "react-redux";
 import watched from "../../appwrite/watched";
 import PlayerLoader from "./PlayerLoader";
+import { loadDetailInfo } from "../../features/content/contentSlice";
+import getSkipTimes from "../../utils/getSkipTimes";
+import PlayerSkipBtns from "./PlayerSkipBtns";
 
 let count = 0;
 
 function Player() {
   const { name, id, epNo } = useParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const playerContainerRef = useRef(null);
   const playerRef = useRef(null);
@@ -20,7 +26,7 @@ function Player() {
   const [sources, setSources] = useState([]);
   const [playBackQuality, setPlayBackQuality] = useState("auto");
   const { detailInfo } = useSelector((state) => state.content);
-  const { userData } = useSelector((state) => state.auth);
+  const { status, userData } = useSelector((state) => state.auth);
   const { isAutoPlayEnabled, isAutoNextEnabled } = useSelector(
     (state) => state.preference
   );
@@ -41,6 +47,7 @@ function Player() {
     // loop: false,
     buffering: false,
     playerFullScreen: false,
+    skipTimes: [],
   });
 
   const handleSeekToUnwatched = async () => {
@@ -63,14 +70,27 @@ function Player() {
 
   const handleEnded = () => {
     if (isAutoNextEnabled) {
-      const currentEpIdx = detailInfo.episodes.findIndex(
+      const currentEpIdx = detailInfo?.episodes.findIndex(
         (ep) => ep.id === decodeURIComponent(name)
       );
-      const nextEp = detailInfo.episodes[currentEpIdx + 1];
+      const nextEp = detailInfo?.episodes[currentEpIdx + 1];
       if (nextEp?.id) {
-        navigate(`/watch/${detailInfo?.id}/${nextEp.id}`, {
-          state: { episode: nextEp },
+        screenfull.exit(document.getElementById("Player"));
+        if (screen.orientation.unlock) screen.orientation.unlock();
+        setPlayerState({
+          ...playerState,
+          playerFullScreen: false,
         });
+
+        navigate(
+          `/watch/${detailInfo?.id}/${nextEp.number}/${
+            nextEp.id
+          }?dub=${searchParams.get("dub")}`,
+          {
+            replace: true,
+            state: { episode: nextEp },
+          }
+        );
       }
     } else {
       setPlayerState({ ...playerState, playing: false });
@@ -80,8 +100,18 @@ function Player() {
   useEffect(() => {
     (async () => {
       try {
+        if (!detailInfo) {
+          dispatch(
+            loadDetailInfo({
+              id,
+              params: {
+                dub: JSON.parse(searchParams.get("dub").toLowerCase()),
+                provider: "gogoanime",
+              },
+            })
+          );
+        }
         const res = await animeApi.getStreamingLinks(name);
-        console.log(res.data);
         setSources(res.data?.sources);
         setPlayBackQuality(res.data?.sources[0]?.quality);
       } catch (error) {
@@ -91,11 +121,29 @@ function Player() {
 
     // before name change update watchTill
     return () => {
-      setWatched();
+      if (status) {
+        setWatched();
+      }
     };
     // check if already played if played then seek to that part
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [name]);
+
+  useEffect(() => {
+    if (detailInfo?.malId && playerState.duration != 0) {
+      setPlayerState((prev) => ({ ...prev, skipTimes: [] }));
+      (async () => {
+        const skipTimes = await getSkipTimes(
+          detailInfo?.malId,
+          epNo,
+          playerState.duration
+        );
+        if (skipTimes) {
+          setPlayerState((prev) => ({ ...prev, skipTimes }));
+        }
+      })();
+    }
+  }, [detailInfo?.malId, epNo, playerState.duration]);
 
   useEffect(() => {
     const loadVideo = (url) => {
@@ -120,7 +168,7 @@ function Player() {
       const { played } = playerState;
       if (played >= markWatchedTill + 0.04) {
         setMarkWatchedTill(played);
-        setWatched();
+        if (status) setWatched();
       }
     };
     handlePlaybackProgress();
@@ -182,8 +230,11 @@ function Player() {
           }}
           onReady={() => console.log("onReady")}
           onStart={() => {
-            setWatched();
-            handleSeekToUnwatched();
+            // find intro & outro
+            if (status) {
+              setWatched();
+              handleSeekToUnwatched();
+            }
           }}
           onPlay={() => console.log("play start")}
           onBuffer={() => setPlayerState({ ...playerState, buffering: true })}
@@ -214,6 +265,7 @@ function Player() {
           playBackQuality={playBackQuality}
           setPlayBackQuality={setPlayBackQuality}
         />
+        <PlayerSkipBtns playerState={playerState} playerRef={playerRef} />
         <div className="flex items-center justify-center absolute bottom-0 left-0 right-0 top-0 z-10">
           <PlayerLoader playerState={playerState} />
         </div>

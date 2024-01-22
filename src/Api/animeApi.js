@@ -72,6 +72,12 @@ const getImdbData = async (params) =>
 const getStreamingLinks = async (episodeId) =>
   await instance.get(`meta/anilist/watch/${episodeId}`);
 
+// getStreamingLinks:  episodeId required
+const getSkipTimes = async (malId, epNo, epLength = 0) =>
+  await axios.get(
+    `https://api.aniskip.com/v2/skip-times/${malId}/${epNo}?episodeLength=${epLength}&types=op&types=ed&types=mixed-op&types=mixed-ed&types=recap`
+  );
+
 const animeApi = {
   search,
   advancedSearch,
@@ -84,6 +90,7 @@ const animeApi = {
   getUpcoming,
   getImdbData,
   getStreamingLinks,
+  getSkipTimes,
 };
 
 export default animeApi;

@@ -4,13 +4,14 @@ import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import HomePage from "./Pages/HomePage";
 import DiscoverPage from "./Pages/DiscoverPage";
+import LibraryPage from "./Pages/LibraryPage";
+import SearchResPage from "./Pages/SearchResPage";
 import DetailViewPage from "./Pages/DetailViewPage";
 import VideoPlayerPage from "./Pages/VideoPlayerPage";
 import SettingPage from "./Pages/SettingPage";
 import LoginPage from "./Pages/LoginPage";
 import SignupPage from "./Pages/SignupPage";
 import { getUser } from "./features/auth/authSlice";
-import LibraryPage from "./Pages/LibraryPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -40,6 +41,7 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/discover" element={<DiscoverPage />} />
         <Route path="/library" element={<LibraryPage />} />
+        <Route path="/search/:query" element={<SearchResPage />} />
         <Route path="/detail/:id/:title" element={<DetailViewPage />} />
         <Route path="/watch/:id/:epNo/:name" element={<VideoPlayerPage />} />
         <Route path="/setting" element={<SettingPage />} />

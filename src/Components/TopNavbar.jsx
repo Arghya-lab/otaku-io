@@ -1,16 +1,28 @@
 import { useSelector } from "react-redux";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import chroma from "chroma-js";
 import UserBtn from "./Ui/UserBtn";
 import MinMaximizeBtn from "./Ui/MinMaximizeBtn";
 import useWindowSize from "../hooks/useWindowSize";
 import useScroll from "../hooks/useScroll";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function TopNavbar() {
+  const navigate = useNavigate();
   const { theme } = useSelector((state) => state.preference);
 
   const { windowWidth } = useWindowSize();
   const scrolled = useScroll();
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.length > 0) {
+      navigate(`/search/${searchQuery}`);
+    }
+  };
 
   return (
     <div
@@ -28,7 +40,9 @@ function TopNavbar() {
       <div className="w-9 h-9">
         <img className="scale-150" src="/logo.png" />
       </div>
-      <div className="h-10 xxs:h-12 w-full xxs:w-2/3 max-w-2xl rounded-[45px] bg-white bg-opacity-10 hover:bg-opacity-15 shadow-sm flex flex-row items-center">
+      <form
+        className="h-10 xxs:h-12 w-full xxs:w-2/3 max-w-2xl rounded-[45px] bg-white bg-opacity-10 hover:bg-opacity-15 shadow-sm flex items-center"
+        onSubmit={handleSearch}>
         <input
           size="1"
           autoCorrect="off"
@@ -37,16 +51,32 @@ function TopNavbar() {
           spellCheck="false"
           tabIndex="-1"
           type="text"
-          placeholder="Search or paste link"
-          className="pl-7 h-full focus:outline-none bg-transparent w-[calc(100%-24px-2.5rem)] font-medium text-neutral-900 dark:text-slate-100"
+          placeholder="Search ..."
+          value={searchQuery}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+          }}
+          className="pl-7 h-full focus:outline-none bg-transparent w-[calc(100%-24px-24px-2.5rem)] font-medium text-neutral-900 dark:text-slate-100"
         />
-        <div className="px-5 w-[24px] h-[24px] cursor-pointer">
+        <div className="w-[24px] h-[24px] pl-1 pr-2 flex-1">
+          {searchQuery.length > 0 && (
+            <X
+              role="button"
+              size={24}
+              className="opacity-90 text-neutral-800 dark:text-slate-300"
+              onClick={() => {
+                setSearchQuery("");
+              }}
+            />
+          )}
+        </div>
+        <button type="submit" className="pr-4 pl-2 w-[24px] h-[24px] flex-1">
           <Search
             size={24}
             className="opacity-90 text-neutral-800 dark:text-slate-300"
           />
-        </div>
-      </div>
+        </button>
+      </form>
       {windowWidth > 425 && (
         <div className="flex gap-1">
           <UserBtn />

@@ -70,6 +70,15 @@ export class Preferences {
       { autoNext }
     );
   }
+  
+  async changeAutoSkip({ preferenceId, autoSkip }) {
+    return await this.databases.updateDocument(
+      conf.appwriteDbId,
+      conf.appwritePreferenceCollectionId,
+      preferenceId,
+      { autoSkip }
+    );
+  }
 
   async changeSeekSeconds({ preferenceId, seekSeconds }) {
     return await this.databases.updateDocument(

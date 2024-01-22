@@ -10,6 +10,7 @@ import EpStreamSheet from "../Components/EpStreamSheet";
 import PosterItemVertical from "../Components/PosterItemVertical";
 import { loadDetailInfo } from "../features/content/contentSlice";
 import TopNavbar from "../Components/TopNavbar";
+import Skeleton from "react-loading-skeleton";
 
 function VideoPlayerPage() {
   const { id, epNo } = useParams();
@@ -19,6 +20,7 @@ function VideoPlayerPage() {
 
   const dispatch = useDispatch();
   const { detailInfo } = useSelector((state) => state.content);
+  const { theme } = useSelector((state) => state.preference);
 
   const isEnabledDub = JSON.parse(
     searchParams.get("dub")?.toLowerCase() || false
@@ -65,7 +67,7 @@ function VideoPlayerPage() {
             setEnabledDub={handleToggleSubOrDub}
           />
         </div>
-        {detailInfo?.recommendations && (
+        {detailInfo?.recommendations ? (
           <div>
             <p className="text-2xl text-center pt-6 pb-3 capitalize text-neutral-950 dark:text-slate-50">
               recommended
@@ -79,6 +81,17 @@ function VideoPlayerPage() {
                 <PosterItemVertical key={reco?.id} item={reco} />
               ))}
             </div>
+          </div>
+        ) : (
+          <div className="px-4 my-4 flex flex-row gap-2 flex-wrap justify-around">
+            {new Array(8).fill("").map((_, id) => (
+              <Skeleton
+                key={id}
+                className="h-40 w-full min-w-96 rounded-xl flex-1"
+                baseColor={theme.type === "dark" ? "#111" : "#ddd"}
+                highlightColor={theme.type === "dark" ? "#222" : "#bbb"}
+              />
+            ))}
           </div>
         )}
       </div>

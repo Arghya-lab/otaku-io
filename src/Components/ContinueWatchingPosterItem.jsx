@@ -16,10 +16,10 @@ function ContinueWatchingPosterItem({ WatchingInfo }) {
 
   const [itemData, setItemData] = useState(null);
   const [isHover, setIsHover] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isDetailDataFetching, setIsDetailDataFetching] = useState(false);
 
   const handleClick = () => {
-    setIsLoading(true);
+    setIsDetailDataFetching(true);
     dispatch(
       loadDetailInfo({
         id: itemData.id,
@@ -67,7 +67,7 @@ function ContinueWatchingPosterItem({ WatchingInfo }) {
         }`}>
         <div
           className={`absolute top-0 bottom-0 left-0 right-0 z-0 flex items-center justify-center`}>
-          {!isLoading ? (
+          {!isDetailDataFetching ? (
             <PlayCircle
               size={48}
               strokeWidth={isHover ? 1.5 : 1}

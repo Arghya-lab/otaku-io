@@ -10,6 +10,7 @@ import usePosterItemCount from "../hooks/usePosterItemCount";
 import Filter from "./Filter";
 import { applyFilter, clearFilterData } from "../features/content/contentSlice";
 import { setMiniMeta } from "../features/selected/selectedSlice";
+import Skeleton from "react-loading-skeleton";
 
 function DiscoverContentContainer() {
   const dispatch = useDispatch();
@@ -45,38 +46,51 @@ function DiscoverContentContainer() {
         {/* Selectable input container */}
         <Filter />
         {/* Meta items container */}
-        <InfiniteScroll
-          className="h-full"
-          dataLength={filterContent.length} //This is important field to render the next data
-          next={handleFetchMoreFilterData}
-          hasMore={hasMoreFilterContent}
-          loader={
-            <div className="w-28 m-auto">
-              <LineWave
-                visible={true}
-                height="200"
-                width="200"
-                color={theme.secondaryColor}
-              />
+        {currentFilterContentPage !== 0 ? (
+          <InfiniteScroll
+            className="h-full"
+            dataLength={filterContent.length} //This is important field to render the next data
+            next={handleFetchMoreFilterData}
+            hasMore={hasMoreFilterContent}
+            loader={
+              <div className="w-28 m-auto">
+                <LineWave
+                  visible={true}
+                  height="200"
+                  width="200"
+                  color={theme.secondaryColor}
+                />
+              </div>
+            }
+            endMessage={
+              <p style={{ textAlign: "center" }}>nothing to show more</p>
+            }>
+            <div
+              className="px-2 xxs:px-4 grid"
+              style={{
+                gridTemplateColumns: `repeat( ${posterItemCount}, 1fr)`,
+              }}>
+              {filterContent.map((item, id) => (
+                <PosterItem
+                  key={id}
+                  item={item}
+                  // type={posterItemType.filter}
+                />
+              ))}
             </div>
-          }
-          endMessage={
-            <p style={{ textAlign: "center" }}>nothing to show more</p>
-          }>
-          <div
-            className="px-2 xxs:px-4 grid"
-            style={{
-              gridTemplateColumns: `repeat( ${posterItemCount}, 1fr)`,
-            }}>
-            {filterContent.map((item, id) => (
-              <PosterItem
+          </InfiniteScroll>
+        ) : (
+          <div className="px-4 flex flex-row gap-4 flex-wrap justify-around">
+            {new Array(25).fill("").map((_, id) => (
+              <Skeleton
                 key={id}
-                item={item}
-                // type={posterItemType.filter}
+                className="h-64 w-44 rounded-xl flex-1"
+                baseColor={theme.type === "dark" ? "#111" : "#ddd"}
+                highlightColor={theme.type === "dark" ? "#222" : "#bbb"}
               />
             ))}
           </div>
-        </InfiniteScroll>
+        )}
       </div>
       {/* {windowWidth>1000 && (
       <MetaMiniPreview />)} */}

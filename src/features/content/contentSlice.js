@@ -56,7 +56,7 @@ const initialState = {
 
   detailInfo: null,
   detailInfoLoaded: false,
-  imdbInfo: {},
+  imdbInfo: null,
   imdbInfoLoaded: false,
 };
 

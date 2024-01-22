@@ -1,5 +1,8 @@
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import htmlParse from "html-react-parser";
+import Skeleton from "react-loading-skeleton";
 import { Bookmark } from "lucide-react";
 import Chip from "./Ui/Chip";
 import ChipBtn from "./Ui/ChipBtn";
@@ -7,11 +10,17 @@ import { toggleBookMark } from "../features/preference/preferenceSlice";
 
 function MetaPreviewContainer() {
   const { id } = useParams();
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const { status, userData } = useSelector((state) => state.auth);
-  const { detailInfo, imdbInfo } = useSelector((state) => state.content);
-  const { bookmarks } = useSelector((state) => state.preference);
+  const { detailInfo, imdbInfo, detailInfoLoaded, imdbInfoLoaded } =
+    useSelector((state) => state.content);
+  const { bookmarks, theme } = useSelector((state) => state.preference);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    setIsLoaded(detailInfoLoaded && imdbInfoLoaded);
+  }, [detailInfoLoaded, imdbInfoLoaded]);
 
   const handleToggleBookmark = () => {
     if (status) {
@@ -20,6 +29,33 @@ function MetaPreviewContainer() {
       })();
     }
   };
+
+  if (!isLoaded) {
+    return (
+      <>
+        <Skeleton
+          className="h-48 w-64 rounded-xl"
+          baseColor={theme.type === "dark" ? "#111" : "#ddd"}
+          highlightColor={theme.type === "dark" ? "#222" : "#bbb"}
+        />
+        <Skeleton
+          className="h-48 mt-3 rounded-xl"
+          baseColor={theme.type === "dark" ? "#111" : "#ddd"}
+          highlightColor={theme.type === "dark" ? "#222" : "#bbb"}
+        />
+        <Skeleton
+          className="h-36 w-80 my-3 rounded-xl"
+          baseColor={theme.type === "dark" ? "#111" : "#ddd"}
+          highlightColor={theme.type === "dark" ? "#222" : "#bbb"}
+        />
+        <Skeleton
+          className="h-80 rounded-xl"
+          baseColor={theme.type === "dark" ? "#111" : "#ddd"}
+          highlightColor={theme.type === "dark" ? "#222" : "#bbb"}
+        />
+      </>
+    );
+  }
 
   return (
     <div>
@@ -142,13 +178,12 @@ function MetaPreviewContainer() {
             <p className="capitalize text-slate-50 opacity-50 font-medium text-lg">
               description
             </p>
-            <p
+            <div
               className="prose text-white font-nunito pl-4"
               // style={{ color: textColor(item - 1) }}
-              dangerouslySetInnerHTML={{
-                __html: `<p >${detailInfo?.description}</p>`,
-              }}
-            />
+            >
+              {htmlParse(`<p >${detailInfo?.description}</p>`)}
+            </div>
           </div>
         )}
         <div className="flex flex-wrap gap-3 my-8">

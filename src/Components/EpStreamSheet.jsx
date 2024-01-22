@@ -10,6 +10,7 @@ import { providerList } from "../constants";
 import { getInitialEpRangeIdx, mapEpisodes } from "../utils/epRangeFunc";
 import { epSelectableList } from "../utils/epRangeFunc";
 import watched from "../appwrite/watched";
+import Skeleton from "react-loading-skeleton";
 
 function EpStreamSheet({
   modeResponsiveness = true,
@@ -19,8 +20,9 @@ function EpStreamSheet({
   const { id, epNo } = useParams();
   const navigate = useNavigate();
 
-  const { detailInfo } = useSelector((state) => state.content);
   const { userData } = useSelector((state) => state.auth);
+  const { detailInfo } = useSelector((state) => state.content);
+  const { theme } = useSelector((state) => state.preference);
   const [isHovered, setIsHovered] = useState(false);
 
   const [selectedEpRangeIdx, setSelectedEpRangeIdx] = useState(0);
@@ -88,7 +90,7 @@ function EpStreamSheet({
           />
         </div>
       </div>
-      {detailInfo?.episodes && (
+      {detailInfo?.episodes ? (
         <div>
           {detailInfo?.episodes.length === 1 ? (
             <div
@@ -139,6 +141,12 @@ function EpStreamSheet({
             </>
           )}
         </div>
+      ) : (
+        <Skeleton
+          className="h-64 rounded-xl"
+          baseColor={theme.type === "dark" ? "#111" : "#ddd"}
+          highlightColor={theme.type === "dark" ? "#222" : "#bbb"}
+        />
       )}
     </div>
   );

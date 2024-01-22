@@ -18,6 +18,7 @@
     "chroma-js": "^2.4.2",
     "date-fns": "^3.0.6",
     "formik": "^2.4.5",
+    "html-react-parser": "^5.1.1",
     "lucide-react": "^0.303.0",
     "react": "^18.2.0",
     "react-alice-carousel": "^2.8.0",

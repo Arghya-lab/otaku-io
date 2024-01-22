@@ -1,4 +1,5 @@
 @import "react-alice-carousel/lib/alice-carousel.css";
+@import 'react-loading-skeleton/dist/skeleton.css';
 
 body,
 #root {
@@ -35,85 +36,4 @@ body,
   font-weight: 300;
   color: unset;
   background-color: rgba(0, 0, 0, 0);
-}
-
-@layer utilities {
-  .scrollbar::-webkit-scrollbar {
-    width: 6px;
-  }
-  
-  /* -----------  No scrollbar  ----------- */
-  /* For Webkit-based browsers (Chrome, Safari and Opera) */
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  /* For IE, Edge and Firefox */
-  .no-scrollbar {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
-  }
-  
-  /* -----------  Custom scrollbar  ----------- */
-  /* Styles for light mode based on user preference */
-  /* Style for custom scrollbar */
-  .scrollbar-1-light {
-    overflow-y: scroll;
-    scrollbar-width: thin; /* For Firefox */
-    margin: 0 4px; /* Added margin on x-axis */
-    scrollbar-color: #969696 #d9d9d9; /* For Firefox */
-  }
-  /* Track */
-  .scrollbar-1-light::-webkit-scrollbar-track {
-    background: #d9d9d9;
-  }
-  /* Handle */
-  .scrollbar-1-light::-webkit-scrollbar-thumb {
-    margin-right: 4px;
-    border-radius: 10px;
-    background-color: #969696;
-  }
-
-  /* Styles for dark mode based on user preference */
-  /* Style for custom scrollbar */
-  .scrollbar-1-dark {
-    overflow-y: scroll;
-    scrollbar-width: thin; /* For Firefox */
-    margin: 0 4px; /* Added margin on x-axis */
-    scrollbar-color: #202225 #2b2d31; /* For Firefox */
-  }
-  /* Track */
-  .scrollbar-1-dark::-webkit-scrollbar-track {
-    background: #2b2d31;
-  }
-  /* Handle */
-  .scrollbar-1-dark::-webkit-scrollbar-thumb {
-    margin-right: 4px;
-    border-radius: 10px;
-    background-color: #202225;
-  }
-
-  /* light scrollbar */
-  .scrollbar-2-light {
-    overflow-y: scroll;
-    scrollbar-width: thin; /* For Firefox */
-    margin: 0 4px; /* Added margin on x-axis */
-    scrollbar-color: #d0d0d0 transparent; /* For Firefox */
-  }
-  .scrollbar-2-light::-webkit-scrollbar-thumb {
-    margin-right: 4px;
-    background-color: #d0d0d0; /* Replace with your desired color */
-    border-radius: 3px;
-  }
-  /* dark scrollbar */
-  .scrollbar-2-dark {
-    overflow-y: scroll;
-    scrollbar-width: thin; /* For Firefox */
-    margin: 0 4px; /* Added margin on x-axis */
-    scrollbar-color: #202225 transparent; /* For Firefox */
-  }
-  .scrollbar-2-dark::-webkit-scrollbar-thumb {
-    margin-right: 4px;
-    background-color: #202225; /* Replace with your desired color */
-    border-radius: 3px;
-  }
 }

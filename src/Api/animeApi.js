@@ -38,7 +38,7 @@ const getAnimeById = async (id) =>
 const getRecentEpisodes = async (params) =>
   await instance.get("meta/anilist/recent-episodes", { params });
 
-const getRandom = async () => await instance.get("/meta/anilist/random-anime");
+const getRandomAnime = async () => await instance.get("/meta/anilist/random-anime");
 
 // Query Parameters for getDetails:  dub, provider
 const getDetails = async (id, params) => {
@@ -86,7 +86,7 @@ const animeApi = {
   getAnimeById,
   getRecentEpisodes,
   getDetails,
-  getRandom,
+  getRandomAnime,
   getUpcoming,
   getImdbData,
   getStreamingLinks,

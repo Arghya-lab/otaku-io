@@ -12,7 +12,7 @@ import SettingPage from "./Pages/SettingPage";
 import LoginPage from "./Pages/LoginPage";
 import SignupPage from "./Pages/SignupPage";
 import { getUser } from "./features/auth/authSlice";
-import ContinueWatchingPage from "./Pages/continueWatchingPage";
+import ContinueWatchingPage from "./Pages/ContinueWatchingPage";
 
 function App() {
   const dispatch = useDispatch();

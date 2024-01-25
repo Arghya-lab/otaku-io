@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
 import { Search, X } from "lucide-react";
 import chroma from "chroma-js";
-import UserBtn from "./Ui/UserBtn";
 import MinMaximizeBtn from "./Ui/MinMaximizeBtn";
 import useWindowSize from "../hooks/useWindowSize";
 import useScroll from "../hooks/useScroll";
@@ -77,12 +76,7 @@ function TopNavbar() {
           />
         </button>
       </form>
-      {windowWidth > 425 && (
-        <div className="flex gap-1">
-          <UserBtn />
-          <MinMaximizeBtn />
-        </div>
-      )}
+      {windowWidth > 425 && <MinMaximizeBtn />}
     </div>
   );
 }

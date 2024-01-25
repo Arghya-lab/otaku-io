@@ -12,6 +12,7 @@ import SettingPage from "./Pages/SettingPage";
 import LoginPage from "./Pages/LoginPage";
 import SignupPage from "./Pages/SignupPage";
 import { getUser } from "./features/auth/authSlice";
+import ContinueWatchingPage from "./Pages/continueWatchingPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -44,6 +45,7 @@ function App() {
         <Route path="/search/:query" element={<SearchResPage />} />
         <Route path="/detail/:id/:title" element={<DetailViewPage />} />
         <Route path="/watch/:id/:epNo/:name" element={<VideoPlayerPage />} />
+        <Route path="/continueWatching" element={<ContinueWatchingPage />} />
         <Route path="/setting" element={<SettingPage />} />
       </Routes>
     </div>

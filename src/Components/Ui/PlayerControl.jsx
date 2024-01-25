@@ -7,7 +7,7 @@ import {
   Check,
   Expand,
   Minimize,
-  Minimize2,
+  // Minimize2,
   Pause,
   Play,
   Redo,
@@ -23,18 +23,10 @@ import useWindowSize from "../../hooks/useWindowSize";
 // import useOrientation from "../../hooks/useOrientation";
 
 const PlayerControl = forwardRef(
-  (
-    {
-      playerRef,
-      playerState,
-      setPlayerState,
-      sources,
-      playBackQuality,
-      setPlayBackQuality,
-    },
-    ref
-  ) => {
-    const { videoSeekSeconds } = useSelector((state) => state.preference);
+  ({ playerRef, playerState, setPlayerState, setWatched }, ref) => {
+    const { isAutoPlayEnabled, videoSeekSeconds } = useSelector(
+      (state) => state.preference
+    );
     const [isRemainingTime, setIsRemainingTime] = useState(false);
     const { windowWidth } = useWindowSize();
 
@@ -49,28 +41,20 @@ const PlayerControl = forwardRef(
         handleSkipBack();
       } else if (e.key === "f" || e.keyCode === 70) {
         handleFullScreen();
-      } else if (e.key === "p" || e.keyCode === 80) {
-        handlePIP();
+        // } else if (e.key === "p" || e.keyCode === 80) {
+        //   handleTogglePIP();
       } else if (e.key === "Escape" || e.keyCode === 27) {
         handleExitFullScreen();
       } else if (e.key === "ArrowUp" || e.keyCode === 38) {
-        setPlayerState({
-          ...playerState,
-          volume: playerState.volume + 0.1,
-        });
+        setPlayerState((prev) => ({ ...prev, volume: prev.volume + 0.1 }));
       } else if (e.key === "ArrowDown" || e.keyCode === 40) {
-        setPlayerState({
-          ...playerState,
-          volume: playerState.volume - 0.1,
-        });
+        setPlayerState((prev) => ({ ...prev, volume: prev.volume - 0.1 }));
       }
     };
 
-    const handleTogglePlayPause = () =>
-      setPlayerState({
-        ...playerState,
-        playing: !playerState?.playing,
-      });
+    const handleTogglePlayPause = () => {
+      setPlayerState((prev) => ({ ...prev, playing: !prev?.playing }));
+    };
     const handleSkipForward = () =>
       playerRef.current.seekTo(
         playerRef.current.getCurrentTime() + videoSeekSeconds
@@ -82,15 +66,12 @@ const PlayerControl = forwardRef(
       );
 
     const handleFullScreen = () => {
-      setPlayerState({ ...playerState, pip: false });
+      // setPlayerState((prev) => ({ ...prev, pip: false }));
       screenfull.request(document.getElementById("Player"));
       if (screen.orientation) {
         screen.orientation.lock("landscape");
       }
-      setPlayerState({
-        ...playerState,
-        playerFullScreen: true,
-      });
+      setPlayerState((prev) => ({ ...prev, playerFullScreen: true }));
     };
 
     const handleExitFullScreen = () => {
@@ -98,24 +79,15 @@ const PlayerControl = forwardRef(
       if (screen.orientation) {
         screen.orientation.unlock();
       }
-      setPlayerState({
-        ...playerState,
-        playerFullScreen: false,
-      });
+      setPlayerState((prev) => ({ ...prev, playerFullScreen: false }));
     };
 
-    const handlePIP = () => {
-      screenfull.exit(document.getElementById("Player"));
-      setPlayerState({
-        ...playerState,
-        pip: !playerState?.pip,
-      });
-
-      setPlayerState({
-        ...playerState,
-        playerFullScreen: false,
-      });
-    };
+    // const handleTogglePIP = () => {
+    //   screenfull.exit(document.getElementById("Player"));
+    //   setPlayerState((prev) => ({ ...prev, pip: !prev.pip }));
+    //   setPlayerState((prev) => ({ ...prev, pip: !prev.pip }));
+    //   setPlayerState((prev) => ({ ...prev, playerFullScreen: false }));
+    // };
 
     useEffect(() => {
       document.addEventListener("keydown", handleKeyPress);
@@ -130,7 +102,6 @@ const PlayerControl = forwardRef(
       <div
         ref={ref}
         className="flex items-center justify-center absolute bottom-0 left-0 right-0 top-0 z-20 text-white"
-        // style={{ gridTemplateColumns: repeat(2, 100px), gridAutoFlow: "column", }}
         onDoubleClick={() => {
           if (playerState.playerFullScreen) {
             handleExitFullScreen();
@@ -245,7 +216,7 @@ const PlayerControl = forwardRef(
             </div> */}
               <Popover className="relative">
                 <Popover.Button className="font-nunito text-sm xs:text-base">
-                  {playBackQuality}
+                  {playerState.currentSource?.quality}
                 </Popover.Button>
                 <Popover.Panel className="absolute bottom-12 -left-14 z-10 bg-black bg-opacity-80 rounded-lg">
                   <div className="p-2">
@@ -253,17 +224,30 @@ const PlayerControl = forwardRef(
                       Quality
                     </p>
                     <div className="my-2">
-                      {sources.map((url) => (
+                      {playerState.sources.map((source) => (
                         <div
                           role="button"
                           className="mx-2 px-4 py-2 w-40 text-sm font-nunito hover:bg-black bg-opacity-60 rounded flex justify-between"
-                          key={url?.quality}
-                          onClick={() => setPlayBackQuality(url?.quality)}>
-                          {url?.quality}
+                          key={source?.quality}
+                          onClick={() => {
+                            setWatched();
+                            setPlayerState((prev) => ({
+                              ...prev,
+                              url: source.url,
+                              playing: isAutoPlayEnabled,
+                              played: 0,
+                              loaded: 0,
+                              // pip: false,
+                              currentSource: source,
+                              playbackQuality: source?.quality,
+                            }));
+                          }}>
+                          {source?.quality}
                           <Check
                             size={24}
                             className={
-                              url?.quality == playBackQuality
+                              source?.quality ==
+                              playerState.currentSource?.quality
                                 ? "text-white"
                                 : "text-transparent"
                             }
@@ -285,9 +269,12 @@ const PlayerControl = forwardRef(
                   </div>
                 </Popover.Panel>
               </Popover>
-              <div role="button" className="px-1.5 xs:px-3" onClick={handlePIP}>
+              {/* <div
+                role="button"
+                className="px-1.5 xs:px-3"
+                onClick={handleTogglePIP}>
                 <Minimize2 className="h-4 w-4 xs:h-6 xs:w-6" color="#fff" />
-              </div>
+              </div> */}
               <div role="button" className="px-1.5 xs:px-3">
                 {playerState.playerFullScreen ? (
                   <Minimize
@@ -318,9 +305,7 @@ PlayerControl.propTypes = {
   playerRef: PropType.object.isRequired,
   playerState: PropType.object.isRequired,
   setPlayerState: PropType.func.isRequired,
-  sources: PropType.array.isRequired,
-  playBackQuality: PropType.string.isRequired,
-  setPlayBackQuality: PropType.func.isRequired,
+  setWatched: PropType.func.isRequired,
 };
 
 export default PlayerControl;

@@ -22,7 +22,7 @@ function VolumeController({ playerState, setPlayerState }) {
         newVolume = 1;
       }
 
-      setPlayerState({ ...playerState, volume: newVolume });
+      setPlayerState((prev) => ({ ...prev, volume: newVolume }));
     }
   };
 
@@ -45,7 +45,7 @@ function VolumeController({ playerState, setPlayerState }) {
         newVolume = 1;
       }
 
-      setPlayerState({ ...playerState, volume: newVolume });
+      setPlayerState((prev) => ({ ...prev, volume: newVolume }));
     }
   };
 
@@ -77,10 +77,7 @@ function VolumeController({ playerState, setPlayerState }) {
       <div
         role="button"
         onClick={() =>
-          setPlayerState({
-            ...playerState,
-            muted: !playerState?.muted,
-          })
+          setPlayerState((prev) => ({ ...prev, muted: !prev?.muted }))
         }>
         {playerState?.muted ? (
           <VolumeX className="h-4 w-4 xs:h-6 xs:w-6" fill="#fff" color="#fff" />

@@ -10,6 +10,7 @@ import PlayerLoader from "./PlayerLoader";
 import { loadDetailInfo } from "../../features/content/contentSlice";
 import getSkipTimes from "../../utils/getSkipTimes";
 import PlayerSkipBtns from "./PlayerSkipBtns";
+import useWindowSize from "../../hooks/useWindowSize";
 
 let count = 0;
 
@@ -19,24 +20,23 @@ function Player() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const { windowWidth, windowHeight } = useWindowSize();
   const playerContainerRef = useRef(null);
   const playerRef = useRef(null);
   const controlRef = useRef(null);
 
-  const [sources, setSources] = useState([]);
-  const [playBackQuality, setPlayBackQuality] = useState("auto");
   const { detailInfo } = useSelector((state) => state.content);
   const { status, userData } = useSelector((state) => state.auth);
-  const { isAutoPlayEnabled, isAutoNextEnabled } = useSelector(
+  const { isAutoPlayEnabled, isAutoNextEnabled, playbackQuality } = useSelector(
     (state) => state.preference
   );
 
   const [markWatchedTill, setMarkWatchedTill] = useState(0);
   const [playerState, setPlayerState] = useState({
     url: null,
-    pip: false,
+    // pip: false,
     playing: false,
-    volume: 0.8, //  value -> 0-1
+    volume: 0.9, //  value -> 0-1
     muted: false,
     played: 0, //  value -> 0-1
     duration: 0,
@@ -45,6 +45,9 @@ function Player() {
     // light: false,
     // playbackRate: 1.0,
     // loop: false,
+    sources: [],
+    currentSource: null,
+    playbackQuality: playbackQuality || "360p",
     buffering: false,
     playerFullScreen: false,
     skipTimes: [],
@@ -77,10 +80,7 @@ function Player() {
       if (nextEp?.id) {
         screenfull.exit(document.getElementById("Player"));
         if (screen.orientation.unlock) screen.orientation.unlock();
-        setPlayerState({
-          ...playerState,
-          playerFullScreen: false,
-        });
+        setPlayerState((prev) => ({ ...prev, playerFullScreen: false }));
 
         navigate(
           `/watch/${detailInfo?.id}/${nextEp.number}/${
@@ -93,7 +93,7 @@ function Player() {
         );
       }
     } else {
-      setPlayerState({ ...playerState, playing: false });
+      setPlayerState((prev) => ({ ...prev, playing: false }));
     }
   };
 
@@ -111,9 +111,20 @@ function Player() {
             })
           );
         }
-        const res = await animeApi.getStreamingLinks(name);
-        setSources(res.data?.sources);
-        setPlayBackQuality(res.data?.sources[0]?.quality);
+        const { data } = await animeApi.getStreamingLinks(name);
+        setPlayerState((prev) => ({
+          ...prev,
+          sources: data.sources,
+          currentSource:
+            data.sources.find(
+              (source) => source.quality == prev.playbackQuality
+            ) || data.sources[0],
+          url: data.sources[0].url,
+          playing: isAutoPlayEnabled,
+          played: prev.played,
+          loaded: 0,
+          // pip: false,
+        }));
       } catch (error) {
         console.error(error.message);
       }
@@ -146,24 +157,6 @@ function Player() {
   }, [detailInfo?.malId, epNo, playerState.duration]);
 
   useEffect(() => {
-    const loadVideo = (url) => {
-      setPlayerState({
-        ...playerState,
-        url,
-        playing: isAutoPlayEnabled,
-        played: playerState.played,
-        loaded: 0,
-        pip: false,
-      });
-    };
-    const objId = sources.findIndex((u) => u?.quality == playBackQuality);
-    const selectedUrl = sources[objId]?.url;
-    // setWatched();
-    loadVideo(selectedUrl);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playBackQuality, sources]);
-
-  useEffect(() => {
     const handlePlaybackProgress = () => {
       const { played } = playerState;
       if (played >= markWatchedTill + 0.04) {
@@ -188,14 +181,18 @@ function Player() {
   return (
     <div
       id="Player"
-      className={`w-full ${
+      className={` ${
         playerState.playerFullScreen
-          ? "flex justify-center"
+          ? "flex justify-center items-center"
           : "rounded-lg overflow-hidden"
       }`}>
       <div
         ref={playerContainerRef}
-        className="relative max-w-full aspect-[16/9]"
+        className={`relative ${
+          windowWidth / windowHeight > 16 / 9
+            ? "h-full max-w-full"
+            : "w-full max-h-full"
+        } aspect-[16/9]`}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onTouchStart={handleMouseMove}>
@@ -203,15 +200,15 @@ function Player() {
           ref={playerRef}
           // controls
           // playsinline
-          url={playerState?.url}
+          url={playerState.url}
           width="100%"
           height="minContent"
-          pip={playerState?.pip}
-          playing={playerState?.playing}
-          volume={playerState?.volume}
-          muted={playerState?.muted}
+          // pip={playerState.pip}
+          playing={playerState.playing}
+          volume={playerState.volume}
+          muted={playerState.muted}
           onDuration={(duration) => {
-            setPlayerState({ ...playerState, duration });
+            setPlayerState((prev) => ({ ...prev, duration }));
           }}
           onProgress={(value) => {
             if (count > 3) {
@@ -222,11 +219,11 @@ function Player() {
             if (controlRef.current.style.visibility == "visible") {
               count++;
             }
-            setPlayerState({
-              ...playerState,
+            setPlayerState((prev) => ({
+              ...prev,
               loaded: value.loaded,
               played: value.played,
-            });
+            }));
           }}
           onReady={() => console.log("onReady")}
           onStart={() => {
@@ -237,15 +234,23 @@ function Player() {
             }
           }}
           onPlay={() => console.log("play start")}
-          onBuffer={() => setPlayerState({ ...playerState, buffering: true })}
+          onBuffer={() =>
+            setPlayerState((prev) => ({ ...prev, buffering: true }))
+          }
           // onPlaybackRateChange={this.handleOnPlaybackRateChange}
           onSeek={(e) => {
             console.log("onSeek", e);
             if (playerState.buffering == true) {
-              setPlayerState({ ...playerState, buffering: false });
+              setPlayerState((prev) => ({ ...prev, buffering: false }));
             }
           }}
           onEnded={handleEnded}
+          // onEnablePIP={() =>
+          //   setPlayerState((prevState) => ({ ...prevState, pip: true }))
+          // }
+          // onDisablePIP={() =>
+          //   setPlayerState((prevState) => ({ ...prevState, pip: false }))
+          // }
           onError={(e) => console.log("onError", e)}
           onPlaybackQualityChange={(e) =>
             console.log("onPlaybackQualityChange", e)
@@ -261,9 +266,7 @@ function Player() {
           playerRef={playerRef}
           playerState={playerState}
           setPlayerState={setPlayerState}
-          sources={sources}
-          playBackQuality={playBackQuality}
-          setPlayBackQuality={setPlayBackQuality}
+          setWatched={setWatched}
         />
         <PlayerSkipBtns playerState={playerState} playerRef={playerRef} />
         <div className="flex items-center justify-center absolute bottom-0 left-0 right-0 top-0 z-10">

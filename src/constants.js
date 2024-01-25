@@ -25,3 +25,10 @@ export const seekTimeList = [
   { value: 45, name: "45 seconds" },
   { value: 60, name: "1 minute" },
 ];
+
+export const playbackQualityList = [
+  { value: "360p", name: "360p" },
+  { value: "480p", name: "480p" },
+  { value: "720p", name: "720p" },
+  { value: "1080p", name: "1080p" },
+];

@@ -70,7 +70,7 @@ export class Preferences {
       { autoNext }
     );
   }
-  
+
   async changeAutoSkip({ preferenceId, autoSkip }) {
     return await this.databases.updateDocument(
       conf.appwriteDbId,
@@ -86,6 +86,15 @@ export class Preferences {
       conf.appwritePreferenceCollectionId,
       preferenceId,
       { seekSeconds }
+    );
+  }
+
+  async changePlaybackQuality({ preferenceId, playbackQuality }) {
+    return await this.databases.updateDocument(
+      conf.appwriteDbId,
+      conf.appwritePreferenceCollectionId,
+      preferenceId,
+      { playbackQuality }
     );
   }
 

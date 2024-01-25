@@ -19,7 +19,7 @@ function BookmarkedPosterItem({ id }) {
   if (!data) {
     return (
       <Skeleton
-        className="h-64 w-44 rounded-xl flex-1"
+        className="h-48 w-36 rounded-xl"
         baseColor={theme.type === "dark" ? "#111" : "#ddd"}
         highlightColor={theme.type === "dark" ? "#222" : "#bbb"}
       />

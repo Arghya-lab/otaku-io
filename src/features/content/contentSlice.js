@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import animeApi from "../../Api/animeApi";
+import watched from "../../appwrite/watched";
 
 // First, create the thunk
 const loadHomePage = createAsyncThunk("content/loadHomePage", async () => {
@@ -10,6 +11,16 @@ const loadHomePage = createAsyncThunk("content/loadHomePage", async () => {
     popular: popularRes.data,
   };
 });
+
+const loadWatching = createAsyncThunk(
+  "content/loadWatching",
+  async (userId) => {
+    const result = await watched.getWatchingAnimeList(userId);
+    return {
+      result,
+    };
+  }
+);
 
 const applyFilter = createAsyncThunk("content/applyFilter", async (params) => {
   const res = await animeApi.advancedSearch(params);
@@ -43,9 +54,11 @@ const loadImdbInfo = createAsyncThunk(
 const initialState = {
   isHomePageLoaded: false,
   trending: [],
-  // additional trending content related info like currentPage, hasNextPage
   popular: [],
-  // additional popular content related info like currentPage, hasNextPage
+
+  watching: [],
+  isWatchingLoaded: false,
+
   filterContent: [],
   hasMoreFilterContent: false,
   currentFilterContentPage: 0,
@@ -87,6 +100,19 @@ export const contentSlice = createSlice({
     });
     builder.addCase(loadHomePage.rejected, (state, action) => {
       console.error(action.error.message);
+    });
+
+    // Initial user  watching load
+    builder.addCase(loadWatching.pending, (state) => {
+      state.isWatchingLoaded = false;
+    });
+    builder.addCase(loadWatching.fulfilled, (state, action) => {
+      state.watching = action.payload?.result || [];
+      state.isWatchingLoaded = true;
+    });
+    builder.addCase(loadWatching.rejected, (state, action) => {
+      console.error(action.error.message);
+      state.isWatchingLoaded = true;
     });
 
     // filter
@@ -146,5 +172,12 @@ export const contentSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const { clearFilterData, clearSearchData } = contentSlice.actions;
-export { loadHomePage, applyFilter, applySearch, loadDetailInfo, loadImdbInfo };
+export {
+  loadHomePage,
+  loadWatching,
+  applyFilter,
+  applySearch,
+  loadDetailInfo,
+  loadImdbInfo,
+};
 export default contentSlice.reducer;

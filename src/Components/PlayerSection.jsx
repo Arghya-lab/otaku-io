@@ -3,11 +3,12 @@ import {
   changeAutoNext,
   changeAutoPlay,
   changeAutoSkip,
+  changePlaybackQuality,
   changeSeekSeconds,
 } from "../features/preference/preferenceSlice";
 import Radio from "./Ui/Radio";
 import Select from "./Ui/Select";
-import { seekTimeList } from "../constants";
+import { seekTimeList, playbackQualityList } from "../constants";
 
 function PlayerSection() {
   const dispatch = useDispatch();
@@ -17,6 +18,7 @@ function PlayerSection() {
     isAutoNextEnabled,
     isAutoSkipEnabled,
     videoSeekSeconds,
+    playbackQuality,
     theme,
   } = useSelector((state) => state.preference);
 
@@ -52,6 +54,15 @@ function PlayerSection() {
       changeSeekSeconds({
         preferenceId,
         seekSeconds: data.value,
+      })
+    );
+  };
+
+  const handleChangePlaybackQuality = (data) => {
+    dispatch(
+      changePlaybackQuality({
+        preferenceId,
+        playbackQuality: data.value,
       })
     );
   };
@@ -98,6 +109,22 @@ function PlayerSection() {
               ]
             }
             onChange={handleChangeSeekSeconds}
+          />
+        </div>
+        <div className="flex gap-4 items-center">
+          <p className="text-gray-950 dark:text-slate-100 text-sm">
+            Default playback quality
+          </p>
+          <Select
+            list={playbackQualityList}
+            selected={
+              playbackQualityList[
+                playbackQualityList.findIndex(
+                  (item) => item.value === playbackQuality
+                )
+              ]
+            }
+            onChange={handleChangePlaybackQuality}
           />
         </div>
       </div>

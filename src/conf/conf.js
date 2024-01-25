@@ -1,6 +1,5 @@
 const conf = {
   consumetBaseUrl: String(import.meta.env.VITE_CONSUMET_BASE_URL),
-  upcomingAnimeUrl: String(import.meta.env.VITE_UPCOMING_ANIME_URL),
   ombdBaseUrl: String(import.meta.env.VITE_OMDB_BASE_URL),
   omdbApiKey: String(import.meta.env.VITE_OMDB_API_KEY),
   imgBaseUrl: String(import.meta.env.VITE_IMG_BASE_URL),

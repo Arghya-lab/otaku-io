@@ -52,6 +52,14 @@ const changeSeekSeconds = createAsyncThunk(
   }
 );
 
+const changePlaybackQuality = createAsyncThunk(
+  "preference/changePlaybackQuality",
+  async (value) => {
+    const preference = await preferences.changePlaybackQuality(value);
+    return { preference };
+  }
+);
+
 const toggleBookMark = createAsyncThunk(
   "preference/toggleBookMark",
   async ({ userId, animeId }) => {
@@ -67,6 +75,7 @@ const initialState = {
   isAutoNextEnabled: true,
   isAutoSkipEnabled: false,
   videoSeekSeconds: 10,
+  playbackQuality: "360p",
   bookmarks: [],
   theme: window.matchMedia("(prefers-color-scheme: dark)").matches
     ? themeTypes[1]
@@ -129,6 +138,11 @@ export const preferenceSlice = createSlice({
     builder.addCase(toggleBookMark.rejected, (state, action) => {
       console.error(action.error.message);
     });
+    // change playback Quality
+    builder.addCase(changePlaybackQuality.fulfilled, handlePreferenceUpdate);
+    builder.addCase(changePlaybackQuality.rejected, (state, action) => {
+      console.error(action.error.message);
+    });
   },
 });
 
@@ -141,6 +155,7 @@ const handlePreferenceUpdate = (state, action) => {
   state.isAutoNextEnabled = preference?.autoNext;
   state.isAutoSkipEnabled = preference?.autoSkip;
   state.videoSeekSeconds = preference?.seekSeconds;
+  state.playbackQuality = preference?.playbackQuality;
   state.bookmarks = preference?.bookmarks || [];
   if (preference?.themeId) {
     state.theme = themeTypes.find((theme) => theme.id === preference?.themeId);
@@ -156,6 +171,7 @@ export {
   changeAutoNext,
   changeAutoSkip,
   changeSeekSeconds,
+  changePlaybackQuality,
   toggleBookMark,
 };
 

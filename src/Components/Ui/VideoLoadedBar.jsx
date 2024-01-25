@@ -63,10 +63,10 @@ function VideoLoadedBar({ playerState, playerRef }) {
       <div
         ref={sliderRef}
         className="relative h-1 w-full bg-white bg-opacity-60 rounded-sm cursor-pointer flex items-center"
+        onClick={handleSliderClick}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onTouchStart={handleTouchStart}
-        onClick={handleSliderClick}
         onMouseEnter={handleSliderHover}
         onMouseLeave={handleSliderLeave}>
         <div

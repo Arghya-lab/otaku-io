@@ -16,8 +16,8 @@ const search = async (query, params) =>
 // Query Parameters for advancedSearch:
 // query, type = "ANIME", page, perPage, year
 // format = enum["TV", "TV_SHORT", "OVA", "ONA", "MOVIE", "SPECIAL", "MUSIC"]
-// sort = enum["POPULARITY_DESC", "POPULARITY", "TRENDING_DESC", "TRENDING", "UPDATED_AT_DESC", "UPDATED_AT", "START_DATE_DESC", "START_DATE", "END_DATE_DESC", "END_DATE", "SCORE_DESC", "SCORE", "TITLE_ROMAJI", "TITLE_ROMAJI_DESC"]   => multiple accepted & should be inside array
-// genres = enum[ "Action", "Adventure", "Comedy", "Drama", "Fantasy", "Horror", "Mecha", "Music", "Mystery", "Psychological", "Romance", "Sci-Fi", "Slice of Life", "Sports", "Supernatural", "Thriller" ]   => multiple accepted & should be inside array
+// sort = ["POPULARITY_DESC", "POPULARITY", "TRENDING_DESC", "TRENDING", "UPDATED_AT_DESC", "UPDATED_AT", "START_DATE_DESC", "START_DATE", "END_DATE_DESC", "END_DATE", "SCORE_DESC", "SCORE", "TITLE_ROMAJI", "TITLE_ROMAJI_DESC"]   => multiple accepted & should be inside array
+// genres = [ "Action", "Adventure", "Comedy", "Drama", "Fantasy", "Horror", "Mecha", "Music", "Mystery", "Psychological", "Romance", "Sci-Fi", "Slice of Life", "Sports", "Supernatural", "Thriller" ]   => multiple accepted & should be inside array
 // status = enum[ "RELEASING", "NOT_YET_RELEASED", "FINISHED", "CANCELLED", "HIATUS", ]
 const advancedSearch = async (params) =>
   await instance.get("meta/anilist/advanced-search", { params });
@@ -53,7 +53,7 @@ const getDetails = async (id, params) => {
 };
 
 const getUpcoming = async () =>
-  await axios.get(conf.upcomingAnimeUrl, {
+  await axios.get("https://api.jikan.moe/v4/top/anime/", {
     params: {
       filter: "upcoming",
     },

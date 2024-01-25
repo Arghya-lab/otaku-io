@@ -3,46 +3,52 @@ import { useSelector } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LineWave } from "react-loader-spinner";
 import Skeleton from "react-loading-skeleton";
-import TopNavbar from "../Components/TopNavbar";
 import SideNavbar from "../Components/SideNavbar";
+import TopNavbar from "../Components/TopNavbar";
 import usePosterItemCount from "../hooks/usePosterItemCount";
-import BookmarkedPosterItem from "../Components/BookmarkedPosterItem";
+import useUserWatching from "../hooks/useUserWatching";
+import ContinueWatchingPosterItem from "../Components/ContinueWatchingPosterItem";
 
-function LibraryPage() {
+function ContinueWatchingPage() {
   const posterItemCount = usePosterItemCount();
-  const { bookmarks, theme } = useSelector((state) => state.preference);
+  const { watching } = useUserWatching();
+
+  const { theme } = useSelector((state) => state.preference);
 
   const perPageItemCount = 25;
   let currentPage = 1;
-  const [subBookmarks, setSubBookmarks] = useState([]);
+  const [subWatchingList, setSubWatchingList] = useState([]);
 
   useEffect(() => {
-    setSubBookmarks(bookmarks.slice(0, perPageItemCount));
-  }, [bookmarks]);
+    setSubWatchingList(watching.slice(0, perPageItemCount));
+  }, [watching]);
 
-  const handleAddMoreBookmarks = () => {
-    const newSubBookmarks = subBookmarks.concat(
-      bookmarks.slice(
+  const handleAddMoreWatching = () => {
+    const newSubWatchingList = subWatchingList.concat(
+      watching.slice(
         (currentPage - 1) * perPageItemCount,
         perPageItemCount * currentPage
       )
     );
 
     currentPage++;
-    setSubBookmarks(newSubBookmarks);
+    setSubWatchingList(newSubWatchingList);
   };
 
   return (
-    <div className="relative h-100%">
+    <div className="h-full relative">
       <TopNavbar />
       <SideNavbar />
       <div className="xs:pl-20 pb-16 xs:pb-0">
-        {bookmarks.length != 0 ? (
+        <p className="py-3 px-3 xxs:px-4 text-2xl capitalize text-neutral-900 dark:text-slate-100">
+          continue watching
+        </p>
+        {watching.length != 0 ? (
           <InfiniteScroll
             className="h-full"
-            dataLength={subBookmarks.length} //This is important field to render the next data
-            next={handleAddMoreBookmarks}
-            hasMore={bookmarks.length != subBookmarks.length}
+            dataLength={subWatchingList.length} //This is important field to render the next data
+            next={handleAddMoreWatching}
+            hasMore={watching.length != subWatchingList.length}
             loader={
               <div className="w-28 m-auto">
                 <LineWave
@@ -61,17 +67,24 @@ function LibraryPage() {
               style={{
                 gridTemplateColumns: `repeat( ${posterItemCount}, 1fr)`,
               }}>
-              {subBookmarks.map((animeId, id) => (
-                <BookmarkedPosterItem key={id} id={animeId} />
+              {subWatchingList.map((WatchingInfo) => (
+                <ContinueWatchingPosterItem
+                  key={WatchingInfo.$id}
+                  WatchingInfo={WatchingInfo}
+                />
               ))}
             </div>
           </InfiniteScroll>
         ) : (
-          <div className="px-4 flex flex-row gap-4 flex-wrap justify-around">
+          <div
+            className="px-2 xxs:px-4 grid gap-4"
+            style={{
+              gridTemplateColumns: `repeat( ${posterItemCount}, 1fr)`,
+            }}>
             {new Array(25).fill("").map((_, id) => (
               <Skeleton
                 key={id}
-                className="h-64 w-44 rounded-xl flex-1"
+                className="rounded-xl aspect-[1/1.464]"
                 baseColor={theme.type === "dark" ? "#111" : "#ddd"}
                 highlightColor={theme.type === "dark" ? "#222" : "#bbb"}
               />
@@ -83,4 +96,4 @@ function LibraryPage() {
   );
 }
 
-export default LibraryPage;
+export default ContinueWatchingPage;

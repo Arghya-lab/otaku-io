@@ -49,14 +49,12 @@ export class Watched {
     );
     if (listedEp.total != 0) {
       // if a particular anime's ep already present then update watchTill only
-      if (listedEp.documents[0].watchedTill < watchedTill) {
-        await this.databases.updateDocument(
-          conf.appwriteDbId,
-          conf.appwriteWatchedEpCollectionId,
-          listedEp.documents[0].$id,
-          { watchedTill }
-        );
-      }
+      await this.databases.updateDocument(
+        conf.appwriteDbId,
+        conf.appwriteWatchedEpCollectionId,
+        listedEp.documents[0].$id,
+        { watchedTill }
+      );
     } else {
       // set the anime as watching
       await this.setAnimeWatching(userId, { animeId, episodeNo });

@@ -1,0 +1,39 @@
+@import "react-alice-carousel/lib/alice-carousel.css";
+@import 'react-loading-skeleton/dist/skeleton.css';
+
+body,
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .side-nav-btn {
+    @apply w-16 h-16 mt-2 pt-2 cursor-pointer flex flex-col items-center rounded-[0.75rem] text-neutral-800 dark:text-slate-300 hover:bg-white hover:bg-opacity-10 hover:opacity-100 hover:text-neutral-900 hover:dark:text-slate-100;
+  }
+}
+
+/* Carousel custom styles */
+.alice-carousel__wrapper {
+  border-radius: 0.75rem;
+}
+
+.alice-carousel__stage-item {
+  width: auto;
+}
+
+.alice-carousel__slide-info {
+  top: unset;
+  left: -0.75rem;
+  right: -0.75rem;
+  display: inline-block;
+  /* font-size: 0.75rem; */
+  line-height: 1rem;
+  font-weight: 300;
+  color: unset;
+  background-color: rgba(0, 0, 0, 0);
+}

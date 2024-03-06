@@ -1,5 +1,5 @@
-import Carousel from "@/components/Carousel";
-import PosterBoard from "@/components/PosterBoard";
+import Carousel from "@/app/Carousel";
+import PosterBoard from "@/app/PosterBoard";
 import SideNavbar from "@/components/SideNavbar";
 import { getPopular, getTrending } from "@/services/getAnime";
 

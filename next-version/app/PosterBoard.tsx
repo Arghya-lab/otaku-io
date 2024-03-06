@@ -1,10 +1,10 @@
 "use client";
 
 import { ChevronRight } from "lucide-react";
-import PosterItem from "./PosterItem";
 import { posterItemType } from "@/types/constants";
 import usePosterItemCount from "@/hooks/usePosterItemCount";
 import Link from "next/link";
+import PosterItem from "@/components/PosterItem";
 
 function PosterBoard({ name, content }) {
   const posterItemCount = usePosterItemCount();

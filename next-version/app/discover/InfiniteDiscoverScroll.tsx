@@ -3,14 +3,14 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LineWave } from "react-loader-spinner";
 import PosterItem from "@/components/PosterItem";
-import { themeTypes } from "@/theme";
+import { themes } from "@/theme";
 import { useEffect, useState } from "react";
 import usePosterItemCount from "@/hooks/usePosterItemCount";
 import { useSearchParams } from "next/navigation";
 import axios from "axios"
 
 function InfiniteDiscoverScroll({ initialData, hasNextPage }) {
-  const theme = themeTypes[1];
+  const theme = themes[1];
   const posterItemCount = usePosterItemCount();
   const searchParams = useSearchParams();
   const searchParamsString = searchParams.toString();

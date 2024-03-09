@@ -6,10 +6,10 @@ import useScroll from "../hooks/useScroll";
 import { FormEvent, useState } from "react";
 import MinMaximizeBtn from "./ui/MinMaximizeBtn";
 import useWindowSize from "@/hooks/useWindowSize";
-import { themeTypes } from "@/theme";
+import { themes } from "@/theme";
 
 function TopNavbar() {
-  const theme = themeTypes[1]
+  const theme = themes[1]
 
   const { windowWidth } = useWindowSize();
   const scrolled = useScroll();

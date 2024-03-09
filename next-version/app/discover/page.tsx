@@ -22,7 +22,7 @@ async function DiscoverPage({
 
   return (
     <div className="h-full relative">
-      <SideNavbar pathName="discover" />
+      <SideNavbar pathName="/discover" />
       <main className="xs:pl-20 pt-24 flex flex-row">
         {/* Selectable input container */}
         <Filter />

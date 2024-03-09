@@ -1,70 +1,57 @@
-import { useDispatch, useSelector } from "react-redux";
+"use client";
+
+import { seekTimeList, playbackQualityList } from "@/types/constants";
+import Radio from "@/components/ui/Radio";
+import Select from "@/components/ui/Select";
+import { themes } from "@/theme";
 import {
-  changeAutoNext,
-  changeAutoPlay,
-  changeAutoSkip,
-  changePlaybackQuality,
-  changeSeekSeconds,
-} from "../features/preference/preferenceSlice";
-import Radio from "./Ui/Radio";
-import Select from "./Ui/Select";
-import { seekTimeList, playbackQualityList } from "../constants";
+  UpdateTypeEnum,
+  defaultPreference,
+  usePreference,
+} from "@/components/PreferenceProvider";
 
 function PlayerSection() {
-  const dispatch = useDispatch();
   const {
-    preferenceId,
-    isAutoPlayEnabled,
-    isAutoNextEnabled,
-    isAutoSkipEnabled,
-    videoSeekSeconds,
+    themeId,
+    autoPlay: isAutoPlayEnabled,
+    autoSkip: isAutoSkipEnabled,
+    autoNext: isAutoNextEnabled,
+    seekSeconds,
     playbackQuality,
-    theme,
-  } = useSelector((state) => state.preference);
+    updatePreference,
+  } = usePreference();
+  const theme = themes[themeId];
 
   const handleChangeAutoPlay = () => {
-    dispatch(
-      changeAutoPlay({
-        preferenceId,
-        autoPlay: !isAutoPlayEnabled,
-      })
-    );
+    updatePreference(UpdateTypeEnum.TOGGLE_AUTO_PLAY);
   };
 
   const handleChangeAutoSkip = () => {
-    dispatch(
-      changeAutoSkip({
-        preferenceId,
-        autoSkip: !isAutoSkipEnabled,
-      })
-    );
+    updatePreference(UpdateTypeEnum.TOGGLE_AUTO_SKIP);
   };
 
   const handleChangeAutoNext = () => {
-    dispatch(
-      changeAutoNext({
-        preferenceId,
-        autoNext: !isAutoNextEnabled,
-      })
-    );
+    updatePreference(UpdateTypeEnum.TOGGLE_AUTO_NEXT);
   };
 
-  const handleChangeSeekSeconds = (data) => {
-    dispatch(
-      changeSeekSeconds({
-        preferenceId,
-        seekSeconds: data.value,
-      })
-    );
+  const handleChangeSeekSeconds = ({
+    value,
+    name,
+  }: {
+    value: string | number;
+    name: string;
+  }) => {
+    updatePreference(UpdateTypeEnum.CHANGE_SEEK_SECONDS, value);
   };
 
-  const handleChangePlaybackQuality = (data) => {
-    dispatch(
-      changePlaybackQuality({
-        preferenceId,
-        playbackQuality: data.value,
-      })
-    );
+  const handleChangePlaybackQuality = ({
+    value,
+    name,
+  }: {
+    value: string | number;
+    name: string;
+  }) => {
+    updatePreference(UpdateTypeEnum.CHANGE_PLAYBACK_QUALITY, value);
   };
 
   return (
@@ -103,9 +90,7 @@ function PlayerSection() {
             list={seekTimeList}
             selected={
               seekTimeList[
-                seekTimeList.findIndex(
-                  (item) => item.value === videoSeekSeconds
-                )
+                seekTimeList.findIndex((item) => item.value === seekSeconds)
               ]
             }
             onChange={handleChangeSeekSeconds}

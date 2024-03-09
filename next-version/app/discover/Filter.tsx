@@ -10,14 +10,14 @@ import {
   sortList,
   statusList,
 } from "@/lib/searchFilter";
-import { themeTypes } from "@/theme";
+import { themes } from "@/theme";
 import useWindowSize from "@/hooks/useWindowSize";
 import { useRouter, useSearchParams } from "next/navigation";
 import useScroll from "@/hooks/useScroll";
 import Select from "@/components/ui/Select";
 
 function Filter() {
-  const theme = themeTypes[1];
+  const theme = themes[1];
 
   const searchParams = useSearchParams();
   const router = useRouter();

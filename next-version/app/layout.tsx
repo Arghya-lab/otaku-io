@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { Poppins, Nunito_Sans } from "next/font/google";
 import "./globals.css";
-import connectDB from "@/db/db";
+import connectDB, { isMongoConnected } from "@/db/db";
 import AuthProvider from "../components/AuthProvider";
 import TopNavbar from "@/components/TopNavbar";
-import { themeTypes } from "@/theme";
+import { themes } from "@/theme";
+import PreferencesProvider from "@/components/PreferenceProvider";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -28,24 +29,26 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const theme = themeTypes[1];
-  await connectDB();
+  const theme = themes[1];
+  if (!isMongoConnected) await connectDB();
 
   return (
     <html lang="en">
       <AuthProvider>
-        <body
-          id="App"
-          className={`${poppins.variable} ${nunito_Sans.variable}w-full relative`}>
-          <div
-            className="fixed -z-20 w-screen h-screen bg-cover"
-            style={{
-              backgroundColor: theme.primaryColor,
-              background: theme.bgImg,
-            }}></div>
-          <TopNavbar />
-          {children}
-        </body>
+        <PreferencesProvider>
+          <body
+            id="App"
+            className={`${poppins.variable} ${nunito_Sans.variable}w-full relative`}>
+            <div
+              className="fixed -z-20 w-screen h-screen bg-cover"
+              style={{
+                backgroundColor: theme.primaryColor,
+                background: theme.bgImg,
+              }}></div>
+            <TopNavbar />
+            {children}
+          </body>
+        </PreferencesProvider>
       </AuthProvider>
     </html>
   );

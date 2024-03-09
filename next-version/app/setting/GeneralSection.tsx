@@ -1,15 +1,15 @@
+"use client"
+
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Palette } from "lucide-react";
-import Radio from "./Ui/Radio";
+import Radio from "@/components/ui/Radio";
 import ThemeSelectModal from "./ThemeSelectModal";
-import { changeLanguagePref } from "../features/preference/preferenceSlice";
+import { themes } from "@/theme";
+import { UpdateTypeEnum, usePreference } from "@/components/PreferenceProvider";
 
 function GeneralSection() {
-  const dispatch = useDispatch();
-  const { preferenceId, isDubEnabled, theme } = useSelector(
-    (state) => state.preference
-  );
+  const { themeId, isDub,updatePreference } = usePreference();
+  const theme = themes[themeId];
 
   const [isThemeSelectModalOpen, setIsThemeSelectModalOpen] = useState(false);
 
@@ -20,13 +20,9 @@ function GeneralSection() {
     setIsThemeSelectModalOpen(false);
   };
 
-  const handleChangeLanguage = () =>
-    dispatch(
-      changeLanguagePref({
-        preferenceId,
-        isDubEnabled: !isDubEnabled,
-      })
-    );
+  const handleChangeLanguage = () => {
+    updatePreference(UpdateTypeEnum.TOGGLE_IS_DUB);
+  };
 
   return (
     <div className="flex flex-col gap-2 pb-16 pt-6 border-b border-zinc-500">
@@ -38,7 +34,7 @@ function GeneralSection() {
           </p>
           <Radio
             color={theme.secondaryColor}
-            enabled={isDubEnabled}
+            enabled={isDub}
             setEnabled={handleChangeLanguage}
           />
         </div>
@@ -46,7 +42,7 @@ function GeneralSection() {
           className="hover:underline font-nunito w-min text-nowrap flex items-center gap-2"
           style={{ color: theme.secondaryColor }}
           onClick={handleThemeSelectModalOpen}>
-            <Palette size={16} />
+          <Palette size={16} />
           Change theme
         </button>
       </div>

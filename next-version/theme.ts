@@ -1,4 +1,13 @@
-export const themeTypes = [
+export interface themeType {
+  id: number;
+  name: string;
+  type: string;
+  primaryColor: string;
+  secondaryColor: string;
+  bgImg: string;
+}
+
+export const themes = [
   {
     id: 1,
     name: "Metallic Toad",

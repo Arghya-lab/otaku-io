@@ -3,14 +3,26 @@ import SimpleBar from "simplebar-react";
 import { Listbox, Transition } from "@headlessui/react";
 import { Check, ChevronDown } from "lucide-react";
 import { shade } from "../../utils/color";
-import { themeTypes } from "@/theme";
+import { themes } from "@/theme";
 
-function classNames(...classes) {
+function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-function Select({ name, color, list, selected, onChange }) {
-  const theme = themeTypes[1]
+function Select({
+  name,
+  color,
+  list,
+  selected,
+  onChange,
+}: {
+  name?: string;
+  color?: string;
+  list: { value: string | number; name: string }[];
+  selected: { value: string | number; name: string };
+  onChange: (value: { value: string | number; name: string }) => void;
+}) {
+  const theme = themes[1];
   return (
     <div>
       {name && (
@@ -26,7 +38,11 @@ function Select({ name, color, list, selected, onChange }) {
             <Listbox.Button
               className="relative min-w-44 max-w-52 py-1.5 pl-3 pr-10 text-left cursor-pointer rounded-[45px] text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-black dark:bg-white bg-opacity-20"
               style={{
-                backgroundColor: shade(color || theme.primaryColor, 0, 0.2).toString(),
+                backgroundColor: shade(
+                  color || theme.primaryColor,
+                  0,
+                  0.2
+                ).toString(),
                 // backgroundColor: chroma(color || theme.primaryColor)
                 //   .darken(1.75)
                 //   .alpha(0.2),

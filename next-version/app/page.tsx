@@ -1,6 +1,7 @@
 import Carousel from "@/app/Carousel";
 import PosterBoard from "@/app/PosterBoard";
 import SideNavbar from "@/components/SideNavbar";
+import TopNavbar from "@/components/TopNavbar";
 import { getPopular, getTrending } from "@/services/getAnime";
 
 export default async function Home() {
@@ -9,6 +10,7 @@ export default async function Home() {
 
   return (
     <>
+      <TopNavbar />
       <SideNavbar pathName="/" />
       <main className="xs:pl-20 pb-16 xs:pb-0">
         {

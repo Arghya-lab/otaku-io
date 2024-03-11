@@ -3,9 +3,13 @@
 import { useState } from "react";
 import { posterItemType } from "@/types/constants";
 import { shade } from "@/utils/color";
+import { useRouter } from "next/navigation";
+import { usePreference } from "./PreferenceProvider";
 
 function PosterItem({ item, type = posterItemType.general }) {
-  // const { isDubEnabled } = useSelector((state) => state.preference);
+  const router = useRouter();
+  const {isDub} = usePreference();
+
   const [isHover, setIsHover] = useState(false);
 
   const handleClick = () => {
@@ -16,7 +20,7 @@ function PosterItem({ item, type = posterItemType.general }) {
           item?.title?.romaji ||
           item?.title?.native ||
           item?.title?.userPreferred;
-        // navigate(`/detail/${item.id}/${title}?dub=${isDubEnabled}`);
+        router.push(`/detail/${item.id}/${title}?dub=${isDub}`)
       }
     } else if (type === posterItemType.filter) {
       // dispatch(setMiniMeta(item));

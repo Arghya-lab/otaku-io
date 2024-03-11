@@ -1,17 +1,9 @@
 import { ANIME, META, PROVIDERS_LIST } from "@consumet/extensions";
 import Anilist from "@consumet/extensions/dist/providers/meta/anilist";
 import NineAnime from "@consumet/extensions/dist/providers/anime/9anime";
-import {
-  FormatEnum,
-  GenresEnum,
-  SeasonEnum,
-  SortEnum,
-  StatusEnum,
-  TypeEnum,
-} from "@/types/discover";
 
 const generateAnilistMeta = (
-  provider: string | undefined = undefined
+  provider: string | undefined = "gogoanime"
 ): Anilist => {
   if (typeof provider !== "undefined") {
     let possibleProvider = PROVIDERS_LIST.ANIME.find(
@@ -68,7 +60,8 @@ export const advancedSearch = async ({
   status,
   year,
   season,
-}: Partial<{  // Partial utility type to make all properties of the input object optional
+}: Partial<{
+  // Partial utility type to make all properties of the input object optional
   query: string;
   page: number;
   perPage: number;
@@ -103,4 +96,12 @@ export const advancedSearch = async ({
     status,
     season
   );
+};
+
+export const getDetailInfo = async (id: string, isDub: boolean = false) => {
+  // const provider = (request.query as { provider?: string }).provider;
+
+  let anilist = generateAnilistMeta();
+
+  return await anilist.fetchAnimeInfo(id, isDub);
 };

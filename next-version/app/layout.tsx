@@ -45,7 +45,6 @@ export default async function RootLayout({
                 backgroundColor: theme.primaryColor,
                 background: theme.bgImg,
               }}></div>
-            <TopNavbar />
             {children}
           </body>
         </PreferencesProvider>

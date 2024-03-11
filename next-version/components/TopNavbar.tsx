@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Search, X } from "lucide-react";
 import chroma from "chroma-js";
@@ -7,19 +7,21 @@ import { FormEvent, useState } from "react";
 import MinMaximizeBtn from "./ui/MinMaximizeBtn";
 import useWindowSize from "@/hooks/useWindowSize";
 import { themes } from "@/theme";
+import { useRouter } from "next/navigation";
 
 function TopNavbar() {
-  const theme = themes[1]
+  const theme = themes[1];
 
   const { windowWidth } = useWindowSize();
   const scrolled = useScroll();
+  const router = useRouter();
 
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (searchQuery.length > 0) {
-      // navigate(`/search/${searchQuery}`);
+      router.push(`/search/${searchQuery}`);
     }
   };
 

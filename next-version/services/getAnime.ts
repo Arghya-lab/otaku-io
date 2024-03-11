@@ -105,3 +105,13 @@ export const getDetailInfo = async (id: string, isDub: boolean = false) => {
 
   return await anilist.fetchAnimeInfo(id, isDub);
 };
+
+export const getSearchData = async (
+  query: string,
+  page: number | undefined = 1,
+  perPage: number | undefined = 30
+) => {
+  const anilist = generateAnilistMeta();
+
+  return await anilist.search(query, page, perPage);
+};

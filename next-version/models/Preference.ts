@@ -16,11 +16,6 @@ interface Preference {
 
 const preferenceSchema = new mongoose.Schema<Preference>(
   {
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      unique: true,
-    },
     email: {
       type: String,
       required: true,

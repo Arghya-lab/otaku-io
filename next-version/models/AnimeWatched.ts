@@ -1,19 +1,19 @@
 import mongoose from "mongoose";
 
 // Interface for AnimeWatched document
-interface AnimeWatched {
+export interface AnimeWatchedType {
   userId: mongoose.Types.ObjectId;
   email: string;
   animeId: string;
-  episodes: EpisodeWatched[];
+  episodes: EpisodeWatchedType[];
 }
 
-interface EpisodeWatched {
+interface EpisodeWatchedType {
   episodeNo: number;
   watchedTill: number;
 }
 
-const episodeWatched = new mongoose.Schema<EpisodeWatched>({
+const episodeWatched = new mongoose.Schema<EpisodeWatchedType>({
   episodeNo: {
     type: Number,
     required: true,
@@ -24,12 +24,8 @@ const episodeWatched = new mongoose.Schema<EpisodeWatched>({
   },
 });
 
-const animeWatchedSchema = new mongoose.Schema<AnimeWatched>(
+const animeWatchedSchema = new mongoose.Schema<AnimeWatchedType>(
   {
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-    },
     email: {
       type: String,
       required: true,
@@ -52,6 +48,6 @@ const animeWatchedSchema = new mongoose.Schema<AnimeWatched>(
 // Export the model
 const AnimeWatched =
   mongoose.models.AnimeWatched ||
-  mongoose.model<AnimeWatched>("AnimeWatched", animeWatchedSchema);
+  mongoose.model<AnimeWatchedType>("AnimeWatched", animeWatchedSchema);
 
 export default AnimeWatched;

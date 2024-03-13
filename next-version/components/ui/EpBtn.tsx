@@ -12,9 +12,8 @@ function EpBtn({ color, episode, watched, modeResponsiveness, handleClick }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div
+    <button
       key={episode?.number}
-      role="button"
       className={`h-7 w-14 flex items-center justify-center rounded-md border-2 ${
         modeResponsiveness
           ? "text-neutral-900 dark:text-slate-100"
@@ -43,7 +42,7 @@ function EpBtn({ color, episode, watched, modeResponsiveness, handleClick }) {
       onMouseLeave={() => setIsHovered(false)}
       onClick={() => handleClick(episode)}>
       {episode?.number}
-    </div>
+    </button>
   );
 }
 

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import Preference from "@/models/Preference";
-import { getSessionEmail } from "./_lib/getSessionEmail";
-import { preferenceSelector } from "./_lib/preferenceSelector";
+import { getSessionEmail } from "@/app/api/_lib/getSessionEmail";
+import { preferenceSelector } from "@/app/api/_lib/preferenceSelector";
 
 export async function GET() {
   try {

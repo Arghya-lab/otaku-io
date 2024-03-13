@@ -35,7 +35,7 @@ export const options: NextAuthOptions = {
           authType: account?.type,
           provider: account?.provider,
         });
-        await Preference.create({ userId: newUser._id, email: user.email });
+        await Preference.create({ email: user.email });
         user.id = newUser._id;
       }
       return true;

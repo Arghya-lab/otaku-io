@@ -11,17 +11,20 @@ import Radio from "./ui/Radio";
 import Select from "./ui/Select";
 import EpBtn from "./ui/EpBtn";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 function EpBtnSheet({
   detailInfo = null,
   isDubEnable = false,
   modeResponsiveness = true,
   episodeNo = 1,
+  isWatchPage = false,
 }: {
   detailInfo: any;
   modeResponsiveness: boolean;
   isDubEnable: boolean;
   episodeNo?: number;
+  isWatchPage?: boolean;
 }) {
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
@@ -41,20 +44,43 @@ function EpBtnSheet({
 
   const [watchedEp, setWatchedEp] = useState<number[]>([]);
 
-  const handleChangeDubEnable = () => {
-    router.push(`${window.location.pathname}?dub=${!isDubEnable}`);
+  const handleChangeLang = async () => {
+    if (isWatchPage) {
+      try {
+        const { data } = await axios.get(
+          `/api/detail-info/${detailInfo.id}?dub=${!isDubEnable}`
+          );
+          
+          const resEpisodes = data?.episodes;
+          const isResDubType = data?.subOrDub === "dub";
+          console.log({resEpisodes,isResDubType});
+
+        const currentEpisodeIdx = resEpisodes.findIndex(
+          (episode: any) => episode.number == episodeNo
+        );
+        const currentEpisode = resEpisodes[currentEpisodeIdx];
+        localStorage.setItem("detailInfo", JSON.stringify(data));
+        
+        router.push(
+          `/watch/${data.id}/${currentEpisode.number}/${currentEpisode.id}?dub=${isResDubType}`
+          );
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+      let currentPath = window.location.pathname;
+      router.push(`${currentPath}?dub=${!isDubEnable}`);
+    }
   };
 
   const handleClick = (ep: any) => {
     if (ep?.id) {
+      localStorage.setItem("detailInfo", JSON.stringify(detailInfo));
+
       router.push(
         `/watch/${detailInfo?.id}/${ep.number}/${ep.id}?dub=${isDubEnable}`
-        // {
-        //   replace: true,
-        //   state: { episode: ep },
-        // }
       );
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      // window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
@@ -75,7 +101,7 @@ function EpBtnSheet({
           <Radio
             color={detailInfo?.color}
             enabled={isDubEnable}
-            setEnabled={handleChangeDubEnable}
+            setEnabled={handleChangeLang}
           />
           <p>dub</p>
         </div>

@@ -1,6 +1,12 @@
-import { ANIME, META, PROVIDERS_LIST } from "@consumet/extensions";
+import {
+  ANIME,
+  META,
+  PROVIDERS_LIST,
+  StreamingServers,
+} from "@consumet/extensions";
 import Anilist from "@consumet/extensions/dist/providers/meta/anilist";
 import NineAnime from "@consumet/extensions/dist/providers/anime/9anime";
+import axios from "axios";
 
 const generateAnilistMeta = (
   provider: string | undefined = "gogoanime"
@@ -114,4 +120,26 @@ export const getSearchData = async (
   const anilist = generateAnilistMeta();
 
   return await anilist.search(query, page, perPage);
+};
+
+export const getStreamingLinks = async (
+  episodeId: string,
+  server?: StreamingServers,
+  provider?: string
+) => {
+  // if (server && !Object.values(StreamingServers).includes(server)) {
+  //   console.log("Invalid server");
+  // }
+  // let anilist = generateAnilistMeta(provider);
+  
+  // return  await anilist.fetchEpisodeSources(episodeId, server);
+  
+  try {
+    const {data} = await axios.get(`https://march-api1.vercel.app/meta/anilist/watch/${episodeId}`)
+    
+    return data;
+  } catch (error) {
+    console.log(error);
+    
+  }
 };

@@ -17,7 +17,6 @@ function VideoLoadedBar({ playerState, playerRef }) {
   };
 
   const handleTouchStart = (e) => {
-    console.log(e.touches[0]);
     const touch = e.touches[0];
     if (sliderRef.current) {
       const rect = sliderRef.current.getBoundingClientRect();
@@ -78,7 +77,7 @@ function VideoLoadedBar({ playerState, playerRef }) {
           style={{ width: `${playerState?.loaded * 100}%` }}
         />
         {/* Skip indicator bar */}
-        {playerState.skipTimes.map((skipTime) => (
+        {playerState.skipTimes.map((skipTime:any) => (
           <Fragment key={skipTime.type}>
             {skipTime.type === "intro" && (
               <div

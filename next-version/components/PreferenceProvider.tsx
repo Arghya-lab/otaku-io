@@ -62,7 +62,7 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
     }
     try {
       const res = await axios.get("/api/preference");
-      
+
       setPreference(res.data);
       localStorage.setItem("preferences", JSON.stringify(res.data));
     } catch (err) {
@@ -72,7 +72,12 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (session) {
-      setPreference(JSON.parse(localStorage.getItem("preferences") || JSON.stringify(defaultPreference)))
+      setPreference(
+        JSON.parse(
+          localStorage.getItem("preferences") ||
+            JSON.stringify(defaultPreference)
+        )
+      );
       fetchPreferences();
     }
   }, [session]);
@@ -96,7 +101,7 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
         } else if (updateType === UpdateTypeEnum.CHANGE_PLAYBACK_QUALITY) {
           if (
             !payload ||
-            !["360p", "720p", "1080p"].includes(payload.toString())
+            !["360p", "480p", "720p", "1080p"].includes(payload.toString())
           ) {
             console.error("Error: invalid preference update payload.");
           } else {
@@ -140,10 +145,10 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
         } else if (updateType === UpdateTypeEnum.CHANGE_PLAYBACK_QUALITY) {
           if (
             !payload ||
-            !["360p", "720p", "1080p"].includes(payload.toString())
+            !["360p", "480p", "720p", "1080p"].includes(payload.toString())
           ) {
             console.error("Error: invalid preference update payload.");
-          } else {
+          } else if (payload) {
             setPreference((prev) => ({
               ...prev,
               playbackQuality: payload.toString(),

@@ -34,7 +34,7 @@ function VideoWatchPage({
       const savedEpisode = savedDetailInfo?.episodes.find(
         (ep: any) => ep.id == epId
       );
-      
+
       if (savedDetailInfo && savedEpisode) {
         setDetailInfo(savedDetailInfo);
         setEpisode(savedEpisode);
@@ -54,17 +54,6 @@ function VideoWatchPage({
   return (
     <div className="max-w-[1600px] m-auto overflow-x-hidden">
       <TopNavbar />
-      {/* <div
-        onClick={async () => {
-          try {
-            const data = await getStreamingLinks("spy-x-family-episode-1");
-            console.log(data);
-          } catch (error) {
-            console.log("test err", error);
-          }
-        }}>
-        test
-      </div> */}
       <div className="flex flex-col md:flex-row">
         <div className="px-3.5 xxs:px-6 lg:px-12 pb-8 flex flex-col md:min-w-[700px] md:w-[66%] lg:min-w-[1000px] lg:w-[75%]">
           <Player

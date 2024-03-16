@@ -4,9 +4,7 @@ import { useState } from "react";
 import { shade } from "../../utils/color";
 import { themes } from "@/theme";
 
-function EpBtn({ color, episode, watched, modeResponsiveness, handleClick }) {
-  const watching = false;
-  // const watching = Boolean(useParams().epNo == episode?.number);
+function EpBtn({ color, episode, watched, modeResponsiveness, handleClick,watching=false }) {
   const theme = themes[23]
 
   const [isHovered, setIsHovered] = useState(false);

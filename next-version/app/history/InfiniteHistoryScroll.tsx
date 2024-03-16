@@ -2,20 +2,19 @@
 
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LineWave } from "react-loader-spinner";
-import PosterItem from "@/components/PosterItem";
 import { themes } from "@/theme";
 import { useState } from "react";
 import usePosterItemCount from "@/hooks/usePosterItemCount";
 import axios from "axios";
 import { usePreference } from "@/components/PreferenceProvider";
+import { WatchingAnimeType } from "@/services/getUserWatching";
+import ContinueWatchingPosterItem from "@/components/ContinueWatchingPosterItem";
 
-function InfiniteSearchScroll({
-  query,
+function InfiniteHistoryScroll({
   initialData,
   hasNextPage,
 }: {
-  query: string;
-  initialData: any;
+  initialData: WatchingAnimeType[];
   hasNextPage: boolean;
 }) {
   const { themeId } = usePreference();
@@ -29,19 +28,18 @@ function InfiniteSearchScroll({
 
   const handleFetchMoreData = async () => {
     try {
-      const response = await axios.get(`/api/search`, {
+      const res = await axios.get(`/api/anime/history`, {
         timeout: 15000,
         params: {
           page: pageNo + 1,
-          query,
         },
       });
 
-      const { currentPage, hasNextPage, results } = response.data;
+      const { currentPage, hasNextPage, results } = res.data;
 
-      setData((prev: any) => [...prev, ...results]);
-      setHasMore(hasNextPage);
-      setPageNo(currentPage);
+      setData((prev: any) => [...prev, ...results] as WatchingAnimeType[]);
+      setHasMore(hasNextPage as boolean);
+      setPageNo(currentPage as number);
     } catch (error) {
       console.error("Error fetching more data:", error);
       // Handle other error scenarios as needed (e.g., display error message to user)
@@ -70,16 +68,12 @@ function InfiniteSearchScroll({
         style={{
           gridTemplateColumns: `repeat( ${posterItemCount}, 1fr)`,
         }}>
-        {data.map((item: any, id: number) => (
-          <PosterItem
-            key={id}
-            item={item}
-            // type={posterItemType.filter}
-          />
+        {data.map((WatchingAnime, id) => (
+          <ContinueWatchingPosterItem key={id} WatchingAnime={WatchingAnime} />
         ))}
       </div>
     </InfiniteScroll>
   );
 }
 
-export default InfiniteSearchScroll;
+export default InfiniteHistoryScroll;

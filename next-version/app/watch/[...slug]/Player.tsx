@@ -30,15 +30,19 @@ function Player({
 }) {
   const { windowWidth, windowHeight } = useWindowSize();
   const router = useRouter();
-  const {data:session} = useSession()
-  
+  const { data: session } = useSession();
+
   const playerContainerRef = useRef(null);
   const playerRef = useRef<ReactPlayer | null>(null);
   const controllerRef = useRef<HTMLDivElement | null>(null);
-  
-  const { autoPlay:isAutoPlayEnabled, autoNext:isAutoNextEnabled, playbackQuality } = usePreference();
+
+  const {
+    autoPlay: isAutoPlayEnabled,
+    autoNext: isAutoNextEnabled,
+    playbackQuality,
+  } = usePreference();
   const appElement = document.getElementById("App");
-  
+
   const [markWatchedTill, setMarkWatchedTill] = useState(0);
   const [playerState, setPlayerState] = useState<any>({
     url: null,
@@ -62,8 +66,11 @@ function Player({
   });
 
   const handleSeekToUnwatched = async () => {
-    const { data } = await axios.get(`/api/anime/watched-till?animeId=${animeId}&episodeNo=${epNo}`);
-    const previouslyWatchedTill = data.watchedTill
+    const { data } = await axios.get(
+      `/api/anime/watched-till?animeId=${animeId}&episodeNo=${epNo}`
+    );
+    const previouslyWatchedTill = data.watchedTill;
+
     if (previouslyWatchedTill && playerRef.current) {
       playerRef.current.seekTo(previouslyWatchedTill * playerState.duration);
     }
@@ -73,29 +80,27 @@ function Player({
     await axios.patch("/api/anime/watched-till", {
       animeId,
       episodeNo: epNo,
-      watchedTill: playerState.played
-    })
+      watchedTill: playerState.played,
+    });
   };
 
   const handleEnded = () => {
     if (isAutoNextEnabled) {
       const currentEpIdx = detailInfo?.episodes.findIndex(
-        (ep:any) => ep.id == epId
+        (ep: any) => ep.id == epId
       );
       const nextEp = detailInfo?.episodes[currentEpIdx + 1];
       if (nextEp?.id) {
         screenfull.exit();
         if (screen.orientation.unlock) screen.orientation.unlock();
-        setPlayerState((prev:any) => ({ ...prev, playerFullScreen: false }));
+        setPlayerState((prev: any) => ({ ...prev, playerFullScreen: false }));
 
         router.push(
-          `/watch/${detailInfo?.id}/${nextEp.number}/${
-            nextEp.id
-          }?dub=${isDub}`
+          `/watch/${detailInfo?.id}/${nextEp.number}/${nextEp.id}?dub=${isDub}`
         );
       }
     } else {
-      setPlayerState((prev:any) => ({ ...prev, playing: false }));
+      setPlayerState((prev: any) => ({ ...prev, playing: false }));
     }
   };
 
@@ -103,13 +108,13 @@ function Player({
     (async () => {
       try {
         const data = await getStreamingLinks(epId, StreamingServers.GogoCDN);
-        
-        setPlayerState((prev:any) => ({
+
+        setPlayerState((prev: any) => ({
           ...prev,
           sources: data.sources,
           currentSource:
             data.sources.find(
-              (source:any) => source.quality == prev.playbackQuality
+              (source: any) => source.quality == prev.playbackQuality
             ) || data.sources[0],
           url: data.sources[0].url,
           playing: isAutoPlayEnabled,
@@ -118,33 +123,31 @@ function Player({
           // pip: false,
         }));
       } catch (error) {
-          console.error(error);       
+        console.error(error);
       }
     })();
 
     // before name change update watchTill
-    // return () => {
-    //   if (session) {
-    //     setWatched();
-    //   }
-    // };
+    return () => {
+      if (session) {
+        setWatched();
+      }
+    };
     // check if already played if played then seek to that part
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [epId]);
 
   useEffect(() => {
     if (detailInfo?.malId && playerState.duration != 0) {
-      setPlayerState((prev:any) => ({ ...prev, skipTimes: [] }));
+      setPlayerState((prev: any) => ({ ...prev, skipTimes: [] }));
       (async () => {
-        const {data}:any = await getSkipTimes(
+        const skipTimes: any = await getSkipTimes(
           detailInfo?.malId,
           epNo,
           playerState.duration
         );
-        const skipTimes = data.results;
-        
+
         if (skipTimes) {
-          setPlayerState((prev:any) => ({ ...prev, skipTimes }));
+          setPlayerState((prev: any) => ({ ...prev, skipTimes }));
         }
       })();
     }
@@ -153,7 +156,7 @@ function Player({
   useEffect(() => {
     const handlePlaybackProgress = () => {
       const { played } = playerState;
-      if (played >= markWatchedTill + 0.04) {
+      if (played >= (markWatchedTill + 0.04)) {
         setMarkWatchedTill(played);
         if (session) setWatched();
       }
@@ -163,8 +166,7 @@ function Player({
   }, [playerState.played]);
 
   const handleMouseMove = () => {
-
-    if (controllerRef.current && appElement) {      
+    if (controllerRef.current && appElement) {
       controllerRef.current.style.visibility = "visible";
       appElement.style.cursor = "auto";
       count = 0;
@@ -205,7 +207,7 @@ function Player({
           volume={playerState.volume}
           muted={playerState.muted}
           onDuration={(duration) => {
-            setPlayerState((prev:any) => ({ ...prev, duration }));
+            setPlayerState((prev: any) => ({ ...prev, duration }));
           }}
           onProgress={(value) => {
             if (count > 3 && appElement && controllerRef.current) {
@@ -216,29 +218,29 @@ function Player({
             if (controllerRef.current?.style.visibility == "visible") {
               count++;
             }
-            setPlayerState((prev:any) => ({
+            setPlayerState((prev: any) => ({
               ...prev,
               loaded: value.loaded,
               played: value.played,
             }));
           }}
           onReady={() => console.log("onReady")}
-          onStart={() => {
+          onStart={async () => {
             // find intro & outro
             if (session) {
-              setWatched();
-              handleSeekToUnwatched();
+              await handleSeekToUnwatched();
+              await setWatched();
             }
           }}
           onPlay={() => console.log("play start")}
           onBuffer={() =>
-            setPlayerState((prev:any) => ({ ...prev, buffering: true }))
+            setPlayerState((prev: any) => ({ ...prev, buffering: true }))
           }
           // onPlaybackRateChange={this.handleOnPlaybackRateChange}
           onSeek={(e) => {
             console.log("onSeek", e);
             if (playerState.buffering == true) {
-              setPlayerState((prev:any) => ({ ...prev, buffering: false }));
+              setPlayerState((prev: any) => ({ ...prev, buffering: false }));
             }
           }}
           onEnded={handleEnded}
@@ -249,7 +251,7 @@ function Player({
           //   setPlayerState((prevState) => ({ ...prevState, pip: false }))
           // }
           onError={(e) => console.log("onError", e)}
-          onPlaybackQualityChange={(e:any) =>
+          onPlaybackQualityChange={(e: any) =>
             console.log("onPlaybackQualityChange", e)
           }
           config={{

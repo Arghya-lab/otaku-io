@@ -14,12 +14,24 @@ export async function GET(req: NextRequest) {
       { email: userEmail, animeId },
       { episodes: { $elemMatch: { episodeNo } } }
     ).exec();
-    const data = {
-      animeId,
-      episodeNo: watchedAnime.episodes[0].episodeNo,
-      watchedTill: watchedAnime.episodes[0].watchedTill,
-    };
-    return NextResponse.json(data, { status: 200 });
+
+    if (watchedAnime?.episodes[0].episodeNo) {
+      const data = {
+        animeId,
+        episodeNo: watchedAnime.episodes[0].episodeNo,
+        watchedTill: watchedAnime.episodes[0].watchedTill,
+      };
+
+      return NextResponse.json(data, { status: 200 });
+    } else {
+      const data = {
+        animeId,
+        episodeNo,
+        watchedTill: 0,
+      };
+
+      return NextResponse.json(data, { status: 200 });
+    }
   } catch (error) {
     return NextResponse.json(
       { error: "Something went wrong." },
@@ -37,17 +49,19 @@ export async function PATCH(req: Request) {
       email: userEmail,
       animeId,
     });
+
     if (animeWatched) {
       // Document exists, update watchedTill for the specific episode
       const episodeIdx = animeWatched.episodes.findIndex(
-        (ep: any) => ep.episodeNo === episodeNo
+        (ep: any) => ep.episodeNo == episodeNo
       );
 
       if (episodeIdx === -1) {
         animeWatched.episodes.push({ episodeNo, watchedTill });
-      } else {
+      } else if (animeWatched.episodes[episodeIdx].watchedTill < watchedTill) {
         animeWatched.episodes[episodeIdx].watchedTill = watchedTill;
       }
+      animeWatched.lastWatched = episodeNo;
       // Save the updated document
       await animeWatched.save();
 
@@ -57,13 +71,12 @@ export async function PATCH(req: Request) {
         email: userEmail,
         animeId,
         episodes: [{ episodeNo, watchedTill }],
+        lastWatched: episodeNo,
       });
 
       return NextResponse.json(animeWatched, { status: 200 });
     }
   } catch (error) {
-    console.log(error);
-    
     return NextResponse.json(
       { error: "Something went wrong." },
       { status: 500 }

@@ -8,7 +8,6 @@ export async function PATCH() {
     const userEmail = await getSessionEmail();
 
     const userPreference = await Preference.findOne({ email: userEmail });
-    console.log(userPreference);
 
     const updatedPreference = await Preference.findByIdAndUpdate(
       userPreference._id,
@@ -18,8 +17,6 @@ export async function PATCH() {
 
     return NextResponse.json(updatedPreference, { status: 200 });
   } catch (error) {
-    console.log(error);
-
     return NextResponse.json(
       { error: "Something went wrong." },
       { status: 500 }

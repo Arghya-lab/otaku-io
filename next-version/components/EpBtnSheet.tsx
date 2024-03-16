@@ -12,6 +12,7 @@ import Select from "./ui/Select";
 import EpBtn from "./ui/EpBtn";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import setDetailInfoAndGetWatchPageLink from "@/utils/setDetailInfoAndGetWatchPageLink";
 
 function EpBtnSheet({
   detailInfo = null,
@@ -29,6 +30,7 @@ function EpBtnSheet({
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
   const [episodes, setEpisodes] = useState<any>([]);
+  const [watchedEp, setWatchedEp] = useState<number[]>([]);
 
   const [selectedEpRangeIdx, setSelectedEpRangeIdx] = useState(0);
 
@@ -39,35 +41,28 @@ function EpBtnSheet({
   }, [detailInfo?.id, episodeNo]);
 
   useEffect(() => {
+    if (detailInfo?.id) {
+      (async () => {
+        try {
+          const { data }: { data: number[] } = await axios.get(
+            `/api/anime/watched-episodes?animeId=${detailInfo.id}`
+          );
+          setWatchedEp(data);
+        } catch (error) {
+          console.log("error occur while fetching watched ep data :", error);
+        }
+      })();
+    }
+  }, [detailInfo?.id]);
+
+  useEffect(() => {
     setEpisodes(mapEpisodes(detailInfo?.episodes, selectedEpRangeIdx));
   }, [selectedEpRangeIdx, detailInfo]);
 
-  const [watchedEp, setWatchedEp] = useState<number[]>([]);
-
   const handleChangeLang = async () => {
     if (isWatchPage) {
-      try {
-        const { data } = await axios.get(
-          `/api/detail-info/${detailInfo.id}?dub=${!isDubEnable}`
-          );
-          
-          const resEpisodes = data?.episodes;
-          const isResDubType = data?.subOrDub === "dub";
-          console.log({resEpisodes,isResDubType});
-
-        const currentEpisodeIdx = resEpisodes.findIndex(
-          (episode: any) => episode.number == episodeNo
-        );
-        const currentEpisode = resEpisodes[currentEpisodeIdx];
-        localStorage.setItem("detailInfo", JSON.stringify(data));
-        
-        router.push(
-          `/watch/${data.id}/${currentEpisode.number}/${currentEpisode.id}?dub=${isResDubType}`
-          );
-        } catch (error) {
-          console.error(error);
-        }
-      } else {
+      setDetailInfoAndGetWatchPageLink(detailInfo.id, isDubEnable, episodeNo);
+    } else {
       let currentPath = window.location.pathname;
       router.push(`${currentPath}?dub=${!isDubEnable}`);
     }
@@ -80,7 +75,6 @@ function EpBtnSheet({
       router.push(
         `/watch/${detailInfo?.id}/${ep.number}/${ep.id}?dub=${isDubEnable}`
       );
-      // window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
@@ -154,6 +148,7 @@ function EpBtnSheet({
                 key={id}
                 episode={episode}
                 color={detailInfo?.color}
+                watching={episodeNo == episode?.number}
                 watched={watchedEp.includes(episode?.number)}
                 modeResponsiveness={modeResponsiveness}
                 handleClick={() => handleClick(episode)}

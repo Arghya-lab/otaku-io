@@ -27,7 +27,7 @@ function TopNavbar() {
 
   return (
     <div
-      className="px-5 h-14 xxs:h-16 sticky -top-[0.5px] z-40 w-full flex items-center justify-between gap-2 backdrop-blur bg-opacity-50"
+      className="px-5 h-14 xxs:h-16 sticky -top-[0.5px] z-40 w-full flex items-center justify-between gap-2 backdrop-blur-lg bg-opacity-50"
       style={{
         backgroundColor: scrolled
           ? `${chroma(theme.primaryColor).darken().alpha(0.6)}`

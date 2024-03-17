@@ -77,7 +77,7 @@ function Filter() {
 
   return (
     <div
-      className="p-4 h-24 fixed top-[calc(3.5rem-0.5px)] xxs:top-[calc(4rem-0.5px)] w-full z-40 flex items-center gap-4 backdrop-blur"
+      className="p-4 h-24 fixed top-[calc(3.5rem-0.5px)] xxs:top-[calc(4rem-0.5px)] w-full z-40 flex items-center gap-4 backdrop-blur-md bg-opacity-50"
       style={{
         backgroundColor: scrolled
           ? `${chroma(theme.primaryColor).darken().alpha(0.6)}`

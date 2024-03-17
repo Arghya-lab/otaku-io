@@ -1,22 +1,21 @@
 import htmlParse from "html-react-parser";
-// import { Bookmark } from "lucide-react";
+import axios from "axios";
 import Chip from "./Chip";
 import ChipBtn from "./ChipBtn";
+import BookmarkBtn from "./BookmarkBtn";
+import User from "@/models/User";
+import { getServerSession } from "next-auth";
 
-function MetaPreviewContainer({
+async function MetaPreviewContainer({
   detailInfo,
   imdbInfo,
 }: {
   detailInfo: any;
   imdbInfo: any;
 }) {
-  // const handleToggleBookmark = () => {
-  // if (status) {
-  //   (async () => {
-  //     dispatch(toggleBookMark({ userId: userData.$id, animeId: id }));
-  //   })();
-  // }
-  // };
+  const session = await getServerSession();
+  const user = await User.findOne({ email: session?.user?.email });
+  let bookmarks = user.bookmarks || null;
 
   return (
     <div>
@@ -35,13 +34,7 @@ function MetaPreviewContainer({
               detailInfo?.title?.romaji}
           </div>
         )}
-        {/* <div role="button" className="pl-20" onClick={handleToggleBookmark}>
-          {bookmarks.includes(id) ? (
-            <Bookmark size={36} color="#fff" fill="#fff" />
-          ) : (
-            <Bookmark size={36} color="#fff" />
-          )}
-        </div> */}
+        <BookmarkBtn userBookmarks={bookmarks} animeId={detailInfo.id} />
       </div>
       <div className="my-8">
         <div className="flex flex-wrap gap-3 mb-4">

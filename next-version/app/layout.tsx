@@ -3,7 +3,6 @@ import { Poppins, Nunito_Sans } from "next/font/google";
 import "./globals.css";
 import connectDB, { isMongoConnected } from "@/db/db";
 import AuthProvider from "../components/AuthProvider";
-import TopNavbar from "@/components/TopNavbar";
 import { themes } from "@/theme";
 import PreferencesProvider from "@/components/PreferenceProvider";
 

@@ -1,70 +1,36 @@
-# Otaku-IO
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-Otaku-IO is a project that aims to provide a comprehensive solution for watching, managing and discovering anime content.\
-This README file will guide you through the project's structure, installation, usage, and contribution guidelines.
+## Getting Started
 
-## Installation
-
-To install Otaku-IO, follow these steps:
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/Arghya-lab/otaku-io.git
-   ```
-
-   Navigate to the project directory:
-
-   ```bash
-   cd otaku-io
-   ```
-
-   Install the project dependencies:
-
-   ```bash
-   npm install
-   ```
-
-   Run the project:
-   Install the project dependencies:
-
-   ```bash
-   npm run dev
-   ```
-
-### Usage
-
-Otaku-IO provides a user-friendly interface for managing and discovering anime content. Some of the key features include:
-
-- Search for anime by title, genre, or other criteria.
-- Add anime to your library.
-- View anime details, including episode information.
-- Filter anime by various criteria, such as popularity, release year, or rating.
-
-## Contribution Guidelines
-
-We welcome contributions to Otaku-IO! To contribute, follow these steps:
-
-Fork the repository.
-Create a new branch for your changes:
+First, run the development server:
 
 ```bash
-git checkout -b your-branch-name
-Make your changes and commit them:
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-```bash
-git add .
-git commit -m "Your commit message"
-```
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-Push your changes to your forked repository:
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-```bash
-git push origin your-branch-name
-```
+This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-Open a pull request against the original repository.
+## Learn More
 
-Troubleshooting
-If you encounter any issues while using Otaku-IO, please refer to the documentation or open an issue on the GitHub issues page.
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

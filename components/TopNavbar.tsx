@@ -3,7 +3,7 @@
 import { Search, X } from "lucide-react";
 import chroma from "chroma-js";
 import useScroll from "../hooks/useScroll";
-import { FormEvent, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
 import MinMaximizeBtn from "./ui/MinMaximizeBtn";
 import useWindowSize from "@/hooks/useWindowSize";
 import { themes } from "@/theme";
@@ -19,6 +19,7 @@ function TopNavbar() {
   const router = useRouter();
 
   const [searchQuery, setSearchQuery] = useState("");
+  const logoId = useMemo(() => Math.ceil(Math.random() * 16), []);
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -41,7 +42,13 @@ function TopNavbar() {
         className="opacity-40 text-neutral-700 dark:text-slate-300"
       /> */}
       <Link href="/" className="w-9 h-9">
-        <Image alt="logo" width={50} height={50} className="scale-125" src="/logo.png" />
+        <Image
+          alt="logo"
+          width={50}
+          height={50}
+          className="scale-125"
+          src={`/logo-${logoId}.png`}
+        />
       </Link>
       <form
         className="h-10 xxs:h-12 w-full xxs:w-2/3 max-w-2xl rounded-[45px] bg-white bg-opacity-10 hover:bg-opacity-15 shadow-sm flex items-center"

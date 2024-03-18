@@ -23,6 +23,7 @@ function InfiniteDiscoverScroll({ initialData, hasNextPage }) {
     setData(initialData);
     setHasMore(hasNextPage)
     setPageNo(1);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParamsString]);
 
   const handleFetchMoreData = async () => {

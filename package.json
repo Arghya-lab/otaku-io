@@ -7,10 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
-  },"repository": {
-    "type": "git",
-    "url": "git+https://github.com/consumet/consumet.ts.git"
-},
+  },
   "dependencies": {
     "@consumet/extensions": "github:consumet/consumet.ts",
     "@headlessui/react": "^1.7.18",

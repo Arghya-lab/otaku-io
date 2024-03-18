@@ -8,6 +8,12 @@ const nextConfig = {
         port: "",
         pathname: "/file/anilistcdn/media/anime/**",
       },
+      {
+        protocol: "https",
+        hostname: "images.metahub.space",
+        port: "",
+        pathname: "/logo/medium/**",
+      },
     ],
   },
 };

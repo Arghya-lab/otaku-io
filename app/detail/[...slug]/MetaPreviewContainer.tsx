@@ -5,6 +5,7 @@ import ChipBtn from "./ChipBtn";
 import BookmarkBtn from "./BookmarkBtn";
 import User from "@/models/User";
 import { getServerSession } from "next-auth";
+import Image from "next/image";
 
 async function MetaPreviewContainer({
   detailInfo,
@@ -17,21 +18,24 @@ async function MetaPreviewContainer({
   const user = await User.findOne({ email: session?.user?.email });
   let bookmarks = user.bookmarks || null;
 
+  const title =
+    detailInfo?.title?.english ||
+    detailInfo?.title?.native ||
+    detailInfo?.title?.romaji;
   return (
     <>
       <div className="flex items-center">
         {imdbInfo?.imdbID ? (
-          <img
-            className="object-contain object-center"
+          <Image
+            className="object-contain object-center h-auto w-auto"
             height={128}
             width={256}
+            alt={title}
             src={`https://images.metahub.space/logo/medium/${imdbInfo?.imdbID}/img`}
           />
         ) : (
           <div className="min-h-32 text-6xl font-extrabold font-nunito text-white">
-            {detailInfo?.title?.english ||
-              detailInfo?.title?.native ||
-              detailInfo?.title?.romaji}
+            {title}
           </div>
         )}
         <BookmarkBtn userBookmarks={bookmarks} animeId={detailInfo.id} />

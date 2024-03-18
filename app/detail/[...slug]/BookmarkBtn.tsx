@@ -14,11 +14,11 @@ function BookmarkBtn({
 }) {
   const { data: session } = useSession();
 
+  const [bookmarks, setBookmarks] = useState(userBookmarks);
+
   if (!session || !userBookmarks) {
     return null;
   }
-
-  const [bookmarks, setBookmarks] = useState(userBookmarks);
 
   const handleToggleBookmark = async () => {
     try {
@@ -31,6 +31,8 @@ function BookmarkBtn({
       console.log(axiosErr.message);
     }
   };
+
+  if (!bookmarks) return null;
 
   return (
     <div role="button" className="pl-20" onClick={handleToggleBookmark}>

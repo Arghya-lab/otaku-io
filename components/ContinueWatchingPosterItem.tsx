@@ -17,12 +17,12 @@ function ContinueWatchingPosterItem({
 }) {
   const { animeInfo, lastWatched } = WatchingAnime;
   const { isDub } = usePreference();
-
-  if (!animeInfo) return null;
-
+  
   const router = useRouter();
   const [isHover, setIsHover] = useState(false);
   const [isDetailDataFetching, setIsDetailDataFetching] = useState(false);
+  
+  if (!animeInfo) return null;
 
   const handleClick = async () => {
     setIsDetailDataFetching(true);

@@ -134,6 +134,7 @@ function Player({
       }
     };
     // check if already played if played then seek to that part
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [epId]);
 
   useEffect(() => {
@@ -183,7 +184,7 @@ function Player({
       className={` ${
         playerState.playerFullScreen
           ? "flex justify-center items-center"
-          : "rounded-lg overflow-hidden"
+          : "xxs:rounded-lg overflow-hidden"
       }`}>
       <div
         ref={playerContainerRef}

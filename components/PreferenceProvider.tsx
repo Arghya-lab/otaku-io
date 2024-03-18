@@ -10,6 +10,7 @@ import React, {
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import { themes } from "@/theme";
+import { cookies } from "next/headers";
 
 export const defaultPreference = {
   themeId: 23,
@@ -173,6 +174,7 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
               themeId: Number(payload),
             }));
           }
+          // cookies().set("themeId", payload.toString())
         } else {
           console.error("Error: invalid preference update type.");
         }

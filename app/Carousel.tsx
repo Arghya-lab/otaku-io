@@ -3,24 +3,28 @@
 import AliceCarousel from "react-alice-carousel";
 import htmlParse from "html-react-parser";
 import useWindowSize from "@/hooks/useWindowSize";
+import Image from "next/image";
 
-function Carousel({ trending }) {
+function Carousel({ trending }: { trending: any }) {
   const { windowWidth } = useWindowSize();
 
-  const items = trending.slice(0, 6).map((data, id) => (
+  const items = trending.map((data:any, id:number) => (
     <div key={id} className="flex items-center">
-      <img
+      <Image
         key={id}
+        width={960}
+        height={540}
         className="w-full aspect-[3/1] xxs:aspect-[4/1] object-cover"
         src={data?.cover}
         alt="Cover"
+        priority={true}
       />
     </div>
   ));
 
   const lineClampValue = windowWidth >= 640 ? 6 : 3;
 
-  const info = trending.slice(0, 6).map((data) => ({
+  const info = trending.map((data:any) => ({
     description: data?.description || "",
     color: data?.color || "#000",
   }));

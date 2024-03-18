@@ -22,10 +22,6 @@ function VideoWatchPage({
   const [detailInfo, setDetailInfo] = useState<any>(null);
   const [episode, setEpisode] = useState<any>(null);
 
-  if (!animeId || !epNo || !epId) {
-    return <p>Invalid url</p>;
-  }
-
   useEffect(() => {
     (async () => {
       const savedDetailInfo = await JSON.parse(
@@ -45,19 +41,22 @@ function VideoWatchPage({
         setEpisode(res.data?.episodes.find((ep: any) => ep.id == epId));
       }
     })();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  
+  if (!animeId || !epNo || !epId) {
+    return <p>Invalid url</p>;
+  }
 
   if (!detailInfo || !episode) {
     return <p>Loading....</p>;
-  }
-  console.log(detailInfo?.recommendations);
-  
+  }  
 
   return (
     <div className="max-w-[1600px] m-auto overflow-x-hidden">
       <TopNavbar />
       <div className="flex flex-col md:flex-row">
-        <div className="px-3.5 xxs:px-6 lg:px-12 pb-8 flex flex-col md:min-w-[700px] md:w-[66%] lg:min-w-[1000px] lg:w-[75%]">
+        <div className="xxs:px-2 xs:px-6 lg:px-12 pb-8 flex flex-col md:min-w-[700px] md:w-[66%] lg:min-w-[1000px] lg:w-[75%]">
           <Player
             animeId={animeId}
             detailInfo={detailInfo}
@@ -73,14 +72,16 @@ function VideoWatchPage({
               {episode?.description}
             </p>
           </div>
+          <div className="px-2 xxs:px-0">
           <EpBtnSheet
             modeResponsiveness={true}
             detailInfo={detailInfo}
             isDubEnable={isDub}
             episodeNo={Number(epNo)}
             isWatchPage={true}
-          />
-        </div>
+            />
+            </div>
+            </div>
         {detailInfo?.recommendations ? (
           <div
             className="flex-1 grid gap-4 justify-evenly pb-8 px-2 md:p-0"

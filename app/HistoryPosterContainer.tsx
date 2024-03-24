@@ -2,7 +2,7 @@
 
 import usePosterItemCount from "@/hooks/usePosterItemCount";
 import ContinueWatchingPosterItem from "@/components/ContinueWatchingPosterItem";
-import { WatchingAnimeType } from "@/services/getUserWatching";
+import { WatchingAnimeType } from "@/types/anime";
 
 function HistoryPosterContainer({
   watchingAnimes,

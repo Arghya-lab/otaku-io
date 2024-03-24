@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useState } from "react";
 import { Palette } from "lucide-react";
@@ -8,7 +8,7 @@ import { themes } from "@/theme";
 import { UpdateTypeEnum, usePreference } from "@/components/PreferenceProvider";
 
 function GeneralSection() {
-  const { themeId, isDub,updatePreference } = usePreference();
+  const { themeId, isDub, updatePreference } = usePreference();
   const theme = themes[themeId];
 
   const [isThemeSelectModalOpen, setIsThemeSelectModalOpen] = useState(false);

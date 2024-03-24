@@ -1,3 +1,4 @@
+import { AnimeImdbInfoType } from "@/types/anime";
 import axios, { isAxiosError } from "axios";
 
 export const getImdbInfo = async (title: string) => {
@@ -8,7 +9,7 @@ export const getImdbInfo = async (title: string) => {
         t: title,
       },
     });
-    return res.data;
+    return res.data as AnimeImdbInfoType;
   } catch (error) {
     if (isAxiosError(error)) {
       console.error("An unexpected error occurred:", error.message);

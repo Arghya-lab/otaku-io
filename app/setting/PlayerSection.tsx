@@ -38,20 +38,24 @@ function PlayerSection() {
     value,
     name,
   }: {
-    value: string | number;
+    value: string | number | undefined;
     name: string;
   }) => {
-    updatePreference(UpdateTypeEnum.CHANGE_SEEK_SECONDS, value);
+    if (value) {
+      updatePreference(UpdateTypeEnum.CHANGE_SEEK_SECONDS, value);
+    }
   };
 
   const handleChangePlaybackQuality = ({
     value,
     name,
   }: {
-    value: string | number;
+    value: string | number | undefined;
     name: string;
   }) => {
-    updatePreference(UpdateTypeEnum.CHANGE_PLAYBACK_QUALITY, value);
+    if (value) {
+      updatePreference(UpdateTypeEnum.CHANGE_PLAYBACK_QUALITY, value);
+    }
   };
 
   return (

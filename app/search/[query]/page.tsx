@@ -17,7 +17,7 @@ async function SearchPage({ params }: { params: { query: string } }) {
         <InfiniteSearchScroll
           query={params.query}
           initialData={initialData}
-          hasNextPage={hasNextPage || false}
+          hasNextPage={!!hasNextPage}
         />
       </div>
     </>

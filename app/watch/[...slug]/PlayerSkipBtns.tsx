@@ -1,17 +1,19 @@
-import { usePreference } from "@/components/PreferenceProvider";
 import { MutableRefObject } from "react";
 import ReactPlayer from "react-player";
+import { usePreference } from "@/components/PreferenceProvider";
+import { PlayerStateType } from "@/types/player";
 
 function PlayerSkipBtns({
-  playerState,
+  state,
   playerRef,
 }: {
-  playerState: any;
+  state: PlayerStateType;
   playerRef: MutableRefObject<ReactPlayer | null>;
 }) {
   const { autoSkip: isAutoSkipEnabled } = usePreference();
 
-  if (playerState.length === 0) {
+  if (state.skipTimes.length === 0) {
+    // if (playerState.length === 0) {
     return null;
   }
 
@@ -23,7 +25,8 @@ function PlayerSkipBtns({
 
   return (
     <div className="pb-3 flex flex-col gap-2 absolute bottom-20 right-4 z-40">
-      {playerState.skipTimes.map((skipTime: any,id:number) => {
+      {state.skipTimes.map((skipTime) => {
+        // {playerState.skipTimes.map((skipTime: any,id:number) => {
         if (playerRef.current) {
           const currentlyPlaying = playerRef.current.getCurrentTime();
 
@@ -62,7 +65,7 @@ function PlayerSkipBtns({
                 currentlyPlaying >= skipTime.startTime &&
                 currentlyPlaying <= skipTime.endTime && (
                   <div
-                  key={skipTime.type}
+                    key={skipTime.type}
                     role="button"
                     className="capitalize text-right px-2 font-nunito text-white rounded-md bg-lime-600 bg-opacity-25 border-2 border-lime-600"
                     onClick={() => handleSkip(skipTime.endTime)}>
@@ -73,7 +76,7 @@ function PlayerSkipBtns({
                 currentlyPlaying >= skipTime.startTime &&
                 currentlyPlaying <= skipTime.endTime && (
                   <div
-                  key={skipTime.type}
+                    key={skipTime.type}
                     role="button"
                     className="capitalize text-right px-2 font-nunito text-white rounded-md bg-orange-400 bg-opacity-25 border-2 border-orange-400"
                     onClick={() => handleSkip(skipTime.endTime)}>
@@ -84,7 +87,7 @@ function PlayerSkipBtns({
                 currentlyPlaying >= skipTime.startTime &&
                 currentlyPlaying <= skipTime.endTime && (
                   <div
-                  key={skipTime.type}
+                    key={skipTime.type}
                     role="button"
                     className="capitalize text-right px-2 font-nunito text-white rounded-md bg-blue-500 bg-opacity-25 border b-2order-blue-500"
                     onClick={() => handleSkip(skipTime.endTime)}>

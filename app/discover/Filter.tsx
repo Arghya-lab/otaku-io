@@ -1,23 +1,25 @@
 "use client";
 
 import { useState, Fragment } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Dialog, Transition } from "@headlessui/react";
 import { FilterIcon } from "lucide-react";
 import chroma from "chroma-js";
+import Select from "@/components/ui/Select";
+import { usePreference } from "@/components/PreferenceProvider";
 import {
   formatList,
   genreList,
   sortList,
   statusList,
 } from "@/lib/searchFilter";
-import { themes } from "@/theme";
 import useWindowSize from "@/hooks/useWindowSize";
-import { useRouter, useSearchParams } from "next/navigation";
 import useScroll from "@/hooks/useScroll";
-import Select from "@/components/ui/Select";
+import { themes } from "@/theme";
 
 function Filter() {
-  const theme = themes[1];
+  const { themeId } = usePreference();
+  const theme = themes[themeId];
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -27,14 +29,14 @@ function Filter() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  function updateQuery(name: string, value: string[] | undefined) {
+  function updateQuery(name: string, value: (string | number)[] | undefined) {
     let formatQueryValue: string | null;
     let genresQueryValue: string | null;
     let sortQueryValue: string | null;
     let statusQueryValue: string | null;
 
     if (name === "format") {
-      formatQueryValue = value ? value[0] : null;
+      formatQueryValue = value ? value[0].toString() : null;
     } else {
       formatQueryValue = searchParams.get("format");
     }
@@ -52,7 +54,7 @@ function Filter() {
     }
 
     if (name === "status") {
-      statusQueryValue = value ? value[0] : null;
+      statusQueryValue = value ? value[0].toString() : null;
     } else {
       statusQueryValue = searchParams.get("status");
     }
@@ -171,7 +173,9 @@ function Filter() {
                                 genreList.findIndex(
                                   (item) =>
                                     item.value ==
-                                    JSON.parse(searchParams.get("genres"))[0]
+                                    JSON.parse(
+                                      searchParams.get("genres") || ""
+                                    )[0]
                                 )
                               ]
                             : genreList[0]
@@ -192,7 +196,9 @@ function Filter() {
                                 sortList.findIndex(
                                   (item) =>
                                     item.value ==
-                                    JSON.parse(searchParams.get("sort"))[0]
+                                    JSON.parse(
+                                      searchParams.get("sort") || ""
+                                    )[0]
                                 )
                               ]
                             : sortList[0]
@@ -238,7 +244,8 @@ function Filter() {
                 ? genreList[
                     genreList.findIndex(
                       (item) =>
-                        item.value == JSON.parse(searchParams.get("genres"))[0]
+                        item.value ==
+                        JSON.parse(searchParams.get("genres") || "")[0]
                     )
                   ]
                 : genreList[0]
@@ -255,7 +262,8 @@ function Filter() {
                 ? sortList[
                     sortList.findIndex(
                       (item) =>
-                        item.value == JSON.parse(searchParams.get("sort"))[0]
+                        item.value ==
+                        JSON.parse(searchParams.get("sort") || "")[0]
                     )
                   ]
                 : sortList[0]

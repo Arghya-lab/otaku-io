@@ -1,9 +1,10 @@
-import PropType from "prop-types";
-import { Loader2 } from "lucide-react";
 import { RotatingLines } from "react-loader-spinner";
+import { PlayerStateType } from "@/types/player";
+import { Loader2 } from "lucide-react";
 
-function PlayerLoader({ playerState }) {
-  if (playerState?.loaded === 0) {
+function PlayerLoader({ state }: { state: PlayerStateType }) {
+  // if (playerState?.loaded === 0) {
+  if (state.loaded === 0) {
     return (
       <RotatingLines
         visible={true}
@@ -16,7 +17,8 @@ function PlayerLoader({ playerState }) {
     );
   }
 
-  if (playerState?.buffering) {
+  if (state.buffering) {
+    // if (playerState?.buffering) {
     return (
       <Loader2
         strokeWidth={2.5}
@@ -25,9 +27,5 @@ function PlayerLoader({ playerState }) {
     );
   }
 }
-
-PlayerLoader.propTypes = {
-  playerState: PropType.object.isRequired,
-};
 
 export default PlayerLoader;

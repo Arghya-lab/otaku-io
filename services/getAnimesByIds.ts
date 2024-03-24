@@ -1,4 +1,4 @@
-import { IAnimeResult } from "@/types/anime";
+import { AnimeItemType } from "@/types/anime";
 import { advancedSearch } from "./getAnime";
 
 export const getAnimesByIds = async (
@@ -6,7 +6,7 @@ export const getAnimesByIds = async (
   page = 1,
   perPage = 30
 ) => {
-  let bookmarkAnimes: IAnimeResult[] = [];
+  let bookmarkAnimes: AnimeItemType[] = [];
 
   await Promise.all(
     animeIds

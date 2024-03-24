@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { shade } from "@/utils/color";
 import Link from "next/link";
+import { shade } from "@/utils/color";
 
 function ChipBtn({ name, color = "#fff" }: { name: string; color: string }) {
   const [isHovered, setIsHovered] = useState(false);

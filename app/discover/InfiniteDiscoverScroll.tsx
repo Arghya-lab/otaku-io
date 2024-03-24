@@ -1,16 +1,25 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LineWave } from "react-loader-spinner";
+import axios from "axios";
 import PosterItem from "@/components/PosterItem";
-import { themes } from "@/theme";
-import { useEffect, useState } from "react";
+import { usePreference } from "@/components/PreferenceProvider";
 import usePosterItemCount from "@/hooks/usePosterItemCount";
-import { useSearchParams } from "next/navigation";
-import axios from "axios"
+import { themes } from "@/theme";
+import { AnimeItemType } from "@/types/anime";
 
-function InfiniteDiscoverScroll({ initialData, hasNextPage }) {
-  const theme = themes[1];
+function InfiniteDiscoverScroll({
+  initialData,
+  hasNextPage,
+}: {
+  initialData: AnimeItemType[];
+  hasNextPage: boolean;
+}) {
+  const { themeId } = usePreference();
+  const theme = themes[themeId];
   const posterItemCount = usePosterItemCount();
   const searchParams = useSearchParams();
   const searchParamsString = searchParams.toString();
@@ -21,28 +30,31 @@ function InfiniteDiscoverScroll({ initialData, hasNextPage }) {
 
   useEffect(() => {
     setData(initialData);
-    setHasMore(hasNextPage)
+    setHasMore(hasNextPage);
     setPageNo(1);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParamsString]);
 
   const handleFetchMoreData = async () => {
     try {
-      const response = await axios.get(`/api/discover`, {timeout:15000, params:{
-        page: pageNo + 1,
-        format: searchParams.get("format"),
-        genres: searchParams.get("genres"),
-        sort: searchParams.get("sort"),
-        status: searchParams.get("status"),
-      }});
-      
+      const response = await axios.get(`/api/discover`, {
+        timeout: 15000,
+        params: {
+          page: pageNo + 1,
+          format: searchParams.get("format"),
+          genres: searchParams.get("genres"),
+          sort: searchParams.get("sort"),
+          status: searchParams.get("status"),
+        },
+      });
+
       const { currentPage, hasNextPage, results } = response.data;
-  
+
       setData((prev) => [...prev, ...results]);
       setHasMore(hasNextPage);
       setPageNo(currentPage);
     } catch (error) {
-      console.error('Error fetching more data:', error);
+      console.error("Error fetching more data:", error);
       // Handle other error scenarios as needed (e.g., display error message to user)
     }
   };

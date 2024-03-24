@@ -30,9 +30,13 @@ async function DetailPage({
     <div className="w-full relative">
       <div
         className="fixed -z-10 w-screen h-screen bg-cover bg-center bg-transparent"
-        style={{
-          backgroundImage: `url(https://images.metahub.space/background/medium/${imdbInfo?.imdbID}/img)`,
-        }}>
+        style={
+          imdbInfo
+            ? {
+                backgroundImage: `url(https://images.metahub.space/background/medium/${imdbInfo.imdbID}/img)`,
+              }
+            : {}
+        }>
         <div className="bg-black w-full h-full opacity-70" />
       </div>
       <div>

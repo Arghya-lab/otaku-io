@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 import { Play } from "lucide-react";
 import {
   getInitialEpRangeIdx,
@@ -10,9 +12,8 @@ import {
 import Radio from "./ui/Radio";
 import Select from "./ui/Select";
 import EpBtn from "./ui/EpBtn";
-import { useRouter } from "next/navigation";
-import axios from "axios";
 import setDetailInfoAndGetWatchPageLink from "@/utils/setDetailInfoAndGetWatchPageLink";
+import { AnimeEpisodeType, DetailAnimeInfoType } from "@/types/anime";
 
 function EpBtnSheet({
   detailInfo = null,
@@ -21,7 +22,7 @@ function EpBtnSheet({
   episodeNo = 1,
   isWatchPage = false,
 }: {
-  detailInfo: any;
+  detailInfo: DetailAnimeInfoType | null;
   modeResponsiveness: boolean;
   isDubEnable: boolean;
   episodeNo?: number;
@@ -29,7 +30,7 @@ function EpBtnSheet({
 }) {
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
-  const [episodes, setEpisodes] = useState<any>([]);
+  const [episodes, setEpisodes] = useState<AnimeEpisodeType[]>([]);
   const [watchedEp, setWatchedEp] = useState<number[]>([]);
 
   const [selectedEpRangeIdx, setSelectedEpRangeIdx] = useState(0);
@@ -56,11 +57,13 @@ function EpBtnSheet({
   }, [detailInfo?.id]);
 
   useEffect(() => {
-    setEpisodes(mapEpisodes(detailInfo?.episodes, selectedEpRangeIdx));
+    if (detailInfo?.episodes) {
+      setEpisodes(mapEpisodes(detailInfo.episodes, selectedEpRangeIdx));
+    }
   }, [selectedEpRangeIdx, detailInfo]);
 
   const handleChangeLang = async () => {
-    if (isWatchPage) {
+    if (isWatchPage && detailInfo) {
       setDetailInfoAndGetWatchPageLink(detailInfo.id, isDubEnable, episodeNo);
     } else {
       let currentPath = window.location.pathname;
@@ -68,18 +71,18 @@ function EpBtnSheet({
     }
   };
 
-  const handleClick = (ep: any) => {
-    if (ep?.id) {
+  const handleClick = (ep: AnimeEpisodeType) => {
+    if (detailInfo?.id && ep?.id) {
       localStorage.setItem("detailInfo", JSON.stringify(detailInfo));
 
       router.push(
-        `/watch/${detailInfo?.id}/${ep.number}/${ep.id}?dub=${isDubEnable}`
+        `/watch/${detailInfo.id}/${ep.number}/${ep.id}?dub=${isDubEnable}`
       );
     }
   };
 
-  if (!detailInfo?.episodes.length) {
-    return;
+  if (!detailInfo || !detailInfo?.episodes || !detailInfo?.episodes.length) {
+    return null;
   }
 
   return (
@@ -122,7 +125,11 @@ function EpBtnSheet({
           }}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          onClick={() => handleClick(detailInfo?.episodes[0])}>
+          onClick={() => {
+            if (detailInfo.episodes) {
+              handleClick(detailInfo.episodes[0]);
+            }
+          }}>
           <p className="text-xl font-medium">Watch</p>
           <Play strokeWidth={3} size={20} />
         </div>
@@ -143,13 +150,13 @@ function EpBtnSheet({
             style={{
               gridTemplateColumns: "repeat(auto-fit, minmax(3.5rem, 3.5rem))",
             }}>
-            {episodes.map((episode: any, id: number) => (
+            {episodes.map((episode, id) => (
               <EpBtn
                 key={id}
                 episode={episode}
                 color={detailInfo?.color}
-                watching={episodeNo == episode?.number}
-                watched={watchedEp.includes(episode?.number)}
+                watching={episodeNo === episode.number}
+                watched={watchedEp.includes(episode.number)}
                 modeResponsiveness={modeResponsiveness}
                 handleClick={() => handleClick(episode)}
               />

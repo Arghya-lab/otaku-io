@@ -1,8 +1,9 @@
+import { SkipTimeType } from "@/types/anime";
 import axios from "axios";
 
 export const getSkipTimes = async (
-  malId: string,
-  epNo: string,
+  malId: string | number,
+  epNo: string | number,
   epLength = 0
 ) => {
   try {
@@ -11,7 +12,7 @@ export const getSkipTimes = async (
     );
     if (data?.found) {
       const results = data?.results || [];
-      const output = results.map((result:any) => {
+      const output: SkipTimeType[] = results.map((result: any) => {
         switch (result.skipType) {
           case "op":
             return {

@@ -1,18 +1,20 @@
 "use client";
 
-import chroma from "chroma-js";
-import { Cog, Compass, Home, LibraryBig, Settings } from "lucide-react";
-import useWindowSize from "../hooks/useWindowSize";
-import { themes } from "@/theme";
-import Link from "next/link";
 import { useState } from "react";
+import Link from "next/link";
+import chroma from "chroma-js";
+import { Cog, Compass, Home, LibraryBig } from "lucide-react";
+import useWindowSize from "@/hooks/useWindowSize";
+import { themes } from "@/theme";
+import { usePreference } from "./PreferenceProvider";
 
 function SideNavbar({ pathName }: { pathName: string }) {
   const { windowWidth } = useWindowSize();
   const [hoverBtn, setHoverBtn] = useState<
     null | "Home" | "Discover" | "Library" | "Setting"
   >(null);
-  const theme = themes[1];
+  const { themeId } = usePreference();
+  const theme = themes[themeId];
 
   const selectedBtn =
     pathName === "/"

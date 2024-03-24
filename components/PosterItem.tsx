@@ -1,26 +1,35 @@
 "use client";
 
 import { useState } from "react";
-import { posterItemType } from "@/types/constants";
-import { shade } from "@/utils/color";
-import { useRouter } from "next/navigation";
-import { usePreference } from "./PreferenceProvider";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { shade } from "@/utils/color";
+import { usePreference } from "./PreferenceProvider";
+import { posterItemType } from "@/types/constants";
+import { AnimeItemType } from "@/types/anime";
 
-function PosterItem({ item, type = posterItemType.general }) {
+function PosterItem({
+  item,
+  type = posterItemType.general,
+}: {
+  item: AnimeItemType;
+  type?: posterItemType;
+}) {
   const router = useRouter();
   const { isDub } = usePreference();
-
   const [isHover, setIsHover] = useState(false);
+
+  const title =
+    typeof item.title === "string"
+      ? item.title
+      : item.title?.english ||
+        item.title?.romaji ||
+        item.title?.native ||
+        item.title?.userPreferred;
 
   const handleClick = () => {
     if (type === posterItemType.general) {
       if (item?.id) {
-        const title =
-          item?.title?.english ||
-          item?.title?.romaji ||
-          item?.title?.native ||
-          item?.title?.userPreferred;
         router.push(`/detail/${item.id}/${title}?dub=${isDub}`);
       }
     } else if (type === posterItemType.filter) {
@@ -47,13 +56,15 @@ function PosterItem({ item, type = posterItemType.general }) {
           className={`h-[calc(100%*1.464)] absolute top-0 -z-10 overflow-hidden transition-transform duration-200 ease-in transform-gpu ${
             isHover ? "scale-110" : null
           }`}>
-          <Image
-            width={173}
-            height={370}
-            alt={item?.title?.english}
-            className="object-cover object-center h-full w-full"
-            src={item?.image}
-          />
+          {item.image && (
+            <Image
+              width={173}
+              height={370}
+              alt={title ?? ""}
+              className="object-cover object-center h-full w-full"
+              src={item.image}
+            />
+          )}
         </div>
       </div>
       <div className="h-16 text-sm font-medium flex items-center overflow-visible">
@@ -64,10 +75,7 @@ function PosterItem({ item, type = posterItemType.general }) {
               ? { color: shade(item?.color, -2).toString() }
               : {}
           }>
-          {item?.title?.english ||
-            item?.title?.userPreferred ||
-            item?.title?.romaji ||
-            item?.title?.native}
+          {title ?? ""}
         </p>
       </div>
     </div>

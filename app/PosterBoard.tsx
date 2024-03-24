@@ -1,12 +1,19 @@
 "use client";
 
+import Link from "next/link";
+import usePosterItemCount from "@/hooks/usePosterItemCount";
+import PosterItem from "@/components/PosterItem";
 import { ChevronRight } from "lucide-react";
 import { posterItemType } from "@/types/constants";
-import usePosterItemCount from "@/hooks/usePosterItemCount";
-import Link from "next/link";
-import PosterItem from "@/components/PosterItem";
+import { AnimeItemType } from "@/types/anime";
 
-function PosterBoard({ name, content }) {
+function PosterBoard({
+  name,
+  content,
+}: {
+  name: string;
+  content: AnimeItemType[];
+}) {
   const posterItemCount = usePosterItemCount();
 
   return (

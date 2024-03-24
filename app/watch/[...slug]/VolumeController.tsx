@@ -1,55 +1,57 @@
-import { useRef, useState, useEffect } from "react";
-import PropType from "prop-types";
+import {
+  useRef,
+  useState,
+  useEffect,
+  Dispatch,
+  MouseEvent,
+} from "react";
 import { Volume, Volume1, Volume2, VolumeX } from "lucide-react";
+import { PlayerActionType, PlayerStateType } from "@/types/player";
 
-function VolumeController({ playerState, setPlayerState }) {
-  const sliderRef = useRef(null);
+function VolumeController({
+  state,
+  dispatch,
+}: {
+  state: PlayerStateType;
+  dispatch: Dispatch<PlayerActionType>;
+}) {
+  const sliderRef = useRef<HTMLDivElement | null>(null);
 
-  // const volume = playerState?.volume //  value -> 0-1
   const [isVolumeVisible, setIsVolumeVisible] = useState(false);
 
-  const handleScroll = (e) => {
-    const isOverSlider =
-      sliderRef.current && sliderRef.current.contains(e.target);
-    if (isOverSlider) {
-      e.preventDefault(); // Prevent default scroll behavior
-
-      let newVolume = playerState?.volume - (e.deltaY > 0 ? 0.05 : -0.05);
-
-      if (newVolume < 0) {
-        newVolume = 0;
-      } else if (newVolume > 1) {
-        newVolume = 1;
-      }
-
-      setPlayerState((prev) => ({ ...prev, volume: newVolume }));
-    }
-  };
-
   useEffect(() => {
+    const handleScroll = (e: any) => {
+      const isOverSlider =
+        sliderRef.current && sliderRef.current.contains(e.target as Node);
+      if (isOverSlider) {
+        e.preventDefault(); // Prevent default scroll behavior
+
+        dispatch({
+          type: "updateVolume",
+          payload: -(e.deltaY > 0 ? 0.05 : -0.05),
+        });
+      }
+    };
+
     window.addEventListener("wheel", handleScroll, { passive: false }); // Add passive: false to prevent default scroll
     return () => {
       window.removeEventListener("wheel", handleScroll);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playerState?.volume]);
+  }, [state?.volume]);
 
-  const adjustVolumeLevel = (e) => {
+  const adjustVolumeLevel = (e: any) => {
     if (sliderRef.current) {
       const rect = sliderRef.current.getBoundingClientRect();
-      let newVolume = (e.pageX - rect.left) / rect.width;
 
-      if (newVolume < 0) {
-        newVolume = 0;
-      } else if (newVolume > 1) {
-        newVolume = 1;
-      }
-
-      setPlayerState((prev) => ({ ...prev, volume: newVolume }));
+      dispatch({
+        type: "updateVolume",
+        payload: (e.pageX - rect.left) / rect.width,
+      });
     }
   };
 
-  const handleMouseDown = (e) => {
+  const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
     adjustVolumeLevel(e);
   };
 
@@ -57,7 +59,7 @@ function VolumeController({ playerState, setPlayerState }) {
     document.removeEventListener("mousemove", adjustVolumeLevel);
   };
 
-  const handleSliderClick = (e) => {
+  const handleSliderClick = (e: MouseEvent<HTMLDivElement>) => {
     adjustVolumeLevel(e);
   };
 
@@ -74,16 +76,12 @@ function VolumeController({ playerState, setPlayerState }) {
       className="flex items-center px-2"
       onMouseEnter={handleSpeakerHover}
       onMouseLeave={handleSpeakerLeave}>
-      <div
-        role="button"
-        onClick={() =>
-          setPlayerState((prev) => ({ ...prev, muted: !prev?.muted }))
-        }>
-        {playerState?.muted ? (
+      <div role="button" onClick={() => dispatch({ type: "toggleMuted" })}>
+        {state.muted ? (
           <VolumeX className="h-4 w-4 xs:h-6 xs:w-6" fill="#fff" color="#fff" />
-        ) : playerState.volume < 0.33 ? (
+        ) : state.volume < 0.33 ? (
           <Volume className="h-4 w-4 xs:h-6 xs:w-6" fill="#fff" color="#fff" />
-        ) : playerState.volume < 0.67 ? (
+        ) : state.volume < 0.67 ? (
           <Volume1 className="h-4 w-4 xs:h-6 xs:w-6" fill="#fff" color="#fff" />
         ) : (
           <Volume2 className="h-4 w-4 xs:h-6 xs:w-6" fill="#fff" color="#fff" />
@@ -100,7 +98,7 @@ function VolumeController({ playerState, setPlayerState }) {
             <div
               className="h-full bg-white rounded-md"
               style={{
-                width: `${playerState?.muted ? 0 : playerState?.volume * 100}%`,
+                width: `${state.muted ? 0 : state.volume * 100}%`,
               }}
             />
           </div>
@@ -109,10 +107,5 @@ function VolumeController({ playerState, setPlayerState }) {
     </div>
   );
 }
-
-VolumeController.propTypes = {
-  playerState: PropType.object.isRequired,
-  setPlayerState: PropType.func.isRequired,
-};
 
 export default VolumeController;

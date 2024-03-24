@@ -8,6 +8,7 @@ import { useState } from "react";
 import usePosterItemCount from "@/hooks/usePosterItemCount";
 import axios from "axios";
 import { usePreference } from "@/components/PreferenceProvider";
+import { AnimeItemType } from "@/types/anime";
 
 function InfiniteSearchScroll({
   query,
@@ -15,7 +16,7 @@ function InfiniteSearchScroll({
   hasNextPage,
 }: {
   query: string;
-  initialData: any;
+  initialData: AnimeItemType[];
   hasNextPage: boolean;
 }) {
   const { themeId } = usePreference();
@@ -39,7 +40,7 @@ function InfiniteSearchScroll({
 
       const { currentPage, hasNextPage, results } = response.data;
 
-      setData((prev: any) => [...prev, ...results]);
+      setData((prev) => [...prev, ...results]);
       setHasMore(hasNextPage);
       setPageNo(currentPage);
     } catch (error) {
@@ -70,7 +71,7 @@ function InfiniteSearchScroll({
         style={{
           gridTemplateColumns: `repeat( ${posterItemCount}, 1fr)`,
         }}>
-        {data.map((item: any, id: number) => (
+        {data.map((item, id) => (
           <PosterItem
             key={id}
             item={item}

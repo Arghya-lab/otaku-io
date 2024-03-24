@@ -1,11 +1,28 @@
-"use client"
+"use client";
 
 import { useState } from "react";
 import { shade } from "../../utils/color";
 import { themes } from "@/theme";
+import { usePreference } from "../PreferenceProvider";
+import { AnimeEpisodeType } from "@/types/anime";
 
-function EpBtn({ color, episode, watched, modeResponsiveness, handleClick,watching=false }) {
-  const theme = themes[23]
+function EpBtn({
+  color = "#000",
+  episode,
+  watched,
+  modeResponsiveness,
+  handleClick,
+  watching = false,
+}: {
+  color?: string;
+  episode: AnimeEpisodeType;
+  watched?: boolean;
+  modeResponsiveness?: boolean;
+  handleClick: (ep: AnimeEpisodeType) => void;
+  watching?: boolean;
+}) {
+  const { themeId } = usePreference();
+  const theme = themes[themeId];
 
   const [isHovered, setIsHovered] = useState(false);
 

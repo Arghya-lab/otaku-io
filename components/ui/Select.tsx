@@ -1,9 +1,12 @@
+"use client";
+
 import { Fragment } from "react";
 import SimpleBar from "simplebar-react";
 import { Listbox, Transition } from "@headlessui/react";
 import { Check, ChevronDown } from "lucide-react";
 import { shade } from "../../utils/color";
 import { themes } from "@/theme";
+import { usePreference } from "../PreferenceProvider";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -18,11 +21,13 @@ function Select({
 }: {
   name?: string;
   color?: string;
-  list: { value: string | number; name: string }[];
-  selected: { value: string | number; name: string };
-  onChange: (value: { value: string | number; name: string }) => void;
+  list: { value: string | number | undefined; name: string }[];
+  selected: { value: string | number | undefined; name: string };
+  onChange: (value: { value: string | number | undefined; name: string }) => void;
 }) {
-  const theme = themes[1];
+  const { themeId } = usePreference();
+  const theme = themes[themeId];
+  
   return (
     <div>
       {name && (

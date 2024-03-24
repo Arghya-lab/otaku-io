@@ -1,7 +1,15 @@
 import { shade } from "@/utils/color";
 import { Switch } from "@headlessui/react";
 
-function Radio({ color = "#fff", enabled, setEnabled }) {
+function Radio({
+  color = "#fff",
+  enabled,
+  setEnabled,
+}: {
+  color?: string;
+  enabled: boolean;
+  setEnabled: () => void;
+}) {
   return (
     <Switch
       checked={enabled}

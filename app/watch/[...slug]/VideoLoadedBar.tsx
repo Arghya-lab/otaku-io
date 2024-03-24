@@ -1,11 +1,25 @@
-import { Fragment, useRef, useState } from "react";
-import PropType from "prop-types";
+import {
+  Fragment,
+  MouseEvent,
+  MutableRefObject,
+  TouchEvent,
+  useRef,
+  useState,
+} from "react";
+import ReactPlayer from "react-player";
+import { PlayerStateType } from "@/types/player";
 
-function VideoLoadedBar({ playerState, playerRef }) {
+function VideoLoadedBar({
+  state,
+  playerRef,
+}: {
+  state: PlayerStateType;
+  playerRef: MutableRefObject<ReactPlayer | null>;
+}) {
   const [isSeeking, setIsSeeking] = useState(false);
-  const sliderRef = useRef(null);
+  const sliderRef = useRef<HTMLDivElement | null>(null);
 
-  const adjustSliderFill = (e) => {
+  const adjustSliderFill = (e: MouseEvent) => {
     if (isSeeking && sliderRef.current) {
       const rect = sliderRef.current.getBoundingClientRect();
       const fillWidth = (e.pageX - rect.left) / rect.width;
@@ -16,11 +30,11 @@ function VideoLoadedBar({ playerState, playerRef }) {
     }
   };
 
-  const handleTouchStart = (e) => {
+  const handleTouchStart = (e: TouchEvent<HTMLDivElement>) => {
     const touch = e.touches[0];
     if (sliderRef.current) {
       const rect = sliderRef.current.getBoundingClientRect();
-      const clientX = touch.pageX || touch.touches[0].pageX;
+      const clientX = touch.pageX;
       const fillWidth = (clientX - rect.left) / rect.width;
 
       if (fillWidth >= 0 && fillWidth <= 1 && playerRef.current) {
@@ -29,7 +43,7 @@ function VideoLoadedBar({ playerState, playerRef }) {
     }
   };
 
-  const handleMouseDown = (e) => {
+  const handleMouseDown = (e: MouseEvent) => {
     setIsSeeking(true);
     adjustSliderFill(e);
   };
@@ -38,23 +52,29 @@ function VideoLoadedBar({ playerState, playerRef }) {
     setIsSeeking(false);
   };
 
-  const handleSliderClick = (e) => {
-    const rect = sliderRef.current.getBoundingClientRect();
-    const fillWidth = (e.pageX - rect.left) / rect.width;
+  const handleSliderClick = (e: MouseEvent<HTMLDivElement>) => {
+    if (sliderRef?.current) {
+      const rect = sliderRef.current.getBoundingClientRect();
+      const fillWidth = (e.pageX - rect.left) / rect.width;
 
-    if (fillWidth >= 0 && fillWidth <= 1 && playerRef.current) {
-      playerRef.current.seekTo(fillWidth);
+      if (fillWidth >= 0 && fillWidth <= 1 && playerRef.current) {
+        playerRef.current.seekTo(fillWidth);
+      }
     }
   };
 
   const handleSliderHover = () => {
-    // Change height when hovered
-    sliderRef.current.style.height = "0.35rem"; // Change this value as needed
+    if (sliderRef?.current) {
+      // Change height when hovered
+      sliderRef.current.style.height = "0.35rem"; // Change this value as needed
+    }
   };
 
   const handleSliderLeave = () => {
-    // Reset height when hover ends
-    sliderRef.current.style.height = "0.25rem"; // Change this value back to original
+    if (sliderRef?.current) {
+      // Reset height when hover ends
+      sliderRef.current.style.height = "0.25rem"; // Change this value back to original
+    }
   };
 
   return (
@@ -70,23 +90,23 @@ function VideoLoadedBar({ playerState, playerRef }) {
         onMouseLeave={handleSliderLeave}>
         <div
           className="h-full bg-red-500 rounded-sm absolute z-10"
-          style={{ width: `${playerState?.played * 100}%` }}
+          style={{ width: `${state?.played * 100}%` }}
         />
         <div
           className="h-full bg-white bg-opacity-70 rounded-sm absolute top-0 left-0 -z-10"
-          style={{ width: `${playerState?.loaded * 100}%` }}
+          style={{ width: `${state?.loaded * 100}%` }}
         />
         {/* Skip indicator bar */}
-        {playerState.skipTimes.map((skipTime:any) => (
+        {state.skipTimes.map((skipTime: any) => (
           <Fragment key={skipTime.type}>
             {skipTime.type === "intro" && (
               <div
                 className={`h-1 bg-purple-500 bg-opacity-70 rounded-sm absolute z-20`}
                 style={{
-                  left: `${(100 * skipTime.startTime) / playerState.duration}%`,
+                  left: `${(100 * skipTime.startTime) / state.duration}%`,
                   width: `${
                     (100 * (skipTime.endTime - skipTime.startTime)) /
-                    playerState.duration
+                    state.duration
                   }%`,
                 }}
               />
@@ -95,10 +115,10 @@ function VideoLoadedBar({ playerState, playerRef }) {
               <div
                 className={`h-1 bg-yellow-400 bg-opacity-70 rounded-sm absolute z-20`}
                 style={{
-                  left: `${(100 * skipTime.startTime) / playerState.duration}%`,
+                  left: `${(100 * skipTime.startTime) / state.duration}%`,
                   width: `${
                     (100 * (skipTime.endTime - skipTime.startTime)) /
-                    playerState.duration
+                    state.duration
                   }%`,
                 }}
               />
@@ -107,10 +127,10 @@ function VideoLoadedBar({ playerState, playerRef }) {
               <div
                 className={`h-1 bg-lime-400 bg-opacity-70 rounded-sm absolute z-20`}
                 style={{
-                  left: `${(100 * skipTime.startTime) / playerState.duration}%`,
+                  left: `${(100 * skipTime.startTime) / state.duration}%`,
                   width: `${
                     (100 * (skipTime.endTime - skipTime.startTime)) /
-                    playerState.duration
+                    state.duration
                   }%`,
                 }}
               />
@@ -119,10 +139,10 @@ function VideoLoadedBar({ playerState, playerRef }) {
               <div
                 className={`h-1 bg-orange-400 bg-opacity-70 rounded-sm absolute z-20`}
                 style={{
-                  left: `${(100 * skipTime.startTime) / playerState.duration}%`,
+                  left: `${(100 * skipTime.startTime) / state.duration}%`,
                   width: `${
                     (100 * (skipTime.endTime - skipTime.startTime)) /
-                    playerState.duration
+                    state.duration
                   }%`,
                 }}
               />
@@ -131,10 +151,10 @@ function VideoLoadedBar({ playerState, playerRef }) {
               <div
                 className={`h-1 bg-blue-500 bg-opacity-70 rounded-sm absolute z-20`}
                 style={{
-                  left: `${(100 * skipTime.startTime) / playerState.duration}%`,
+                  left: `${(100 * skipTime.startTime) / state.duration}%`,
                   width: `${
                     (100 * (skipTime.endTime - skipTime.startTime)) /
-                    playerState.duration
+                    state.duration
                   }%`,
                 }}
               />
@@ -145,10 +165,5 @@ function VideoLoadedBar({ playerState, playerRef }) {
     </div>
   );
 }
-
-VideoLoadedBar.propTypes = {
-  playerState: PropType.object.isRequired,
-  playerRef: PropType.object.isRequired,
-};
 
 export default VideoLoadedBar;

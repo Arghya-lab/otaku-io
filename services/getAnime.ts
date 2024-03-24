@@ -7,6 +7,14 @@ import {
 import Anilist from "@consumet/extensions/dist/providers/meta/anilist";
 import NineAnime from "@consumet/extensions/dist/providers/anime/9anime";
 import axios from "axios";
+import {
+  AdvancedAnimeSearchResType,
+  AnimeSearchResType,
+  AnimeStreamingSourceType,
+  DetailAnimeInfoType,
+  PopularAnimeResType,
+  TrendingAnimeResType,
+} from "@/types/anime";
 
 const generateAnilistMeta = (
   provider: string | undefined = "gogoanime"
@@ -39,13 +47,23 @@ const generateAnilistMeta = (
 // Query Parameters for getTrending:  page, perPage
 export const getTrending = async (page = 1, perPage = 10) => {
   const anilist = generateAnilistMeta();
-  return await anilist.fetchTrendingAnime(page, perPage);
+
+  const res = (await anilist.fetchTrendingAnime(
+    page,
+    perPage
+  )) as TrendingAnimeResType;
+  return res;
 };
 
 // Query Parameters for getPopular:  page, perPage
 export const getPopular = async (page = 1, perPage = 10) => {
   const anilist = generateAnilistMeta();
-  return await anilist.fetchPopularAnime(page, perPage);
+
+  const res = (await anilist.fetchPopularAnime(
+    page,
+    perPage
+  )) as PopularAnimeResType;
+  return res;
 };
 
 // Query Parameters for advancedSearch:
@@ -89,7 +107,8 @@ export const advancedSearch = async ({
   if (sort) sort = JSON.parse(sort as string);
 
   const anilist = generateAnilistMeta();
-  return await anilist.advancedSearch(
+
+  const res = (await anilist.advancedSearch(
     query,
     type,
     page,
@@ -101,7 +120,8 @@ export const advancedSearch = async ({
     year,
     status,
     season
-  );
+  )) as AdvancedAnimeSearchResType;
+  return res;
 };
 
 export const getDetailInfo = async (id: string, isDub: boolean = false) => {
@@ -109,7 +129,8 @@ export const getDetailInfo = async (id: string, isDub: boolean = false) => {
 
   let anilist = generateAnilistMeta();
 
-  return await anilist.fetchAnimeInfo(id, isDub);
+  const res = (await anilist.fetchAnimeInfo(id, isDub)) as DetailAnimeInfoType;
+  return res;
 };
 
 export const getSearchData = async (
@@ -119,7 +140,12 @@ export const getSearchData = async (
 ) => {
   const anilist = generateAnilistMeta();
 
-  return await anilist.search(query, page, perPage);
+  const res = (await anilist.search(
+    query,
+    page,
+    perPage
+  )) as AnimeSearchResType;
+  return res;
 };
 
 export const getStreamingLinks = async (
@@ -131,15 +157,16 @@ export const getStreamingLinks = async (
   //   console.log("Invalid server");
   // }
   // let anilist = generateAnilistMeta(provider);
-  
+
   // return  await anilist.fetchEpisodeSources(episodeId, server);
-  
+
   try {
-    const {data} = await axios.get(`https://march-api1.vercel.app/meta/anilist/watch/${episodeId}`)
-    
+    const { data }: { data: AnimeStreamingSourceType } = await axios.get(
+      `https://march-api1.vercel.app/meta/anilist/watch/${episodeId}`
+    );
+
     return data;
   } catch (error) {
     console.log(error);
-    
   }
 };

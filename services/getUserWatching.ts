@@ -1,12 +1,7 @@
-import AnimeWatched from "@/models/AnimeWatched";
 import { getServerSession } from "next-auth";
+import AnimeWatched from "@/models/AnimeWatched";
 import { advancedSearch } from "./getAnime";
-import { IAnimeResult } from "@/types/anime";
-
-export interface WatchingAnimeType {
-  animeInfo: IAnimeResult | undefined;
-  lastWatched: number;
-}
+import { WatchingAnimeType } from "@/types/anime";
 
 export const getUserWatching = async (
   page: number = 1,

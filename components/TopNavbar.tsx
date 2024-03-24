@@ -1,18 +1,20 @@
 "use client";
 
-import { Search, X } from "lucide-react";
-import chroma from "chroma-js";
-import useScroll from "../hooks/useScroll";
 import { FormEvent, useMemo, useState } from "react";
-import MinMaximizeBtn from "./ui/MinMaximizeBtn";
-import useWindowSize from "@/hooks/useWindowSize";
-import { themes } from "@/theme";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import chroma from "chroma-js";
+import { Search, X } from "lucide-react";
+import MinMaximizeBtn from "@/components/ui/MinMaximizeBtn";
+import useScroll from "@/hooks/useScroll";
+import useWindowSize from "@/hooks/useWindowSize";
+import { usePreference } from "./PreferenceProvider";
+import { themes } from "@/theme";
 
 function TopNavbar() {
-  const theme = themes[1];
+  const { themeId } = usePreference();
+  const theme = themes[themeId];
 
   const { windowWidth } = useWindowSize();
   const scrolled = useScroll();

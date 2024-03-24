@@ -1,14 +1,16 @@
 "use client";
 
-import { LogIn, LogOut, Mail, User } from "lucide-react";
-import { themes } from "@/theme";
-import Skeleton from "react-loading-skeleton";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import Skeleton from "react-loading-skeleton";
+import { LogIn, LogOut, Mail, User } from "lucide-react";
+import { themes } from "@/theme";
+import { usePreference } from "@/components/PreferenceProvider";
 
 function AccountSection() {
   const { data: session, status } = useSession();
-  const theme = themes[1];
+  const { themeId } = usePreference();
+  const theme = themes[themeId];
 
   return (
     <div className="flex flex-col gap-2 pb-16 pt-6 border-b border-zinc-500">

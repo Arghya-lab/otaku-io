@@ -2,13 +2,13 @@
 
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LineWave } from "react-loader-spinner";
-import { themes } from "@/theme";
 import { useState } from "react";
 import usePosterItemCount from "@/hooks/usePosterItemCount";
 import axios from "axios";
 import { usePreference } from "@/components/PreferenceProvider";
-import { WatchingAnimeType } from "@/services/getUserWatching";
 import ContinueWatchingPosterItem from "@/components/ContinueWatchingPosterItem";
+import { themes } from "@/theme";
+import { WatchingAnimeType } from "@/types/anime";
 
 function InfiniteHistoryScroll({
   initialData,
@@ -37,7 +37,7 @@ function InfiniteHistoryScroll({
 
       const { currentPage, hasNextPage, results } = res.data;
 
-      setData((prev: any) => [...prev, ...results] as WatchingAnimeType[]);
+      setData((prev) => [...prev, ...results] as WatchingAnimeType[]);
       setHasMore(hasNextPage as boolean);
       setPageNo(currentPage as number);
     } catch (error) {

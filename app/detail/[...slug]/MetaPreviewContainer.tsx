@@ -1,27 +1,34 @@
+import { getServerSession } from "next-auth";
+import Image from "next/image";
 import htmlParse from "html-react-parser";
-import axios from "axios";
 import Chip from "./Chip";
 import ChipBtn from "./ChipBtn";
 import BookmarkBtn from "./BookmarkBtn";
 import User from "@/models/User";
-import { getServerSession } from "next-auth";
-import Image from "next/image";
+import { AnimeImdbInfoType, DetailAnimeInfoType } from "@/types/anime";
 
 async function MetaPreviewContainer({
   detailInfo,
   imdbInfo,
 }: {
-  detailInfo: any;
-  imdbInfo: any;
+  detailInfo: DetailAnimeInfoType;
+  imdbInfo: AnimeImdbInfoType | undefined;
 }) {
   const session = await getServerSession();
   const user = await User.findOne({ email: session?.user?.email });
   let bookmarks = user.bookmarks || null;
 
   const title =
-    detailInfo?.title?.english ||
-    detailInfo?.title?.native ||
-    detailInfo?.title?.romaji;
+    typeof detailInfo.title === "string"
+      ? detailInfo.title
+      : detailInfo.title?.english ||
+        detailInfo.title?.native ||
+        detailInfo.title?.romaji ||
+        detailInfo.title?.userPreferred ||
+        "";
+
+  const color = detailInfo?.color || "#000";
+
   return (
     <>
       <div className="flex items-center">
@@ -31,7 +38,7 @@ async function MetaPreviewContainer({
             height={128}
             width={256}
             alt={title}
-            src={`https://images.metahub.space/logo/medium/${imdbInfo?.imdbID}/img`}
+            src={`https://images.metahub.space/logo/medium/${imdbInfo.imdbID}/img`}
           />
         ) : (
           <div className="min-h-32 text-6xl font-extrabold font-nunito text-white">
@@ -45,36 +52,24 @@ async function MetaPreviewContainer({
           <Chip
             name={"popularity"}
             value={detailInfo?.popularity}
-            color={detailInfo?.color}
+            color={color}
           />
-          <Chip
-            name={"rating"}
-            value={detailInfo?.rating}
-            color={detailInfo?.color}
-          />
+          <Chip name={"rating"} value={detailInfo?.rating} color={color} />
         </div>
         <div className="flex flex-wrap gap-3 mb-4">
           <Chip
             name={"Imdb rating"}
             value={imdbInfo?.imdbRating}
-            color={detailInfo?.color}
+            color={color}
           />
-          <Chip
-            name={"Runtime"}
-            value={detailInfo?.duration}
-            color={detailInfo?.color}
-          />
-          <Chip
-            name={"Rated"}
-            value={imdbInfo?.Rated}
-            color={detailInfo?.color}
-          />
+          <Chip name={"Runtime"} value={detailInfo?.duration} color={color} />
+          <Chip name={"Rated"} value={imdbInfo?.Rated} color={color} />
         </div>
         <div className="flex flex-wrap gap-3 mb-12">
           <Chip
             name={"totalSeasons"}
             value={imdbInfo?.totalSeasons}
-            color={detailInfo?.color}
+            color={color}
           />
           {detailInfo?.startDate?.year &&
           detailInfo?.startDate?.month &&
@@ -82,13 +77,13 @@ async function MetaPreviewContainer({
             <Chip
               name={"releaseDate"}
               value={`${detailInfo?.startDate?.year}-${detailInfo?.startDate?.month}-${detailInfo?.startDate?.day}`}
-              color={detailInfo?.color}
+              color={color}
             />
           ) : (
             <Chip
               name={"releaseDate"}
               value={detailInfo?.releaseDate}
-              color={detailInfo?.color}
+              color={color}
             />
           )}
           {detailInfo?.endDate?.year &&
@@ -97,14 +92,10 @@ async function MetaPreviewContainer({
             <Chip
               name={"endDate"}
               value={`${detailInfo?.endDate?.year}-${detailInfo?.endDate?.month}-${detailInfo?.endDate?.day}`}
-              color={detailInfo?.color}
+              color={color}
             />
           ) : null}
-          <Chip
-            name={"season"}
-            value={detailInfo?.season}
-            color={detailInfo?.color}
-          />
+          <Chip name={"season"} value={detailInfo?.season} color={color} />
         </div>
 
         {detailInfo?.genres && (
@@ -113,8 +104,8 @@ async function MetaPreviewContainer({
               genres
             </p>
             <div className="flex flex-wrap gap-2 items-center mt-2 mb-8 ml-4">
-              {detailInfo?.genres.map((genre: any, id: number) => (
-                <ChipBtn key={id} name={genre} color={detailInfo?.color} />
+              {detailInfo?.genres.map((genre, id) => (
+                <ChipBtn key={id} name={genre} color={color} />
               ))}
             </div>
           </div>
@@ -126,7 +117,7 @@ async function MetaPreviewContainer({
             </p>
             <div className="flex flex-wrap items-center mt-2 mb-8 ml-4">
               {detailInfo?.studios.map((studio: string, id: number) => (
-                <Chip key={id} value={studio} color={detailInfo?.color} />
+                <Chip key={id} value={studio} color={color} />
               ))}
             </div>
           </div>
@@ -145,17 +136,9 @@ async function MetaPreviewContainer({
           </div>
         )}
         <div className="flex flex-wrap gap-3 my-8">
-          <Chip
-            name={"Type"}
-            value={detailInfo?.type}
-            color={detailInfo?.color}
-          />
+          <Chip name={"Type"} value={detailInfo?.type} color={color} />
           {imdbInfo?.Writer !== "N/A" && (
-            <Chip
-              name={"Writer"}
-              value={imdbInfo?.Writer}
-              color={detailInfo?.color}
-            />
+            <Chip name={"Writer"} value={imdbInfo?.Writer} color={color} />
           )}
         </div>
       </div>

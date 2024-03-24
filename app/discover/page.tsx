@@ -32,7 +32,7 @@ async function DiscoverPage({
           {/* Meta items container */}
           <InfiniteDiscoverScroll
             initialData={results}
-            hasNextPage={hasNextPage}
+            hasNextPage={!!hasNextPage}
           />
         </main>
       </div>

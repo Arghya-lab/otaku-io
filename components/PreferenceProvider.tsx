@@ -10,7 +10,7 @@ import React, {
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import { themes } from "@/theme";
-import { cookies } from "next/headers";
+import setThemeInCookie from "@/actions/actions";
 
 export const defaultPreference = {
   themeId: 23,
@@ -55,7 +55,7 @@ export const usePreference = () => useContext(PreferencesContext);
 
 const PreferencesProvider = ({ children }: { children: ReactNode }) => {
   const { data: session } = useSession();
-  const [preferences, setPreference] = useState(defaultPreference);
+  const [preferences, setPreferences] = useState(defaultPreference);
 
   const fetchPreferences = async () => {
     if (!localStorage.getItem("preferences")) {
@@ -64,7 +64,7 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
     try {
       const res = await axios.get("/api/preference");
 
-      setPreference(res.data);
+      setPreferences(res.data);
       localStorage.setItem("preferences", JSON.stringify(res.data));
     } catch (err) {
       console.warn("Error occur while fetching data from server error ::", err);
@@ -73,7 +73,7 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (session) {
-      setPreference(
+      setPreferences(
         JSON.parse(
           localStorage.getItem("preferences") ||
             JSON.stringify(defaultPreference)
@@ -120,6 +120,8 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
           }
         } else if (updateType === UpdateTypeEnum.CHANGE_THEME_ID) {
           payload = Number(payload);
+          setThemeInCookie(payload);
+
           if (!payload || payload < 1 || payload > themes.length) {
             console.error("Error: invalid preference update payload.");
           } else {
@@ -132,44 +134,48 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
         }
 
         if (data) {
-          setPreference(data);
+          setPreferences(data);
+          localStorage.setItem("preferences", JSON.stringify(data));
         }
       } else {
         if (updateType === UpdateTypeEnum.TOGGLE_AUTO_NEXT) {
-          setPreference((prev) => ({ ...prev, autoNext: !prev.autoNext }));
+          setPreferences((prev) => ({ ...prev, autoNext: !prev.autoNext }));
         } else if (updateType === UpdateTypeEnum.TOGGLE_AUTO_PLAY) {
-          setPreference((prev) => ({ ...prev, autoPlay: !prev.autoPlay }));
+          setPreferences((prev) => ({ ...prev, autoPlay: !prev.autoPlay }));
         } else if (updateType === UpdateTypeEnum.TOGGLE_AUTO_SKIP) {
-          setPreference((prev) => ({ ...prev, autoSkip: !prev.autoSkip }));
+          setPreferences((prev) => ({ ...prev, autoSkip: !prev.autoSkip }));
         } else if (updateType === UpdateTypeEnum.TOGGLE_IS_DUB) {
-          setPreference((prev) => ({ ...prev, isDub: !prev.isDub }));
+          setPreferences((prev) => ({ ...prev, isDub: !prev.isDub }));
         } else if (updateType === UpdateTypeEnum.CHANGE_PLAYBACK_QUALITY) {
           if (
             !payload ||
             !["360p", "480p", "720p", "1080p"].includes(payload.toString())
           ) {
             console.error("Error: invalid preference update payload.");
-          } else if (payload) {
-            setPreference((prev) => ({
-              ...prev,
-              playbackQuality: payload.toString(),
-            }));
+          }
+          if (typeof payload === "string") {
+            setPreferences({
+              ...preferences,
+              playbackQuality: payload,
+            });
           }
         } else if (updateType === UpdateTypeEnum.CHANGE_SEEK_SECONDS) {
           if (!payload || ![5, 10, 15, 20].includes(Number(payload))) {
             console.error("Error: invalid preference update payload.");
           } else {
-            setPreference((prev) => ({
+            setPreferences((prev) => ({
               ...prev,
               seekSeconds: Number(payload),
             }));
           }
         } else if (updateType === UpdateTypeEnum.CHANGE_THEME_ID) {
           payload = Number(payload);
+          setThemeInCookie(payload);
+
           if (!payload || payload < 1 || payload > themes.length) {
             console.error("Error: invalid preference update payload.");
           } else {
-            setPreference((prev) => ({
+            setPreferences((prev) => ({
               ...prev,
               themeId: Number(payload),
             }));
@@ -178,9 +184,8 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
         } else {
           console.error("Error: invalid preference update type.");
         }
+        localStorage.setItem("preferences", JSON.stringify(preferences));
       }
-
-      localStorage.setItem("preferences", JSON.stringify(preferences));
     } catch (error) {
       console.error("Error updating preferences:", error);
     }

@@ -3,11 +3,12 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LineWave } from "react-loader-spinner";
 import PosterItem from "@/components/PosterItem";
-import { themes } from "@/theme";
+import { usePreference } from "@/components/PreferenceProvider";
 import { useState } from "react";
-import usePosterItemCount from "@/hooks/usePosterItemCount";
-import { IAnimeResult } from "@consumet/extensions";
 import { getAnimesByIds } from "@/services/getAnimesByIds";
+import usePosterItemCount from "@/hooks/usePosterItemCount";
+import { themes } from "@/theme";
+import { AnimeItemType } from "@/types/anime";
 
 function InfiniteLibraryScroll({
   bookmarkAnimeIds,
@@ -15,10 +16,11 @@ function InfiniteLibraryScroll({
   hasNextPage,
 }: {
   bookmarkAnimeIds: string[];
-  initialData: IAnimeResult[];
+  initialData: AnimeItemType[];
   hasNextPage: boolean;
 }) {
-  const theme = themes[1];
+  const { themeId } = usePreference();
+  const theme = themes[themeId];
   const posterItemCount = usePosterItemCount();
 
   let currentPage = 1;

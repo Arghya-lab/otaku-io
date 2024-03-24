@@ -2,10 +2,11 @@
 
 import EpBtnSheet from "@/components/EpBtnSheet";
 import TopNavbar from "@/components/TopNavbar";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import { useEffect, useState } from "react";
 import RecommendItem from "./RecommendItem";
 import Player from "./Player";
+import { AnimeEpisodeType, DetailAnimeInfoType } from "@/types/anime";
 
 function VideoWatchPage({
   params,
@@ -19,38 +20,52 @@ function VideoWatchPage({
   const epId = decodeURIComponent(params.slug[2]);
   const isDub = searchParams.dub === "true" ? true : false;
 
-  const [detailInfo, setDetailInfo] = useState<any>(null);
-  const [episode, setEpisode] = useState<any>(null);
+  const [detailInfo, setDetailInfo] = useState<DetailAnimeInfoType | null>(
+    null
+  );
+  const [episode, setEpisode] = useState<AnimeEpisodeType | null>(null);
 
   useEffect(() => {
     (async () => {
-      const savedDetailInfo = await JSON.parse(
+      const savedDetailInfo: DetailAnimeInfoType | null = await JSON.parse(
         localStorage.getItem("detailInfo") || "null"
       );
-      const savedEpisode = savedDetailInfo?.episodes.find(
-        (ep: any) => ep.id == epId
-      );
-
-      if (savedDetailInfo && savedEpisode) {
-        setDetailInfo(savedDetailInfo);
-        setEpisode(savedEpisode);
+      if (savedDetailInfo && savedDetailInfo?.episodes) {
+        const savedEpisode = savedDetailInfo.episodes.find(
+          (ep) => ep.id === epId
+        );
+        if (savedEpisode) {
+          setDetailInfo(savedDetailInfo);
+          setEpisode(savedEpisode);
+        }
       } else {
-        const res = await axios.get(`/api/detail-info/${animeId}?dub=${isDub}`);
+        try {
+          const res = await axios.get(
+            `/api/detail-info/${animeId}?dub=${isDub}`
+          );
+          const data: DetailAnimeInfoType = res.data;
 
-        setDetailInfo(res.data);
-        setEpisode(res.data?.episodes.find((ep: any) => ep.id == epId));
+          setDetailInfo(data);
+          if (data?.episodes) {
+            setEpisode(data.episodes.find((ep) => ep.id === epId) ?? null);
+          }
+        } catch (error) {
+          if (isAxiosError(error)) {
+            console.log(error.message);
+          }
+        }
       }
     })();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+
   if (!animeId || !epNo || !epId) {
     return <p>Invalid url</p>;
   }
 
   if (!detailInfo || !episode) {
     return <p>Loading....</p>;
-  }  
+  }
 
   return (
     <div className="max-w-[1600px] m-auto overflow-x-hidden">
@@ -73,23 +88,23 @@ function VideoWatchPage({
             </p>
           </div>
           <div className="px-2 xxs:px-0">
-          <EpBtnSheet
-            modeResponsiveness={true}
-            detailInfo={detailInfo}
-            isDubEnable={isDub}
-            episodeNo={Number(epNo)}
-            isWatchPage={true}
+            <EpBtnSheet
+              modeResponsiveness={true}
+              detailInfo={detailInfo}
+              isDubEnable={isDub}
+              episodeNo={Number(epNo)}
+              isWatchPage={true}
             />
-            </div>
-            </div>
+          </div>
+        </div>
         {detailInfo?.recommendations ? (
           <div
             className="flex-1 grid gap-4 justify-evenly pb-8 px-2 md:p-0"
             style={{
               gridTemplateColumns: "repeat(auto-fit, minmax(16rem, 24rem))",
             }}>
-            {detailInfo?.recommendations.slice(0, 8).map((reco: any) => (
-              <RecommendItem key={reco?.id} item={reco} />
+            {detailInfo?.recommendations.slice(0, 8).map((recommendation) => (
+              <RecommendItem key={recommendation.id} item={recommendation} />
             ))}
           </div>
         ) : null}

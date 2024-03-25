@@ -6,7 +6,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { LineWave } from "react-loader-spinner";
 import axios from "axios";
 import PosterItem from "@/components/PosterItem";
-import { usePreference } from "@/components/PreferenceProvider";
+import { usePreference } from "@/app/PreferenceProvider";
 import usePosterItemCount from "@/hooks/usePosterItemCount";
 import { themes } from "@/theme";
 import { AnimeItemType } from "@/types/anime";
@@ -19,7 +19,7 @@ function InfiniteDiscoverScroll({
   hasNextPage: boolean;
 }) {
   const { themeId } = usePreference();
-  const theme = themes[themeId];
+  const theme = themes.find(theme=>theme.id===themeId) || themes[0];
   const posterItemCount = usePosterItemCount();
   const searchParams = useSearchParams();
   const searchParamsString = searchParams.toString();

@@ -5,7 +5,7 @@ import { LineWave } from "react-loader-spinner";
 import { useState } from "react";
 import usePosterItemCount from "@/hooks/usePosterItemCount";
 import axios from "axios";
-import { usePreference } from "@/components/PreferenceProvider";
+import { usePreference } from "@/app/PreferenceProvider";
 import ContinueWatchingPosterItem from "@/components/ContinueWatchingPosterItem";
 import { themes } from "@/theme";
 import { WatchingAnimeType } from "@/types/anime";
@@ -18,7 +18,7 @@ function InfiniteHistoryScroll({
   hasNextPage: boolean;
 }) {
   const { themeId } = usePreference();
-  const theme = themes[themeId];
+  const theme = themes.find(theme=>theme.id===themeId) || themes[0];
 
   const posterItemCount = usePosterItemCount();
 

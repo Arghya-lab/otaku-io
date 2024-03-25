@@ -10,7 +10,8 @@ import React, {
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import { themes } from "@/theme";
-import setThemeInCookie from "@/actions/actions";
+import { useCookies } from "next-client-cookies";
+import { useRouter } from "next/navigation";
 
 export const defaultPreference = {
   themeId: 23,
@@ -56,6 +57,8 @@ export const usePreference = () => useContext(PreferencesContext);
 const PreferencesProvider = ({ children }: { children: ReactNode }) => {
   const { data: session } = useSession();
   const [preferences, setPreferences] = useState(defaultPreference);
+  const cookies = useCookies();
+  const router = useRouter();
 
   const fetchPreferences = async () => {
     if (!localStorage.getItem("preferences")) {
@@ -120,13 +123,14 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
           }
         } else if (updateType === UpdateTypeEnum.CHANGE_THEME_ID) {
           payload = Number(payload);
-          setThemeInCookie(payload);
 
           if (!payload || payload < 1 || payload > themes.length) {
             console.error("Error: invalid preference update payload.");
           } else {
+            cookies.set("themeId", payload.toString());
+            router.refresh();
             ({ data } = await axios.patch("/api/preference/themeid", {
-              themeId: Number(payload),
+              themeId: payload,
             }));
           }
         } else {
@@ -170,17 +174,18 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
           }
         } else if (updateType === UpdateTypeEnum.CHANGE_THEME_ID) {
           payload = Number(payload);
-          setThemeInCookie(payload);
 
           if (!payload || payload < 1 || payload > themes.length) {
             console.error("Error: invalid preference update payload.");
           } else {
+            cookies.set("themeId", payload.toString());
+            router.refresh();
+
             setPreferences((prev) => ({
               ...prev,
               themeId: Number(payload),
             }));
           }
-          // cookies().set("themeId", payload.toString())
         } else {
           console.error("Error: invalid preference update type.");
         }

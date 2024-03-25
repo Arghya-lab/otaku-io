@@ -6,7 +6,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { FilterIcon } from "lucide-react";
 import chroma from "chroma-js";
 import Select from "@/components/ui/Select";
-import { usePreference } from "@/components/PreferenceProvider";
+import { usePreference } from "@/app/PreferenceProvider";
 import {
   formatList,
   genreList,
@@ -19,7 +19,7 @@ import { themes } from "@/theme";
 
 function Filter() {
   const { themeId } = usePreference();
-  const theme = themes[themeId];
+  const theme = themes.find(theme=>theme.id===themeId) || themes[0];
 
   const searchParams = useSearchParams();
   const router = useRouter();

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { shade } from "../../utils/color";
 import { themes } from "@/theme";
-import { usePreference } from "../PreferenceProvider";
+import { usePreference } from "../../app/PreferenceProvider";
 import { AnimeEpisodeType } from "@/types/anime";
 
 function EpBtn({
@@ -22,7 +22,7 @@ function EpBtn({
   watching?: boolean;
 }) {
   const { themeId } = usePreference();
-  const theme = themes[themeId];
+  const theme = themes.find(theme=>theme.id===themeId) || themes[0];
 
   const [isHovered, setIsHovered] = useState(false);
 

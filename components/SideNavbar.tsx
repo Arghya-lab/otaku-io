@@ -6,7 +6,7 @@ import chroma from "chroma-js";
 import { Cog, Compass, Home, LibraryBig } from "lucide-react";
 import useWindowSize from "@/hooks/useWindowSize";
 import { themes } from "@/theme";
-import { usePreference } from "./PreferenceProvider";
+import { usePreference } from "../app/PreferenceProvider";
 
 function SideNavbar({ pathName }: { pathName: string }) {
   const { windowWidth } = useWindowSize();
@@ -14,7 +14,7 @@ function SideNavbar({ pathName }: { pathName: string }) {
     null | "Home" | "Discover" | "Library" | "Setting"
   >(null);
   const { themeId } = usePreference();
-  const theme = themes[themeId];
+  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
 
   const selectedBtn =
     pathName === "/"

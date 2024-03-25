@@ -27,7 +27,7 @@ import VideoLoadedBar from "./VideoLoadedBar";
 import VolumeController from "./VolumeController";
 import ReactPlayer from "react-player";
 import useWindowSize from "@/hooks/useWindowSize";
-import { usePreference } from "@/components/PreferenceProvider";
+import { usePreference } from "@/app/PreferenceProvider";
 import { secToMinSec } from "@/utils/time";
 import { PlayerActionType, PlayerStateType } from "@/types/player";
 // import useOrientation from "../../hooks/useOrientation";
@@ -67,16 +67,13 @@ const PlayerControl = forwardRef(
       } else if (e.key === "Escape" || e.keyCode === 27) {
         handleExitFullScreen();
       } else if (e.key === "ArrowUp" || e.keyCode === 38) {
-        // setPlayerState((prev: any) => ({ ...prev, volume: prev.volume + 0.1 }));
         dispatch({ type: "updateVolume", payload: 0.1 });
       } else if (e.key === "ArrowDown" || e.keyCode === 40) {
-        // setPlayerState((prev: any) => ({ ...prev, volume: prev.volume - 0.1 }));
         dispatch({ type: "updateVolume", payload: -0.1 });
       }
     };
 
     const handleTogglePlayPause = () => {
-      // setPlayerState((prev: any) => ({ ...prev, playing: !prev?.playing }));
       dispatch({ type: "togglePlaying" });
     };
     const handleSkipForward = () => {
@@ -97,25 +94,20 @@ const PlayerControl = forwardRef(
 
     const handleFullScreen = () => {
       if (playerElement) {
-        // setPlayerState((prev) => ({ ...prev, pip: false }));
         screenfull.request(playerElement);
         if (screen.orientation) {
-        //   screen.orientation.lock("landscape");
+          //   screen.orientation.lock("landscape");
         }
-        // setPlayerState((prev: any) => ({ ...prev, playerFullScreen: true }));
         dispatch({ type: "minimizeMaximize", payload: true });
       }
     };
 
     const handleExitFullScreen = () => {
-      {
-        screenfull.exit();
-        if (screen.orientation) {
-          screen.orientation.unlock();
-        }
-        // setPlayerState((prev: any) => ({ ...prev, playerFullScreen: false }));
-        dispatch({ type: "minimizeMaximize", payload: false });
+      screenfull.exit();
+      if (screen.orientation) {
+        screen.orientation.unlock();
       }
+      dispatch({ type: "minimizeMaximize", payload: false });
     };
 
     // const handleTogglePIP = () => {
@@ -140,14 +132,12 @@ const PlayerControl = forwardRef(
         className="flex items-center justify-center absolute bottom-0 left-0 right-0 top-0 z-20 text-white"
         onDoubleClick={() => {
           if (state.playerFullScreen) {
-            // if (playerState.playerFullScreen) {
             handleExitFullScreen();
           } else {
             handleFullScreen();
           }
         }}>
-        {!state?.loaded && (
-          // {!playerState?.loaded && (
+        {state?.loaded && (
           <div className="w-full flex items-center justify-center gap-[15%]">
             {windowWidth <= 640 && (
               <div
@@ -158,25 +148,22 @@ const PlayerControl = forwardRef(
               </div>
             )}
             <div role="button" onClick={handleTogglePlayPause}>
-              {state.playing ? (
-                !state.buffering && (
-                  // {playerState?.playing ? (
-                  //   !playerState?.buffering && (
+              {!state.buffering &&
+                (state.playing ? (
                   <Pause
                     className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
                     strokeWidth={1}
                     fill="#fff"
                     color="#fff"
                   />
-                )
-              ) : (
-                <Play
-                  className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
-                  strokeWidth={3}
-                  fill="#fff"
-                  color="#fff"
-                />
-              )}
+                ) : (
+                  <Play
+                    className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
+                    strokeWidth={3}
+                    fill="#fff"
+                    color="#fff"
+                  />
+                ))}
             </div>
             {windowWidth <= 640 && (
               <div
@@ -196,7 +183,6 @@ const PlayerControl = forwardRef(
                 className="px-1 xs:px-2"
                 onClick={handleTogglePlayPause}>
                 {state.playing ? (
-                  // {playerState?.playing ? (
                   <Pause
                     className="h-4 w-4 xs:h-6 xs:w-6"
                     fill="#fff"
@@ -217,15 +203,8 @@ const PlayerControl = forwardRef(
                 <span>
                   {
                     isRemainingTime
-                      ? "-" +
-                        secToMinSec(
-                          (1 - state.played) * state.duration
-                          // (1 - playerState?.played) * playerState?.duration
-                        )
-                      : secToMinSec(
-                          state.played * state.duration
-                          // playerState?.played * playerState?.duration
-                        )
+                      ? "-" + secToMinSec((1 - state.played) * state.duration)
+                      : secToMinSec(state.played * state.duration)
                     // playerRef.current.getCurrentTime()
                   }
                 </span>
@@ -259,7 +238,6 @@ const PlayerControl = forwardRef(
             </div> */}
               <Popover className="relative">
                 <Popover.Button className="font-nunito text-sm xs:text-base">
-                  {/* {playerState.currentSource?.quality} */}
                   {state.currentSource?.quality || "unknown"}
                 </Popover.Button>
                 <Popover.Panel className="absolute bottom-12 -left-14 z-10 bg-black bg-opacity-80 rounded-lg">
@@ -269,23 +247,12 @@ const PlayerControl = forwardRef(
                     </p>
                     <div className="my-2">
                       {state.sources.map((source: any) => (
-                        // {playerState.sources.map((source: any) => (
                         <div
                           role="button"
                           className="mx-2 px-4 py-2 w-40 text-sm font-nunito hover:bg-black bg-opacity-60 rounded flex justify-between"
                           key={source?.quality}
                           onClick={() => {
                             setWatched();
-                            // setPlayerState((prev: any) => ({
-                            //   ...prev,
-                            //   url: source.url,
-                            //   playing: isAutoPlayEnabled,
-                            //   played: 0,
-                            //   loaded: 0,
-                            //   // pip: false,
-                            //   currentSource: source,
-                            //   playbackQuality: source?.quality,
-                            // }));
                             dispatch({
                               type: "updateStreamingLinks",
                               payload: {
@@ -300,8 +267,7 @@ const PlayerControl = forwardRef(
                             size={24}
                             className={
                               source?.quality == state.currentSource?.quality
-                                ? // playerState.currentSource?.quality
-                                  "text-white"
+                                ? "text-white"
                                 : "text-transparent"
                             }
                           />
@@ -330,7 +296,6 @@ const PlayerControl = forwardRef(
               </div> */}
               <div role="button" className="px-1.5 xs:px-3">
                 {state.playerFullScreen ? (
-                  // {playerState.playerFullScreen ? (
                   <Minimize
                     className="h-4 w-4 xs:h-6 xs:w-6"
                     color="#fff"

@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { Poppins, Nunito_Sans } from "next/font/google";
 import "./globals.css";
 import connectDB, { isMongoConnected } from "@/db/db";
-import AuthProvider from "../components/AuthProvider";
+import AuthProvider from "./AuthProvider";
 import { themes } from "@/theme";
-import PreferencesProvider from "@/components/PreferenceProvider";
+import PreferencesProvider from "@/app/PreferenceProvider";
 import { cookies } from "next/headers";
-import setThemeInCookie from "@/actions/actions";
+import { CookiesProvider } from "next-client-cookies/server";
 
 export const poppins_init = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -29,14 +29,9 @@ export const metadata: Metadata = {
 
 export const getUserTheme = () => {
   let themeCookie = cookies().get("themeId");
-  let themeId = 23;
-  if (!themeCookie) {
-    setThemeInCookie(23);
-  } else {
-    themeId = Number(themeCookie.value);
-  }
-  const userTheme = themes.find((theme) => theme.id === themeId) || themes[22];
-  return userTheme;
+  let themeId = Number(themeCookie?.value || 1);
+
+  return themes.find((theme) => theme.id === themeId) || themes[0];
 };
 
 export default async function RootLayout({
@@ -50,20 +45,22 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <AuthProvider>
-        <PreferencesProvider>
-          <body
-            id="App"
-            className={`${poppins_init.variable} ${nunito_Sans_init.variable} font-poppins w-full relative`}>
-            <div
-              className="fixed -z-20 w-screen h-screen bg-cover"
-              style={{
-                backgroundColor: theme.primaryColor,
-                background: theme.bgImg,
-              }}
-            />
-            {children}
-          </body>
-        </PreferencesProvider>
+        <CookiesProvider>
+          <PreferencesProvider>
+            <body
+              id="App"
+              className={`${poppins_init.variable} ${nunito_Sans_init.variable} font-poppins w-full relative`}>
+              <div
+                className="fixed -z-20 w-screen h-screen bg-cover"
+                style={{
+                  backgroundColor: theme.primaryColor,
+                  background: theme.bgImg,
+                }}
+              />
+              {children}
+            </body>
+          </PreferencesProvider>
+        </CookiesProvider>
       </AuthProvider>
     </html>
   );

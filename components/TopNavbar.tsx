@@ -9,19 +9,19 @@ import { Search, X } from "lucide-react";
 import MinMaximizeBtn from "@/components/ui/MinMaximizeBtn";
 import useScroll from "@/hooks/useScroll";
 import useWindowSize from "@/hooks/useWindowSize";
-import { usePreference } from "./PreferenceProvider";
+import { usePreference } from "../app/PreferenceProvider";
 import { themes } from "@/theme";
 
 function TopNavbar() {
   const { themeId } = usePreference();
-  const theme = themes[themeId];
+  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
 
   const { windowWidth } = useWindowSize();
   const scrolled = useScroll();
   const router = useRouter();
 
   const [searchQuery, setSearchQuery] = useState("");
-  const logoId = useMemo(() => Math.ceil(Math.random() * 16), []);
+  // const logoId = useMemo(() => Math.ceil(Math.random() * 16), []);
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -49,7 +49,7 @@ function TopNavbar() {
           width={50}
           height={50}
           className="scale-125"
-          src={`/logo-${logoId}.png`}
+          src={`/logo-${themeId%14}.png`}
         />
       </Link>
       <form

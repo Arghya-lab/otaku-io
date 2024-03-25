@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { shade } from "@/utils/color";
-import { usePreference } from "./PreferenceProvider";
+import { usePreference } from "../app/PreferenceProvider";
 import { posterItemType } from "@/types/constants";
 import { AnimeItemType } from "@/types/anime";
 

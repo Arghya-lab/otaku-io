@@ -6,7 +6,7 @@ import { Listbox, Transition } from "@headlessui/react";
 import { Check, ChevronDown } from "lucide-react";
 import { shade } from "../../utils/color";
 import { themes } from "@/theme";
-import { usePreference } from "../PreferenceProvider";
+import { usePreference } from "../../app/PreferenceProvider";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -26,7 +26,7 @@ function Select({
   onChange: (value: { value: string | number | undefined; name: string }) => void;
 }) {
   const { themeId } = usePreference();
-  const theme = themes[themeId];
+  const theme = themes.find(theme=>theme.id===themeId) || themes[0];
   
   return (
     <div>

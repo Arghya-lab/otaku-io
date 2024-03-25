@@ -5,7 +5,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import Tippy from "@tippyjs/react";
 import { Check } from "lucide-react";
 import { themeType, themes } from "@/theme";
-import { UpdateTypeEnum, usePreference } from "@/components/PreferenceProvider";
+import { UpdateTypeEnum, usePreference } from "@/app/PreferenceProvider";
 
 function ThemeSelectModal({
   isOpen,

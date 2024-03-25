@@ -3,7 +3,7 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LineWave } from "react-loader-spinner";
 import PosterItem from "@/components/PosterItem";
-import { usePreference } from "@/components/PreferenceProvider";
+import { usePreference } from "@/app/PreferenceProvider";
 import { useState } from "react";
 import { getAnimesByIds } from "@/services/getAnimesByIds";
 import usePosterItemCount from "@/hooks/usePosterItemCount";
@@ -20,7 +20,7 @@ function InfiniteLibraryScroll({
   hasNextPage: boolean;
 }) {
   const { themeId } = usePreference();
-  const theme = themes[themeId];
+  const theme = themes.find(theme=>theme.id===themeId) || themes[0];
   const posterItemCount = usePosterItemCount();
 
   let currentPage = 1;

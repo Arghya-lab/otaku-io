@@ -5,12 +5,12 @@ import { useSession } from "next-auth/react";
 import Skeleton from "react-loading-skeleton";
 import { LogIn, LogOut, Mail, User } from "lucide-react";
 import { themes } from "@/theme";
-import { usePreference } from "@/components/PreferenceProvider";
+import { usePreference } from "@/app/PreferenceProvider";
 
 function AccountSection() {
   const { data: session, status } = useSession();
   const { themeId } = usePreference();
-  const theme = themes[themeId];
+  const theme = themes.find(theme=>theme.id===themeId) || themes[0];
 
   return (
     <div className="flex flex-col gap-2 pb-16 pt-6 border-b border-zinc-500">

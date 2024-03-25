@@ -5,11 +5,11 @@ import { Palette } from "lucide-react";
 import Radio from "@/components/ui/Radio";
 import ThemeSelectModal from "./ThemeSelectModal";
 import { themes } from "@/theme";
-import { UpdateTypeEnum, usePreference } from "@/components/PreferenceProvider";
+import { UpdateTypeEnum, usePreference } from "@/app/PreferenceProvider";
 
 function GeneralSection() {
   const { themeId, isDub, updatePreference } = usePreference();
-  const theme = themes[themeId];
+  const theme = themes.find(theme=>theme.id===themeId) || themes[0];
 
   const [isThemeSelectModalOpen, setIsThemeSelectModalOpen] = useState(false);
 

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Oval } from "react-loader-spinner";
 import { PlayCircle } from "lucide-react";
-import { usePreference } from "./PreferenceProvider";
+import { usePreference } from "../app/PreferenceProvider";
 import { shade } from "@/utils/color";
 import setDetailInfoAndGetWatchPageLink from "@/utils/setDetailInfoAndGetWatchPageLink";
 import { WatchingAnimeType } from "@/types/anime";

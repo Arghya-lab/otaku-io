@@ -8,7 +8,7 @@ import {
   UpdateTypeEnum,
   defaultPreference,
   usePreference,
-} from "@/components/PreferenceProvider";
+} from "@/app/PreferenceProvider";
 
 function PlayerSection() {
   const {
@@ -20,7 +20,7 @@ function PlayerSection() {
     playbackQuality,
     updatePreference,
   } = usePreference();
-  const theme = themes[themeId];
+  const theme = themes.find(theme=>theme.id===themeId) || themes[0];
 
   const handleChangeAutoPlay = () => {
     updatePreference(UpdateTypeEnum.TOGGLE_AUTO_PLAY);

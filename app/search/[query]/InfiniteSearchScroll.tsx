@@ -7,7 +7,7 @@ import { themes } from "@/theme";
 import { useState } from "react";
 import usePosterItemCount from "@/hooks/usePosterItemCount";
 import axios from "axios";
-import { usePreference } from "@/components/PreferenceProvider";
+import { usePreference } from "@/app/PreferenceProvider";
 import { AnimeItemType } from "@/types/anime";
 
 function InfiniteSearchScroll({
@@ -20,7 +20,7 @@ function InfiniteSearchScroll({
   hasNextPage: boolean;
 }) {
   const { themeId } = usePreference();
-  const theme = themes[themeId];
+  const theme = themes.find(theme=>theme.id===themeId) || themes[0];
 
   const posterItemCount = usePosterItemCount();
 

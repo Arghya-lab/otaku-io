@@ -3,7 +3,6 @@ import { PlayerStateType } from "@/types/player";
 import { Loader2 } from "lucide-react";
 
 function PlayerLoader({ state }: { state: PlayerStateType }) {
-  // if (playerState?.loaded === 0) {
   if (state.loaded === 0) {
     return (
       <RotatingLines
@@ -18,7 +17,6 @@ function PlayerLoader({ state }: { state: PlayerStateType }) {
   }
 
   if (state.buffering) {
-    // if (playerState?.buffering) {
     return (
       <Loader2
         strokeWidth={2.5}

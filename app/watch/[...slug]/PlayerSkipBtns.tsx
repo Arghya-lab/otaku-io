@@ -1,6 +1,6 @@
 import { MutableRefObject } from "react";
 import ReactPlayer from "react-player";
-import { usePreference } from "@/components/PreferenceProvider";
+import { usePreference } from "@/app/PreferenceProvider";
 import { PlayerStateType } from "@/types/player";
 
 function PlayerSkipBtns({
@@ -13,7 +13,6 @@ function PlayerSkipBtns({
   const { autoSkip: isAutoSkipEnabled } = usePreference();
 
   if (state.skipTimes.length === 0) {
-    // if (playerState.length === 0) {
     return null;
   }
 
@@ -26,7 +25,6 @@ function PlayerSkipBtns({
   return (
     <div className="pb-3 flex flex-col gap-2 absolute bottom-20 right-4 z-40">
       {state.skipTimes.map((skipTime) => {
-        // {playerState.skipTimes.map((skipTime: any,id:number) => {
         if (playerRef.current) {
           const currentlyPlaying = playerRef.current.getCurrentTime();
 

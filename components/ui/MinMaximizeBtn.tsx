@@ -1,25 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import screenfull from "screenfull";
 import { Maximize, Minimize } from "lucide-react";
 
 function MinMaximizeBtn() {
   const [isFullScreen, setIsFullScreen] = useState(false);
 
-  useEffect(() => {
-    const handleFullScreenChange = () => {
-      setIsFullScreen(document.fullscreenElement === document.documentElement);
-    };
-
-    document.addEventListener("fullscreenchange", handleFullScreenChange);
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullScreenChange);
-    };
-  }, []);
-
   const handleMaximizeClick = () => {
     const appElement = document.getElementsByTagName("body")[0];
     if (appElement) {
       screenfull.request(appElement);
+      setIsFullScreen(true);
     }
   };
 
@@ -31,14 +21,11 @@ function MinMaximizeBtn() {
           strokeWidth={2.5}
           onClick={() => {
             screenfull.exit();
+            setIsFullScreen(false);
           }}
         />
       ) : (
-        <Maximize
-          size={24}
-          strokeWidth={2.5}
-          onClick={handleMaximizeClick}
-        />
+        <Maximize size={24} strokeWidth={2.5} onClick={handleMaximizeClick} />
       )}
     </div>
   );

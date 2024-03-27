@@ -16,7 +16,7 @@ async function MetaPreviewContainer({
 }) {
   const session = await getServerSession();
   const user = await User.findOne({ email: session?.user?.email });
-  let bookmarks = user.bookmarks || null;
+  let bookmarks = user?.bookmarks || null;
 
   const title =
     typeof detailInfo.title === "string"

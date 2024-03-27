@@ -14,7 +14,7 @@ import { useCookies } from "next-client-cookies";
 import { useRouter } from "next/navigation";
 
 export const defaultPreference = {
-  themeId: 23,
+  themeId: 1,
   autoNext: false,
   autoPlay: true,
   autoSkip: false,
@@ -61,9 +61,6 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   const fetchPreferences = async () => {
-    if (!localStorage.getItem("preferences")) {
-      localStorage.setItem("preferences", JSON.stringify(defaultPreference));
-    }
     try {
       const res = await axios.get("/api/preference");
 
@@ -75,13 +72,16 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
+    if (!localStorage.getItem("preferences")) {
+      localStorage.setItem("preferences", JSON.stringify(defaultPreference));
+    }
+    setPreferences(
+      JSON.parse(
+        localStorage.getItem("preferences") || JSON.stringify(defaultPreference)
+      )
+    );
+
     if (session) {
-      setPreferences(
-        JSON.parse(
-          localStorage.getItem("preferences") ||
-            JSON.stringify(defaultPreference)
-        )
-      );
       fetchPreferences();
     }
   }, [session]);
@@ -142,14 +142,16 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
           localStorage.setItem("preferences", JSON.stringify(data));
         }
       } else {
+        let data = preferences;
+
         if (updateType === UpdateTypeEnum.TOGGLE_AUTO_NEXT) {
-          setPreferences((prev) => ({ ...prev, autoNext: !prev.autoNext }));
+          data = { ...data, autoNext: !data.autoNext };
         } else if (updateType === UpdateTypeEnum.TOGGLE_AUTO_PLAY) {
-          setPreferences((prev) => ({ ...prev, autoPlay: !prev.autoPlay }));
+          data = { ...data, autoPlay: !data.autoPlay };
         } else if (updateType === UpdateTypeEnum.TOGGLE_AUTO_SKIP) {
-          setPreferences((prev) => ({ ...prev, autoSkip: !prev.autoSkip }));
+          data = { ...data, autoSkip: !data.autoSkip };
         } else if (updateType === UpdateTypeEnum.TOGGLE_IS_DUB) {
-          setPreferences((prev) => ({ ...prev, isDub: !prev.isDub }));
+          data = { ...data, isDub: !data.isDub };
         } else if (updateType === UpdateTypeEnum.CHANGE_PLAYBACK_QUALITY) {
           if (
             !payload ||
@@ -158,19 +160,13 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
             console.error("Error: invalid preference update payload.");
           }
           if (typeof payload === "string") {
-            setPreferences({
-              ...preferences,
-              playbackQuality: payload,
-            });
+            data = { ...data, playbackQuality: payload };
           }
         } else if (updateType === UpdateTypeEnum.CHANGE_SEEK_SECONDS) {
           if (!payload || ![5, 10, 15, 20].includes(Number(payload))) {
             console.error("Error: invalid preference update payload.");
           } else {
-            setPreferences((prev) => ({
-              ...prev,
-              seekSeconds: Number(payload),
-            }));
+            data = { ...data, seekSeconds: Number(payload) };
           }
         } else if (updateType === UpdateTypeEnum.CHANGE_THEME_ID) {
           payload = Number(payload);
@@ -181,15 +177,13 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
             cookies.set("themeId", payload.toString());
             router.refresh();
 
-            setPreferences((prev) => ({
-              ...prev,
-              themeId: Number(payload),
-            }));
+            data = { ...data, themeId: Number(payload) };
           }
         } else {
           console.error("Error: invalid preference update type.");
         }
-        localStorage.setItem("preferences", JSON.stringify(preferences));
+        localStorage.setItem("preferences", JSON.stringify(data));
+        setPreferences(data);
       }
     } catch (error) {
       console.error("Error updating preferences:", error);

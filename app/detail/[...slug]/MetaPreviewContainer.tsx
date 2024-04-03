@@ -31,7 +31,7 @@ async function MetaPreviewContainer({
 
   return (
     <>
-      <div className="flex items-center">
+      <div className="flex items-center justify-between flex-wrap max-w-96 gap-4">
         {imdbInfo?.imdbID ? (
           <Image
             className="object-contain object-center h-auto w-auto"

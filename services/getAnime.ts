@@ -46,13 +46,17 @@ const generateAnilistMeta = (
 
 // Query Parameters for getTrending:  page, perPage
 export const getTrending = async (page = 1, perPage = 10) => {
-  const anilist = generateAnilistMeta();
-
-  const res = (await anilist.fetchTrendingAnime(
-    page,
-    perPage
-  )) as TrendingAnimeResType;
-  return res;
+  // try {
+    const anilist = generateAnilistMeta();
+    
+    const res = (await anilist.fetchTrendingAnime(
+      page,
+      perPage
+      )) as TrendingAnimeResType;
+      return res;
+    // } catch (error) {
+    //   console.error(error);
+    // }
 };
 
 // Query Parameters for getPopular:  page, perPage

@@ -35,7 +35,7 @@ function BookmarkBtn({
   if (!bookmarks) return null;
 
   return (
-    <div role="button" className="pl-20" onClick={handleToggleBookmark}>
+    <div role="button" onClick={handleToggleBookmark}>
       {bookmarks.includes(animeId) ? (
         <Bookmark size={36} color="#fff" fill="#fff" />
       ) : (

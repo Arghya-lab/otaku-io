@@ -95,8 +95,8 @@ const PlayerControl = forwardRef(
     const handleFullScreen = () => {
       if (playerElement) {
         screenfull.request(playerElement);
-        if (screen.orientation) {
-          //   screen.orientation.lock("landscape");
+        if ((screen as any).orientation) {
+          (screen as any).orientation.lock("landscape");
         }
         dispatch({ type: "minimizeMaximize", payload: true });
       }

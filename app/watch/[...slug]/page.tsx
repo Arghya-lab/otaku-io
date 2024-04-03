@@ -67,6 +67,14 @@ function VideoWatchPage({
     return <p>Loading....</p>;
   }
 
+  const title =
+    typeof detailInfo.title === "string"
+      ? detailInfo.title
+      : detailInfo.title?.english ||
+        detailInfo.title?.romaji ||
+        detailInfo.title?.native ||
+        detailInfo.title?.userPreferred;
+
   return (
     <div className="max-w-[1600px] m-auto overflow-x-hidden">
       <TopNavbar />
@@ -81,7 +89,9 @@ function VideoWatchPage({
           />
           <div className="pb-4 md:pb-18 lg:pb-12">
             <p className="py-4 px-2 font-bold font-nunito text-xl text-neutral-900 dark:text-slate-100">
-              {episode?.title}
+              {detailInfo?.episodes?.length === 1
+                ? title ?? ""
+                : episode?.title}
             </p>
             <p className="text-neutral-900 dark:text-slate-100">
               {episode?.description}

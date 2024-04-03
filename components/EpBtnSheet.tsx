@@ -14,6 +14,7 @@ import Select from "./ui/Select";
 import EpBtn from "./ui/EpBtn";
 import setDetailInfoAndGetWatchPageLink from "@/utils/setDetailInfoAndGetWatchPageLink";
 import { AnimeEpisodeType, DetailAnimeInfoType } from "@/types/anime";
+import { useSession } from "next-auth/react";
 
 function EpBtnSheet({
   detailInfo = null,
@@ -29,6 +30,8 @@ function EpBtnSheet({
   isWatchPage?: boolean;
 }) {
   const router = useRouter();
+  const { data: session } = useSession();
+
   const [isHovered, setIsHovered] = useState(false);
   const [episodes, setEpisodes] = useState<AnimeEpisodeType[]>([]);
   const [watchedEp, setWatchedEp] = useState<number[]>([]);
@@ -42,7 +45,7 @@ function EpBtnSheet({
   }, [detailInfo?.id, episodeNo]);
 
   useEffect(() => {
-    if (detailInfo?.id) {
+    if (detailInfo?.id && session) {
       (async () => {
         try {
           const { data }: { data: number[] } = await axios.get(
@@ -113,26 +116,28 @@ function EpBtnSheet({
           /> */}
       </div>
       {detailInfo?.episodes.length === 1 ? (
-        <div
-          role="button"
-          className={`px-4 py-2 w-36 m-auto my-4 ${
-            modeResponsiveness ? "bg-black dark:bg-white" : "bg-white"
-          } bg-opacity-20 border-2 rounded-[45px] flex justify-center gap-2`}
-          style={{
-            color: isHovered ? detailInfo?.color || "#fff" : "#fff",
-            borderColor: isHovered ? detailInfo?.color || "#fff" : "#fff",
-            transition: "color 0.3s, border-color 0.3s",
-          }}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          onClick={() => {
-            if (detailInfo.episodes) {
-              handleClick(detailInfo.episodes[0]);
-            }
-          }}>
-          <p className="text-xl font-medium">Watch</p>
-          <Play strokeWidth={3} size={20} />
-        </div>
+        isWatchPage ? null : (
+          <div
+            role="button"
+            className={`px-4 py-2 w-36 m-auto my-4 ${
+              modeResponsiveness ? "bg-black dark:bg-white" : "bg-white"
+            } bg-opacity-20 border-2 rounded-[45px] flex justify-center items-center gap-2`}
+            style={{
+              color: isHovered ? detailInfo?.color || "#fff" : "#fff",
+              borderColor: isHovered ? detailInfo?.color || "#fff" : "#fff",
+              transition: "color 0.3s, border-color 0.3s",
+            }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            onClick={() => {
+              if (detailInfo.episodes) {
+                handleClick(detailInfo.episodes[0]);
+              }
+            }}>
+            <p className="text-xl font-medium">Watch</p>
+            <Play strokeWidth={3} size={20} />
+          </div>
+        )
       ) : (
         <>
           <Select

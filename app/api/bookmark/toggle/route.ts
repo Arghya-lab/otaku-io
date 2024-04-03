@@ -16,10 +16,10 @@ export async function PATCH(req: Request) {
         (id: string) => id !== animeId.toString()
       );
     } else {
-      user.bookmarks.push(animeId);
+      user.bookmarks.unshift(animeId);
     }
     await user.save();
-    
+
     return NextResponse.json(user.bookmarks, { status: 200 });
   } catch (error) {
     console.log(error);

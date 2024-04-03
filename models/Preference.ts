@@ -11,7 +11,7 @@ interface Preference {
   seekSeconds: number;
   bookmarks: string[];
   autoSkip: boolean;
-  playbackQuality: "360p" | "720p" | "1080p";
+  playbackQuality: "360p" | "480p" | "720p" | "1080p";
 }
 
 const preferenceSchema = new mongoose.Schema<Preference>(
@@ -44,7 +44,7 @@ const preferenceSchema = new mongoose.Schema<Preference>(
     },
     playbackQuality: {
       type: String,
-      enum: ["360p", "720p", "1080p"],
+      enum: ["360p", "480p", "720p", "1080p"],
       default: "360p",
     },
     themeId: {

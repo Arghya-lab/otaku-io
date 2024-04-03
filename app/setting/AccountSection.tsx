@@ -10,7 +10,7 @@ import { usePreference } from "@/app/PreferenceProvider";
 function AccountSection() {
   const { data: session, status } = useSession();
   const { themeId } = usePreference();
-  const theme = themes.find(theme=>theme.id===themeId) || themes[0];
+  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
 
   return (
     <div className="flex flex-col gap-2 pb-16 pt-6 border-b border-zinc-500">

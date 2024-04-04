@@ -17,11 +17,11 @@ import {
   // Minimize2,
   Pause,
   Play,
-  Redo,
+  FastForward,
+  Rewind,
   // Settings,
   // Settings2,
   Subtitles,
-  Undo,
 } from "lucide-react";
 import VideoLoadedBar from "./VideoLoadedBar";
 import VolumeController from "./VolumeController";
@@ -30,6 +30,7 @@ import useWindowSize from "@/hooks/useWindowSize";
 import { usePreference } from "@/app/PreferenceProvider";
 import { secToMinSec } from "@/utils/time";
 import { PlayerActionType, PlayerStateType } from "@/types/player";
+import isMobileDevice from "@/utils/getIsMobileDevice";
 // import useOrientation from "../../hooks/useOrientation";
 
 interface PlayerControlProps {
@@ -132,19 +133,19 @@ const PlayerControl = forwardRef(
         className="flex items-center justify-center absolute bottom-0 left-0 right-0 top-0 z-20 text-white"
         onDoubleClick={() => {
           if (state.playerFullScreen) {
-            handleExitFullScreen();
+            if (!isMobileDevice()) handleExitFullScreen();
           } else {
             handleFullScreen();
           }
         }}>
         {state?.loaded && (
           <div className="w-full flex items-center justify-center gap-[15%]">
-            {windowWidth <= 640 && (
+            {(windowWidth <= 640 || isMobileDevice()) && (
               <div
                 role="button"
                 className="px-1 xs:px-3 rotate-[-45]"
                 onClick={handleSkipBack}>
-                <Undo className="h-8 w-8 xs:h-10 xs:w-10" color="#fff" />
+                <Rewind className="h-6 w-6 xs:h-8 xs:w-8" color="#fff" />
               </div>
             )}
             <div role="button" onClick={handleTogglePlayPause}>
@@ -165,12 +166,12 @@ const PlayerControl = forwardRef(
                   />
                 ))}
             </div>
-            {windowWidth <= 640 && (
+            {(windowWidth <= 640 || isMobileDevice()) && (
               <div
                 role="button"
                 className="px-1 xs:px-3 rotate-[45]"
                 onClick={handleSkipForward}>
-                <Redo className="h-8 w-8 xs:h-10 xs:w-10" color="#fff" />
+                <FastForward className="h-6 w-6 xs:h-8 xs:w-8" color="#fff" />
               </div>
             )}
           </div>
@@ -178,27 +179,31 @@ const PlayerControl = forwardRef(
         <div className="text-lg px-4 pb-1 xxs:pb-2 text-white absolute left-0 right-0 bottom-0">
           <div className="flex items-center justify-between xs:pb-2">
             <div className="flex items-center">
+              {!isMobileDevice() && (
+                <div
+                  role="button"
+                  className="px-1 xs:px-2"
+                  onClick={handleTogglePlayPause}>
+                  {state.playing ? (
+                    <Pause
+                      className="h-4 w-4 xs:h-6 xs:w-6"
+                      fill="#fff"
+                      color="#fff"
+                    />
+                  ) : (
+                    <Play
+                      className="h-4 w-4 xs:h-6 xs:w-6"
+                      fill="#fff"
+                      color="#fff"
+                    />
+                  )}
+                </div>
+              )}
+              {!isMobileDevice() && (
+                <VolumeController state={state} dispatch={dispatch} />
+              )}
               <div
-                role="button"
-                className="px-1 xs:px-2"
-                onClick={handleTogglePlayPause}>
-                {state.playing ? (
-                  <Pause
-                    className="h-4 w-4 xs:h-6 xs:w-6"
-                    fill="#fff"
-                    color="#fff"
-                  />
-                ) : (
-                  <Play
-                    className="h-4 w-4 xs:h-6 xs:w-6"
-                    fill="#fff"
-                    color="#fff"
-                  />
-                )}
-              </div>
-              <VolumeController state={state} dispatch={dispatch} />
-              <div
-                className="ml-2 xs:ml-4 text-xs xs:text-sm cursor-pointer font-nunito"
+                className="ml-2 xs:ml-4 text-xs xs:text-sm cursor-pointer font-nunito select-none"
                 onClick={() => setIsRemainingTime(!isRemainingTime)}>
                 <span>
                   {
@@ -213,23 +218,23 @@ const PlayerControl = forwardRef(
               </div>
             </div>
             <div className="flex items-center">
-              {windowWidth > 640 && (
+              {windowWidth > 640 && !isMobileDevice() && (
                 <>
                   <div
                     role="button"
                     className="px-1 xs:px-3 rotate-[-30]"
                     onClick={handleSkipBack}>
-                    <Undo className="h-6 w-6" color="#fff" />
+                    <Rewind className="h-5 w-5" color="#fff" />
                   </div>
                   <div
                     role="button"
                     className="px-1 xs:px-3 rotate-[30]"
                     onClick={handleSkipForward}>
-                    <Redo className="h-6 w-6" color="#fff" />
+                    <FastForward className="h-5 w-5" color="#fff" />
                   </div>
                 </>
               )}
-              <div role="button" className="px-1.5 xs:px-3 ">
+              <div role="button" className="px-3 xs:px-6">
                 <Subtitles className="h-4 w-4 xs:h-6 xs:w-6" color="#fff" />
               </div>
               {/* <div role="button" className="px-3 "> */}
@@ -237,7 +242,7 @@ const PlayerControl = forwardRef(
               {/* <Settings2  />
             </div> */}
               <Popover className="relative">
-                <Popover.Button className="font-nunito text-sm xs:text-base">
+                <Popover.Button className="font-nunito text-sm xs:text-base select-none">
                   {state.currentSource?.quality || "unknown"}
                 </Popover.Button>
                 <Popover.Panel className="absolute bottom-12 -left-14 z-10 bg-black bg-opacity-80 rounded-lg">
@@ -249,7 +254,7 @@ const PlayerControl = forwardRef(
                       {state.sources.map((source: any) => (
                         <div
                           role="button"
-                          className="mx-2 px-4 py-2 w-40 text-sm font-nunito hover:bg-black bg-opacity-60 rounded flex justify-between"
+                          className="mx-2 px-4 py-2 w-40 text-sm font-nunito hover:bg-black bg-opacity-60 rounded flex justify-between select-none"
                           key={source?.quality}
                           onClick={() => {
                             setWatched();
@@ -290,11 +295,11 @@ const PlayerControl = forwardRef(
               </Popover>
               {/* <div
                 role="button"
-                className="px-1.5 xs:px-3"
+                className="px-3 xs:px-6"
                 onClick={handleTogglePIP}>
                 <Minimize2 className="h-4 w-4 xs:h-6 xs:w-6" color="#fff" />
               </div> */}
-              <div role="button" className="px-1.5 xs:px-3">
+              <div role="button" className="px-3 xs:px-6">
                 {state.playerFullScreen ? (
                   <Minimize
                     className="h-4 w-4 xs:h-6 xs:w-6"

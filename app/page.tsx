@@ -22,11 +22,13 @@ export default async function Home() {
             <>
               <Carousel trending={trending} />
               {/* continue watching segment */}
-              {userWatchingRes && (
+              {userWatchingRes && !!userWatchingRes.results.length && (
                 <div className="mt-4 pb-8 px-2 xxs:px-4">
                   {/* Header */}
                   <div className="mb-1 px-3 xxs:px-4 flex items-center justify-between text-neutral-900 dark:text-slate-100">
-                    <p className="text-2xl capitalize font-nunito">continue watching</p>
+                    <p className="text-2xl capitalize font-nunito">
+                      continue watching
+                    </p>
                     {/* See all btn */}
                     <Link
                       href="/history"

@@ -57,7 +57,7 @@ function EpBtnSheet({
         }
       })();
     }
-  }, [detailInfo?.id]);
+  }, [detailInfo?.id, session]);
 
   useEffect(() => {
     if (detailInfo?.episodes) {

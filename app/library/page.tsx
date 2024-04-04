@@ -28,7 +28,8 @@ async function HistoryPage() {
     );
   }
 
-  const { results, hasNextPage } = await getAnimesByIds(bookmarkAnimeIds);
+  const results = await getAnimesByIds(bookmarkAnimeIds.slice(0,20));
+const hasNextPage = bookmarkAnimeIds.length>=20;
 
   return (
     <>

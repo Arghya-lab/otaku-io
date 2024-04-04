@@ -14,17 +14,20 @@ import PlayerControl from "./PlayerControl";
 import PlayerLoader from "./PlayerLoader";
 import reducer from "./reducerFunc";
 import { DetailAnimeInfoType } from "@/types/anime";
+import isMobileDevice from "@/utils/getIsMobileDevice";
 
 let count = 0;
 
 function Player({
   animeId,
+  title,
   epNo,
   epId,
   isDub,
   detailInfo,
 }: {
   animeId: string;
+  title: string | undefined;
   epNo: string;
   epId: string;
   isDub: boolean;
@@ -34,7 +37,7 @@ function Player({
   const router = useRouter();
   const { data: session } = useSession();
 
-  const playerContainerRef = useRef(null);
+  const playerContainerRef = useRef<HTMLDivElement | null>(null);
   const playerRef = useRef<ReactPlayer | null>(null);
   const controllerRef = useRef<HTMLDivElement | null>(null);
 
@@ -50,7 +53,7 @@ function Player({
     url: null,
     // pip: false,
     playing: false,
-    volume: 0.9, //  value -> 0-1
+    volume: isMobileDevice() ? 1 : 0.85, //  value -> 0-1
     muted: false,
     played: 0, //  value -> 0-1
     duration: 0,
@@ -269,6 +272,20 @@ function Player({
             },
           }}
         />
+        {state.playerFullScreen && title && playerContainerRef.current && (
+          <p
+            className="select-none text-white absolute top-3 left-5 font-nunito opacity-90 font-medium shadow"
+            style={{
+              fontSize:
+                playerContainerRef.current.clientWidth /
+                (windowWidth > 1000 ? 40 : 30),
+            }}>
+            {title}
+            {detailInfo?.episodes && detailInfo?.episodes.length !== 1 && (
+              <p style={{ fontSize: "80%" }}>Ep-{epNo}</p>
+            )}
+          </p>
+        )}
         <PlayerControl
           ref={controllerRef}
           playerRef={playerRef}

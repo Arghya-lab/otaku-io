@@ -20,7 +20,7 @@ function InfiniteLibraryScroll({
   hasNextPage: boolean;
 }) {
   const { themeId } = usePreference();
-  const theme = themes.find(theme=>theme.id===themeId) || themes[0];
+  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
   const posterItemCount = usePosterItemCount();
 
   let currentPage = 1;
@@ -29,9 +29,8 @@ function InfiniteLibraryScroll({
   const [hasMore, setHasMore] = useState(hasNextPage);
 
   const handleFetchMoreData = async () => {
-    const { results, hasNextPage } = await getAnimesByIds(
-      bookmarkAnimeIds,
-      currentPage + 1
+    const results = await getAnimesByIds(
+      bookmarkAnimeIds.slice(currentPage * 20, (currentPage + 1) * 20)
     );
 
     currentPage++;

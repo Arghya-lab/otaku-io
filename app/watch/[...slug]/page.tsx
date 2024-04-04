@@ -7,6 +7,9 @@ import { useEffect, useState } from "react";
 import RecommendItem from "./RecommendItem";
 import Player from "./Player";
 import { AnimeEpisodeType, DetailAnimeInfoType } from "@/types/anime";
+import Skeleton from "react-loading-skeleton";
+import { themes } from "@/theme";
+import { usePreference } from "@/app/PreferenceProvider";
 
 function VideoWatchPage({
   params,
@@ -64,7 +67,16 @@ function VideoWatchPage({
   }
 
   if (!detailInfo || !episode) {
-    return <p>Loading....</p>;
+    return (
+      <div className="max-w-[1600px] m-auto overflow-x-hidden">
+        <TopNavbar />
+        <Skeleton
+          className="rounded-md my-4 h-screen w-[90%] m-[5%]"
+          baseColor={"#ddd"}
+          highlightColor={"#bbb"}
+        />
+      </div>
+    );
   }
 
   const title =
@@ -82,6 +94,7 @@ function VideoWatchPage({
         <div className="xxs:px-2 xs:px-6 lg:px-12 pb-8 flex flex-col md:min-w-[700px] md:w-[66%] lg:min-w-[1000px] lg:w-[75%]">
           <Player
             animeId={animeId}
+            title={title}
             detailInfo={detailInfo}
             epId={epId}
             epNo={epNo}

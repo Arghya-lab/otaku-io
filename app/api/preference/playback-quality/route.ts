@@ -10,7 +10,7 @@ export async function PATCH(req: Request) {
 
     if (
       !playbackQuality ||
-      !["360p", "720p", "1080p"].includes(playbackQuality)
+      !["360p", "480p", "720p", "1080p"].includes(playbackQuality)
     ) {
       return NextResponse.json(
         { error: "Proper request body is not set." },

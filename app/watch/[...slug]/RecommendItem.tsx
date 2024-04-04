@@ -18,7 +18,7 @@ function RecommendItem({ item }: { item: AnimeItemType }) {
   return (
     <Link
       href={`/detail/${item.id}/${title}`}
-      className={`p-3 mr-4 max-w-md min-w-40 flex flex-row rounded-xl bg-black border-2 ${
+      className={`p-3 mr-4 max-w-md min-w-40 h-48 flex flex-row rounded-xl bg-black border-2 ${
         isHover
           ? "bg-opacity-20 border-neutral-800"
           : "bg-opacity-10 border-transparent"

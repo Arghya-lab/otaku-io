@@ -1,29 +1,18 @@
 import { AnimeItemType } from "@/types/anime";
 import { advancedSearch } from "./getAnime";
 
-export const getAnimesByIds = async (
-  animeIds: string[],
-  page = 1,
-  perPage = 30
-) => {
+export const getAnimesByIds = async (animeIds: string[]) => {
+  // try {
   let bookmarkAnimes: AnimeItemType[] = [];
 
-  await Promise.all(
-    animeIds
-      .slice((page - 1) * perPage, page * perPage)
-      .map((animeId: string) => advancedSearch({ id: animeId }))
-  )
-    .then((data) => {
-      const result = data.map((item) => item.results[0]);
-      bookmarkAnimes = result;
-    })
-    .catch((error) => {
-      console.error("Error fetching data:", error);
-    });
+  const data = await Promise.all(
+    animeIds.map((animeId: string) => advancedSearch({ id: animeId }))
+  );
 
-  return {
-    results: bookmarkAnimes,
-    hasNextPage: animeIds.length > page * perPage,
-    currentPage: page,
-  };
+  bookmarkAnimes = data.map((item) => item?.results[0]);
+
+  return bookmarkAnimes;
+  // } catch (error) {
+  //   console.error("Error fetching data: ", error);
+  // }
 };

@@ -24,6 +24,8 @@ function PlayerLoader({ state }: { state: PlayerStateType }) {
       />
     );
   }
+  
+  return null;
 }
 
 export default PlayerLoader;

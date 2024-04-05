@@ -1,17 +1,18 @@
+import Skeleton from "react-loading-skeleton";
+import chroma from "chroma-js";
 import { getUserTheme } from "@/app/layout";
 import TopNavbar from "@/components/TopNavbar";
-import Skeleton from "react-loading-skeleton";
 
 async function loading() {
   const theme = await getUserTheme();
 
   return (
-    <div className="w-full relative">
+    <div className="w-full relative h-full">
       <TopNavbar />
       <Skeleton
-        className="rounded-md my-4 h-screen w-[90%] m-[5%]"
-        baseColor={theme.type === "dark" ? "#111" : "#ddd"}
-        highlightColor={theme.type === "dark" ? "#222" : "#bbb"}
+        className="rounded-md my-4 h-[75vh] w-[90%] m-[5%]"
+        baseColor={chroma(theme.primaryColor).darken(1).toString()}
+        highlightColor={chroma(theme.primaryColor).darken(1.5).toString()}
       />
     </div>
   );

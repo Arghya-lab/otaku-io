@@ -16,9 +16,9 @@ const reducer = (state: PlayerStateType, action: PlayerActionType) => {
         ...state,
         sources: action.payload.sources,
         currentSource: action.payload.currentSource,
-        url: action.payload.currentSource.url,
         playing: action.payload.playing,
         loaded: 0,
+        // url: action.payload.currentSource.url,
         // played: action.payload.played,
         // pip: false,
       };
@@ -63,6 +63,9 @@ const reducer = (state: PlayerStateType, action: PlayerActionType) => {
       break;
     case "toggleMuted":
       return { ...state, muted: !state.muted };
+      break;
+    case "changeControllerVisibility":
+      return { ...state, controllerVisibility: action.payload };
       break;
 
     default:

@@ -50,7 +50,7 @@ function Player({
 
   const [markWatchedTill, setMarkWatchedTill] = useState(0);
   const [state, dispatch] = useReducer(reducer, {
-    url: null,
+    // url: null,
     // pip: false,
     playing: false,
     volume: isMobileDevice() ? 1 : 0.85, //  value -> 0-1
@@ -66,7 +66,10 @@ function Player({
     currentSource: null,
     playbackQuality: playbackQuality || "360p",
     buffering: false,
+    videoAspectRatio: 16 / 9,
     playerFullScreen: false,
+    isMobileDevice: isMobileDevice(),
+    controllerVisibility: true,
     skipTimes: [],
   });
 
@@ -115,6 +118,7 @@ function Player({
     }
   };
 
+  // On initial page load or episode change
   useEffect(() => {
     (async () => {
       try {
@@ -178,8 +182,8 @@ function Player({
   }, [state.played, markWatchedTill, session, setWatched]);
 
   const handleMouseMove = () => {
-    if (controllerRef.current && appElement) {
-      controllerRef.current.style.visibility = "visible";
+    if (appElement) {
+      dispatch({ type: "changeControllerVisibility", payload: true });
       appElement.style.cursor = "auto";
       count = 0;
     }
@@ -192,18 +196,19 @@ function Player({
   return (
     <div
       id="Player"
-      className={` ${
+      className={`${
         state.playerFullScreen
           ? "flex justify-center items-center"
-          : "xxs:rounded-lg overflow-hidden"
+          : "xxs:rounded-lg overflow-hidden max-h-[75vh]"
       }`}>
       <div
         ref={playerContainerRef}
         className={`relative ${
-          windowWidth / windowHeight > 16 / 9
+          windowWidth / windowHeight >= 16 / 9
             ? "h-full max-w-full"
             : "w-full max-h-full"
-        } aspect-[16/9]`}
+        }`}
+        // style={{aspectRatio: state.videoAspectRatio}}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onTouchStart={handleMouseMove}>
@@ -213,7 +218,7 @@ function Player({
           // playsinline
           url={state.currentSource?.url}
           width="100%"
-          height="minContent"
+          height="100%"
           // pip={state.pip}
           // playing={state.playing}
           // volume={state.volume}
@@ -225,20 +230,33 @@ function Player({
             dispatch({ type: "updateDuration", payload: duration });
           }}
           onProgress={(value) => {
-            if (count > 3 && appElement && controllerRef.current) {
-              controllerRef.current.style.visibility = "hidden";
+            if (count > 3 && appElement) {
+              dispatch({ type: "changeControllerVisibility", payload: false });
               appElement.style.cursor = "none";
               count = 0;
             }
-            if (controllerRef.current?.style.visibility == "visible") {
-              count++;
-            }
+
+            if (state.controllerVisibility) count++;
+
             dispatch({
               type: "updateProgress",
               payload: { loaded: value.loaded, played: value.played },
             });
           }}
-          onReady={() => console.log("onReady")}
+          onReady={() => {
+            console.log("onReady");
+            if (playerRef?.current) {
+              const videoElement = playerRef.current.getInternalPlayer();
+              dispatch({
+                type: "setVideoAspectRatio",
+                payload: Number(
+                  (videoElement.videoWidth / videoElement.videoHeight).toFixed(
+                    4
+                  )
+                ),
+              });
+            }
+          }}
           onStart={async () => {
             // find intro & outro
             if (session) {
@@ -272,27 +290,35 @@ function Player({
             },
           }}
         />
-        {state.playerFullScreen && title && playerContainerRef.current && (
-          <p
-            className="select-none text-white absolute top-3 left-5 font-nunito opacity-90 font-medium shadow"
-            style={{
-              fontSize:
-                playerContainerRef.current.clientWidth /
-                (windowWidth > 1000 ? 40 : 30),
-            }}>
-            {title}
-            {detailInfo?.episodes && detailInfo?.episodes.length !== 1 && (
-              <p style={{ fontSize: "80%" }}>Ep-{epNo}</p>
-            )}
-          </p>
+        {state.playerFullScreen &&
+          title &&
+          playerContainerRef.current &&
+          state.controllerVisibility && (
+            <>
+              <p
+                className="select-none text-white absolute top-3 left-5 font-medium opacity-90"
+                style={{
+                  fontSize:
+                    playerContainerRef.current.clientWidth /
+                    (windowWidth > 1000 ? 45 : 30),
+                  textShadow: "0.25vw 0.25vw 6px rgba(0, 0, 0, 0.65)",
+                }}>
+                {title}
+                {detailInfo?.episodes && detailInfo?.episodes.length !== 1 && (
+                  <p style={{ fontSize: "70%" }}>Ep-{epNo}</p>
+                )}
+              </p>
+            </>
+          )}
+        {state.controllerVisibility && (
+          <PlayerControl
+            ref={controllerRef}
+            playerRef={playerRef}
+            state={state}
+            dispatch={dispatch}
+            setWatched={setWatched}
+          />
         )}
-        <PlayerControl
-          ref={controllerRef}
-          playerRef={playerRef}
-          state={state}
-          dispatch={dispatch}
-          setWatched={setWatched}
-        />
         <PlayerSkipBtns state={state} playerRef={playerRef} />
         <div className="flex items-center justify-center absolute bottom-0 left-0 right-0 top-0 z-10">
           <PlayerLoader state={state} />

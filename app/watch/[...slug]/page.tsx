@@ -10,6 +10,7 @@ import { AnimeEpisodeType, DetailAnimeInfoType } from "@/types/anime";
 import Skeleton from "react-loading-skeleton";
 import { themes } from "@/theme";
 import { usePreference } from "@/app/PreferenceProvider";
+import chroma from "chroma-js";
 
 function VideoWatchPage({
   params,
@@ -18,6 +19,8 @@ function VideoWatchPage({
   params: { slug: ["animeId", "epNo", "epId"] };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
+  const theme = themes[usePreference().themeId];
+
   const animeId = decodeURIComponent(params.slug[0]);
   const epNo = decodeURIComponent(params.slug[1]);
   const epId = decodeURIComponent(params.slug[2]);
@@ -72,8 +75,8 @@ function VideoWatchPage({
         <TopNavbar />
         <Skeleton
           className="rounded-md my-4 h-screen w-[90%] m-[5%]"
-          baseColor={"#ddd"}
-          highlightColor={"#bbb"}
+          baseColor={chroma(theme.primaryColor).darken(1).toString()}
+          highlightColor={chroma(theme.primaryColor).darken(1.5).toString()}
         />
       </div>
     );
@@ -94,22 +97,24 @@ function VideoWatchPage({
         <div className="xxs:px-2 xs:px-6 lg:px-12 pb-8 flex flex-col md:min-w-[700px] md:w-[66%] lg:min-w-[1000px] lg:w-[75%]">
           <Player
             animeId={animeId}
-            title={title}
+            title={
+              detailInfo?.episodes?.length === 1
+                ? title ?? ""
+                : episode?.title ?? ""
+            }
             detailInfo={detailInfo}
             epId={epId}
             epNo={epNo}
             isDub={isDub}
           />
-          <div className="pb-4 md:pb-18 lg:pb-12">
             <p className="py-4 px-2 font-bold font-nunito text-xl text-neutral-900 dark:text-slate-100">
               {detailInfo?.episodes?.length === 1
                 ? title ?? ""
                 : episode?.title}
             </p>
-            <p className="text-neutral-900 dark:text-slate-100">
+            <p className="pb-4 md:pb-18 lg:pb-12 text-neutral-900 dark:text-slate-100">
               {episode?.description}
             </p>
-          </div>
           <div className="px-2 xxs:px-0">
             <EpBtnSheet
               modeResponsiveness={true}

@@ -1,7 +1,7 @@
 import { AnimeStreamingLinkType, SkipTimeType } from "./anime";
 
 export interface PlayerStateType {
-  url: string | null;
+  // url: string | null;
   // pip: boolean,
   playing: boolean;
   volume: number; //  value -> 0-1
@@ -17,7 +17,10 @@ export interface PlayerStateType {
   currentSource: AnimeStreamingLinkType | null;
   playbackQuality: string;
   buffering: boolean;
+  videoAspectRatio: number;
   playerFullScreen: boolean;
+  isMobileDevice: boolean;
+  controllerVisibility: boolean;
   skipTimes: SkipTimeType[];
 }
 
@@ -68,6 +71,14 @@ interface ChangeVolumeActionType {
 interface ToggleMutedActionType {
   type: "toggleMuted";
 }
+interface changeControllerVisibilityActionType {
+  type: "changeControllerVisibility";
+  payload: boolean;
+}
+interface setVideoAspectRatioActionType {
+  type: "setVideoAspectRatio";
+  payload: number;
+}
 
 export type PlayerActionType =
   | MinimizeMaximizeActionType
@@ -80,4 +91,6 @@ export type PlayerActionType =
   | UpdateBufferingActionType
   | UpdateVolumeActionType
   | ChangeVolumeActionType
-  | ToggleMutedActionType;
+  | ToggleMutedActionType
+  | changeControllerVisibilityActionType
+  | setVideoAspectRatioActionType;

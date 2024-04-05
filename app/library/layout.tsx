@@ -1,4 +1,5 @@
 import TopNavbar from "@/components/TopNavbar";
+import SideNavbar from "@/components/SideNavbar";
 
 function Layout({
   children,
@@ -7,8 +8,9 @@ function Layout({
 }>) {
   return (
     <>
-      <div className="w-full relative">
-        <TopNavbar />
+      <TopNavbar />
+      <div className="h-full relative">
+        <SideNavbar pathName="/library" />
         {children}
       </div>
     </>

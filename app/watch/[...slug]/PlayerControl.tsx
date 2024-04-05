@@ -132,15 +132,15 @@ const PlayerControl = forwardRef(
         ref={ref}
         className="flex items-center justify-center absolute bottom-0 left-0 right-0 top-0 z-20 text-white"
         onDoubleClick={() => {
-          if (state.playerFullScreen) {
-            if (!isMobileDevice()) handleExitFullScreen();
+          if (state.playerFullScreen && screenfull.isFullscreen) {
+            if (!state.isMobileDevice) handleExitFullScreen();
           } else {
             handleFullScreen();
           }
         }}>
         {state?.loaded && (
           <div className="w-full flex items-center justify-center gap-[15%]">
-            {(windowWidth <= 640 || isMobileDevice()) && (
+            {(windowWidth <= 640 || state.isMobileDevice) && (
               <div
                 role="button"
                 className="px-1 xs:px-3 rotate-[-45]"
@@ -166,7 +166,7 @@ const PlayerControl = forwardRef(
                   />
                 ))}
             </div>
-            {(windowWidth <= 640 || isMobileDevice()) && (
+            {(windowWidth <= 640 || state.isMobileDevice) && (
               <div
                 role="button"
                 className="px-1 xs:px-3 rotate-[45]"
@@ -179,7 +179,7 @@ const PlayerControl = forwardRef(
         <div className="text-lg px-4 pb-1 xxs:pb-2 text-white absolute left-0 right-0 bottom-0">
           <div className="flex items-center justify-between xs:pb-2">
             <div className="flex items-center">
-              {!isMobileDevice() && (
+              {!state.isMobileDevice && (
                 <div
                   role="button"
                   className="px-1 xs:px-2"
@@ -199,7 +199,7 @@ const PlayerControl = forwardRef(
                   )}
                 </div>
               )}
-              {!isMobileDevice() && (
+              {!state.isMobileDevice && (
                 <VolumeController state={state} dispatch={dispatch} />
               )}
               <div
@@ -218,7 +218,7 @@ const PlayerControl = forwardRef(
               </div>
             </div>
             <div className="flex items-center">
-              {windowWidth > 640 && !isMobileDevice() && (
+              {windowWidth > 640 && !state.isMobileDevice && (
                 <>
                   <div
                     role="button"
@@ -300,7 +300,7 @@ const PlayerControl = forwardRef(
                 <Minimize2 className="h-4 w-4 xs:h-6 xs:w-6" color="#fff" />
               </div> */}
               <div role="button" className="px-3 xs:px-6">
-                {state.playerFullScreen ? (
+                {state.playerFullScreen && screenfull.isFullscreen ? (
                   <Minimize
                     className="h-4 w-4 xs:h-6 xs:w-6"
                     color="#fff"

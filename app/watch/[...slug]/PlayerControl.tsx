@@ -22,6 +22,10 @@ import {
   // Settings,
   // Settings2,
   Subtitles,
+  Fullscreen,
+  RectangleHorizontal,
+  BoxSelect,
+  Loader2,
 } from "lucide-react";
 import VideoLoadedBar from "./VideoLoadedBar";
 import VolumeController from "./VolumeController";
@@ -29,9 +33,11 @@ import ReactPlayer from "react-player";
 import useWindowSize from "@/hooks/useWindowSize";
 import { usePreference } from "@/app/PreferenceProvider";
 import { secToMinSec } from "@/utils/time";
-import { PlayerActionType, PlayerStateType } from "@/types/player";
-import isMobileDevice from "@/utils/getIsMobileDevice";
-// import useOrientation from "../../hooks/useOrientation";
+import {
+  PlayerActionType,
+  PlayerStateType,
+  ScreenFullTypeEnum,
+} from "@/types/player";
 
 interface PlayerControlProps {
   playerRef: MutableRefObject<ReactPlayer | null>;
@@ -149,8 +155,8 @@ const PlayerControl = forwardRef(
               </div>
             )}
             <div role="button" onClick={handleTogglePlayPause}>
-              {!state.buffering &&
-                (state.playing ? (
+              {!state.buffering ? (
+                state.playing ? (
                   <Pause
                     className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
                     strokeWidth={1}
@@ -164,7 +170,16 @@ const PlayerControl = forwardRef(
                     fill="#fff"
                     color="#fff"
                   />
-                ))}
+                )
+              ) : (
+                <div className="px-1 xs:px-2">
+                  <Loader2
+                    strokeWidth={2.5}
+                    className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14 text-white animate-spin"
+                    color="#fff"
+                  />
+                </div>
+              )}
             </div>
             {(windowWidth <= 640 || state.isMobileDevice) && (
               <div
@@ -299,6 +314,33 @@ const PlayerControl = forwardRef(
                 onClick={handleTogglePIP}>
                 <Minimize2 className="h-4 w-4 xs:h-6 xs:w-6" color="#fff" />
               </div> */}
+              {state.playerFullScreen && screenfull.isFullscreen && (
+                <div role="button" className="pl-3 xs:pl-6">
+                  {state.FullScreenType === ScreenFullTypeEnum.DEFAULT ? (
+                    <Fullscreen
+                      className="h-4 w-4 xs:h-6 xs:w-6"
+                      color="#fff"
+                      onClick={() =>
+                        dispatch({ type: "setMaxWidthFullScreen" })
+                      }
+                    />
+                  ) : state.FullScreenType === ScreenFullTypeEnum.MAXWIDTH ? (
+                    <BoxSelect
+                      className="h-4 w-4 xs:h-6 xs:w-6"
+                      color="#fff"
+                      onClick={() =>
+                        dispatch({ type: "setVideoAspectRatioFullScreen" })
+                      }
+                    />
+                  ) : state.FullScreenType === ScreenFullTypeEnum["16:9"] ? (
+                    <RectangleHorizontal
+                      className="h-4 w-4 xs:h-6 xs:w-6"
+                      color="#fff"
+                      onClick={() => dispatch({ type: "setDefaultFullScreen" })}
+                    />
+                  ) : null}
+                </div>
+              )}
               <div role="button" className="px-3 xs:px-6">
                 {state.playerFullScreen && screenfull.isFullscreen ? (
                   <Minimize

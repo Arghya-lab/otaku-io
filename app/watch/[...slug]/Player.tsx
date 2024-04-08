@@ -15,6 +15,8 @@ import PlayerLoader from "./PlayerLoader";
 import reducer from "./reducerFunc";
 import { DetailAnimeInfoType } from "@/types/anime";
 import isMobileDevice from "@/utils/getIsMobileDevice";
+import { Fullscreen } from "lucide-react";
+import classNames from "classnames";
 
 let count = 0;
 
@@ -68,6 +70,7 @@ function Player({
     buffering: false,
     videoAspectRatio: 16 / 9,
     playerFullScreen: false,
+    FullScreenType: 0, // value -> 0=>>default 1=>>maxWidth 2=>>16:9
     isMobileDevice: isMobileDevice(),
     controllerVisibility: true,
     skipTimes: [],
@@ -196,19 +199,25 @@ function Player({
   return (
     <div
       id="Player"
-      className={`${
-        state.playerFullScreen
-          ? "flex justify-center items-center"
-          : "xxs:rounded-lg overflow-hidden max-h-[75vh]"
-      }`}>
+      className={classNames({
+        "flex justify-center items-center": state.playerFullScreen,
+        "w-full aspect-video bg-black xxs:rounded-lg overflow-hidden":
+          state.loaded === 0,
+      })}>
       <div
         ref={playerContainerRef}
-        className={`relative ${
-          windowWidth / windowHeight >= 16 / 9
-            ? "h-full max-w-full"
-            : "w-full max-h-full"
-        }`}
-        // style={{aspectRatio: state.videoAspectRatio}}
+        className={classNames("relative bg-black", {
+          "h-full max-w-full":
+            state.playerFullScreen && windowWidth / windowHeight >= 16 / 9,
+          "w-full max-h-full":
+            state.playerFullScreen && windowWidth / windowHeight < 16 / 9,
+          "m-auto xxs:rounded-lg overflow-hidden": !state.playerFullScreen,
+          "max-h-[calc(100vh-6rem)]":
+            !state.playerFullScreen && windowWidth >= 800,
+        })}
+        style={{
+          aspectRatio: windowWidth >= 800 ? state.videoAspectRatio : "auto",
+        }}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onTouchStart={handleMouseMove}>
@@ -217,6 +226,7 @@ function Player({
           // controls
           // playsinline
           url={state.currentSource?.url}
+          className="flex-1"
           width="100%"
           height="100%"
           // pip={state.pip}
@@ -249,11 +259,8 @@ function Player({
               const videoElement = playerRef.current.getInternalPlayer();
               dispatch({
                 type: "setVideoAspectRatio",
-                payload: Number(
-                  (videoElement.videoWidth / videoElement.videoHeight).toFixed(
-                    4
-                  )
-                ),
+                payload: ((videoElement.videoWidth as number) /
+                  videoElement.videoHeight) as number,
               });
             }
           }}
@@ -266,7 +273,6 @@ function Player({
           }}
           onPlay={() => console.log("play start")}
           onBuffer={() => dispatch({ type: "updateBuffering", payload: true })}
-          // onPlaybackRateChange={this.handleOnPlaybackRateChange}
           onSeek={(e) => {
             console.log("onSeek", e);
             if (state.buffering == true) {
@@ -320,7 +326,7 @@ function Player({
           />
         )}
         <PlayerSkipBtns state={state} playerRef={playerRef} />
-        <div className="flex items-center justify-center absolute bottom-0 left-0 right-0 top-0 z-10">
+        <div className="flex items-center justify-center">
           <PlayerLoader state={state} />
         </div>
       </div>

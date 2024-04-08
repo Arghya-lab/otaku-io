@@ -50,8 +50,8 @@ const preferenceSchema = new mongoose.Schema<Preference>(
     themeId: {
       type: Number,
       min: 1,
-      max: 28,
-      default: 23,
+      max: 30,
+      default: 1,
     },
   },
   { timestamps: true }

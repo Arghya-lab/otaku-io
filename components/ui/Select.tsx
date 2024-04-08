@@ -7,6 +7,7 @@ import { Check, ChevronDown } from "lucide-react";
 import { shade } from "../../utils/color";
 import { themes } from "@/theme";
 import { usePreference } from "../../app/PreferenceProvider";
+import chroma from "chroma-js";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -18,21 +19,26 @@ function Select({
   list,
   selected,
   onChange,
+  isWatchPage = false,
 }: {
   name?: string;
   color?: string;
   list: { value: string | number | undefined; name: string }[];
   selected: { value: string | number | undefined; name: string };
-  onChange: (value: { value: string | number | undefined; name: string }) => void;
+  onChange: (value: {
+    value: string | number | undefined;
+    name: string;
+  }) => void;
+  isWatchPage?: boolean;
 }) {
   const { themeId } = usePreference();
-  const theme = themes.find(theme=>theme.id===themeId) || themes[0];
-  
+  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
+
   return (
     <div>
       {name && (
         <div className="pl-4">
-          <p className="text-neutral-900 dark:text-slate-100 capitalize">
+          <p style={{ color: theme.textColor, textTransform: "capitalize" }}>
             {name}
           </p>
         </div>
@@ -41,24 +47,22 @@ function Select({
         {({ open }) => (
           <div className="relative pt-1">
             <Listbox.Button
-              className="relative min-w-44 max-w-52 py-1.5 pl-3 pr-10 text-left cursor-pointer rounded-[45px] text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-black dark:bg-white bg-opacity-20"
+              className="relative min-w-44 max-w-52 py-1.5 pl-3 pr-10 text-left cursor-pointer rounded-[45px] text-gray-900 shadow-sm focus:outline-none focus:ring-2 bg-opacity-20"
               style={{
-                backgroundColor: shade(
-                  color || theme.primaryColor,
-                  0,
-                  0.2
-                ).toString(),
-                // backgroundColor: chroma(color || theme.primaryColor)
-                //   .darken(1.75)
-                //   .alpha(0.2),
+                backgroundColor: isWatchPage
+                  ? chroma(theme.secondaryColor).alpha(0.2).toString()
+                  : shade(color || theme.primaryColor, 0, 0.2).toString(),
               }}>
-              <span className="ml-3 block truncate text-neutral-900 dark:text-slate-200">
+              <span
+                className="ml-3 block truncate"
+                style={{ color: !isWatchPage ? "#fff" : theme.textColor }}>
                 {selected?.name}
               </span>
               <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
                 <ChevronDown
                   strokeWidth={2.75}
-                  className="h-5 w-5 text-neutral-700 dark:text-gray-300"
+                  className="h-5 w-5 opacity-70"
+                  style={{ color: !isWatchPage ? "#fff" : theme.textColor }}
                 />
               </span>
             </Listbox.Button>

@@ -1,9 +1,17 @@
+"use client";
+
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimeItemType } from "@/types/anime";
+import { usePreference } from "@/app/PreferenceProvider";
+import { themeEnum, themes } from "@/theme";
+import chroma from "chroma-js";
 
 function RecommendItem({ item }: { item: AnimeItemType }) {
+  const { themeId } = usePreference();
+  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
+
   const [isHover, setIsHover] = useState(false);
 
   const title =
@@ -18,11 +26,15 @@ function RecommendItem({ item }: { item: AnimeItemType }) {
   return (
     <Link
       href={`/detail/${item.id}/${title}`}
-      className={`p-3 mr-4 max-w-md min-w-40 h-48 flex flex-row rounded-xl bg-black border-2 ${
-        isHover
-          ? "bg-opacity-20 border-neutral-800"
-          : "bg-opacity-10 border-transparent"
-      }`}
+      style={{
+        backgroundColor: chroma(theme.primaryColor)
+          .darken(isHover ? 0.3 : 0.1)
+          .toString(),
+        borderColor: isHover
+          ? chroma(theme.primaryColor).darken(1).toString()
+          : chroma(theme.primaryColor).darken(0.5).toString(),
+      }}
+      className={`p-3 mr-4 max-w-md min-w-40 h-48 flex flex-row rounded-xl border-2`}
       onPointerEnter={() => setIsHover(true)}
       onPointerLeave={() => setIsHover(false)}>
       <div className={`pl-24 relative overflow-hidden`}>
@@ -42,11 +54,11 @@ function RecommendItem({ item }: { item: AnimeItemType }) {
           )}
         </div>
       </div>
-      <div className="flex-1 py-2 px-4 text-neutral-900 dark:text-slate-100">
+      <div className="flex-1 py-2 px-4" style={{ color: theme.textColor }}>
         <p className="px-6 font-nunito font-semibold w-full text-center pb-2 line-clamp-2 overflow-x-ellipsis">
           {title}
         </p>
-        <div className="text-neutral-800 dark:text-slate-300 text-sm">
+        <div className="text-sm opacity-85" style={{ color: theme.textColor }}>
           {item?.rating && (
             <div>
               <span>Rating : </span>

@@ -15,20 +15,23 @@ import EpBtn from "./ui/EpBtn";
 import setDetailInfoAndGetWatchPageLink from "@/utils/setDetailInfoAndGetWatchPageLink";
 import { AnimeEpisodeType, DetailAnimeInfoType } from "@/types/anime";
 import { useSession } from "next-auth/react";
+import { usePreference } from "@/app/PreferenceProvider";
+import { themes } from "@/theme";
 
 function EpBtnSheet({
   detailInfo = null,
   isDubEnable = false,
-  modeResponsiveness = true,
   episodeNo = 1,
   isWatchPage = false,
 }: {
   detailInfo: DetailAnimeInfoType | null;
-  modeResponsiveness: boolean;
   isDubEnable: boolean;
   episodeNo?: number;
   isWatchPage?: boolean;
 }) {
+  const { themeId } = usePreference();
+  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
+
   const router = useRouter();
   const { data: session } = useSession();
 
@@ -92,18 +95,14 @@ function EpBtnSheet({
     <>
       {/* radio dub / sub btn */}
       <div className="pb-4 max-w-lg flex items-center justify-between">
-        <div
-          className={`flex gap-1 capitalize items-center ${
-            modeResponsiveness
-              ? "text-neutral-800 dark:text-slate-300"
-              : "text-slate-300"
-          }`}>
+        <div className="flex gap-1 capitalize items-center\">
           <Radio
             color={detailInfo?.color}
+            isWatchPage={isWatchPage}
             enabled={isDubEnable}
             setEnabled={handleChangeLang}
           />
-          <p>dub</p>
+          <p style={{ color: isWatchPage ? theme.textColor : "unset" }}>dub</p>
         </div>
         {/* <Select
             // name={"providers"}
@@ -119,9 +118,7 @@ function EpBtnSheet({
         isWatchPage ? null : (
           <div
             role="button"
-            className={`px-4 py-2 w-36 m-auto my-4 ${
-              modeResponsiveness ? "bg-black dark:bg-white" : "bg-white"
-            } bg-opacity-20 border-2 rounded-[45px] flex justify-center items-center gap-2`}
+            className="px-4 py-2 w-36 m-auto my-4 bg-opacity-20 border-2 rounded-[45px] flex justify-center items-center gap-2"
             style={{
               color: isHovered ? detailInfo?.color || "#fff" : "#fff",
               borderColor: isHovered ? detailInfo?.color || "#fff" : "#fff",
@@ -149,6 +146,7 @@ function EpBtnSheet({
             onChange={(data) => {
               setSelectedEpRangeIdx(Number(data.value));
             }}
+            isWatchPage={isWatchPage}
           />
           <div
             className="grid gap-4 mt-3 justify-center"
@@ -160,9 +158,9 @@ function EpBtnSheet({
                 key={id}
                 episode={episode}
                 color={detailInfo?.color}
+                isWatchPage={isWatchPage}
                 watching={episodeNo === episode.number}
                 watched={watchedEp.includes(episode.number)}
-                modeResponsiveness={modeResponsiveness}
                 handleClick={() => handleClick(episode)}
               />
             ))}

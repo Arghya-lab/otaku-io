@@ -1,8 +1,15 @@
+"use client";
+
 import { useState } from "react";
 import screenfull from "screenfull";
 import { Maximize, Minimize } from "lucide-react";
+import { usePreference } from "@/app/PreferenceProvider";
+import { themes } from "@/theme";
 
 function MinMaximizeBtn() {
+  const { themeId } = usePreference();
+  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
+
   const [isFullScreen, setIsFullScreen] = useState(false);
 
   const handleMaximizeClick = () => {
@@ -14,7 +21,9 @@ function MinMaximizeBtn() {
   };
 
   return (
-    <div className="w-12 h-12 cursor-pointer flex justify-center items-center rounded-[10px] opacity-65 text-neutral-800 dark:text-slate-300 bg-white bg-opacity-0 hover:bg-opacity-10 hover:opacity-100 hover:text-neutral-900 dark:hover:text-slate-100">
+    <div
+      className="w-12 h-12 cursor-pointer flex justify-center items-center rounded-[10px] opacity-55 hover:opacity-75 bg-white bg-opacity-0 hover:bg-opacity-20"
+      style={{ color: theme.textColor }}>
       {isFullScreen ? (
         <Minimize
           size={24}

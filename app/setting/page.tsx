@@ -15,9 +15,9 @@ function Setting() {
           <GeneralSection />
           <PlayerSection />
           {/* shortcuts section */}
-          <div className="flex flex-col gap-4 pb-16 pt-6">
+          {/* <div className="flex flex-col gap-4 pb-16 pt-6">
             <p className="text-xl text-black dark:text-white pb-6">Shortcuts</p>
-          </div>
+          </div> */}
         </main>
       </div>
     </>

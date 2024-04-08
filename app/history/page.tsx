@@ -2,8 +2,10 @@ import SideNavbar from "@/components/SideNavbar";
 import TopNavbar from "@/components/TopNavbar";
 import InfiniteHistoryScroll from "./InfiniteHistoryScroll";
 import { getUserWatching } from "@/services/getUserWatching";
+import { getUserTheme } from "../layout";
 
 async function HistoryPage() {
+  const theme = await getUserTheme();
   const userWatchingRes = await getUserWatching();
 
   if (!userWatchingRes) {
@@ -17,7 +19,9 @@ async function HistoryPage() {
       <TopNavbar />
       <div className="h-full relative">
         <SideNavbar pathName="/history" />
-        <h2 className="py-3 pl-8 xs:pl-28 text-2xl capitalize text-neutral-900 dark:text-slate-100">
+        <h2
+          className="py-3 pl-8 xs:pl-28 text-2xl capitalize"
+          style={{ color: theme.textColor }}>
           continue watching
         </h2>
         <main className="xs:pl-20 flex flex-row">

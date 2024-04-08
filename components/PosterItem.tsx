@@ -7,6 +7,7 @@ import { shade } from "@/utils/color";
 import { usePreference } from "../app/PreferenceProvider";
 import { posterItemType } from "@/types/constants";
 import { AnimeItemType } from "@/types/anime";
+import { themes } from "@/theme";
 
 function PosterItem({
   item,
@@ -15,6 +16,9 @@ function PosterItem({
   item: AnimeItemType;
   type?: posterItemType;
 }) {
+  const { themeId } = usePreference();
+  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
+
   const router = useRouter();
   const { isDub } = usePreference();
   const [isHover, setIsHover] = useState(false);
@@ -70,11 +74,12 @@ function PosterItem({
       <div className="h-16 text-sm font-medium flex items-center overflow-visible">
         <p
           className="px-2 w-full line-clamp-2 text-center text-neutral-950 dark:text-white"
-          style={
-            isHover && item?.color
-              ? { color: shade(item?.color, -2).toString() }
-              : {}
-          }>
+          style={{
+            color:
+              isHover && item?.color
+                ? shade(item?.color, -2).toString()
+                : theme.textColor,
+          }}>
           {title ?? ""}
         </p>
       </div>

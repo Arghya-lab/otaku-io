@@ -12,7 +12,9 @@ async function HistoryPage() {
   if (!bookmarkAnimeIds) {
     return (
       <>
-        <p className="font-poppins text-lg text-gray-100 text-center pt-8">
+        <p
+          className="font-poppins text-lg text-center pt-8"
+          style={{ color: theme.textColor }}>
           You are not login
         </p>
         <div className="flex items-center justify-center gap-2">
@@ -28,12 +30,14 @@ async function HistoryPage() {
     );
   }
 
-  const results = await getAnimesByIds(bookmarkAnimeIds.slice(0,20));
-const hasNextPage = bookmarkAnimeIds.length>=20;
+  const results = await getAnimesByIds(bookmarkAnimeIds.slice(0, 20));
+  const hasNextPage = bookmarkAnimeIds.length >= 20;
 
   return (
     <>
-      <h2 className="py-3 pl-8 xs:pl-28 text-2xl capitalize text-neutral-900 dark:text-slate-100">
+      <h2
+        className="py-3 pl-8 xs:pl-28 text-2xl capitalize"
+        style={{ color: theme.textColor }}>
         library
       </h2>
       <main className="xs:pl-20 flex flex-row">

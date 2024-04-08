@@ -1,4 +1,8 @@
-import { PlayerActionType, PlayerStateType } from "@/types/player";
+import {
+  PlayerActionType,
+  PlayerStateType,
+  ScreenFullTypeEnum,
+} from "@/types/player";
 
 const reducer = (state: PlayerStateType, action: PlayerActionType) => {
   switch (action.type) {
@@ -66,6 +70,15 @@ const reducer = (state: PlayerStateType, action: PlayerActionType) => {
       break;
     case "changeControllerVisibility":
       return { ...state, controllerVisibility: action.payload };
+      break;
+    case "setDefaultFullScreen":
+      return { ...state, FullScreenType: ScreenFullTypeEnum.DEFAULT };
+      break;
+    case "setMaxWidthFullScreen":
+      return { ...state, FullScreenType: ScreenFullTypeEnum.MAXWIDTH };
+      break;
+    case "setVideoAspectRatioFullScreen":
+      return { ...state, FullScreenType: ScreenFullTypeEnum["16:9"] };
       break;
 
     default:

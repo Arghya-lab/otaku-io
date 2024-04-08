@@ -6,6 +6,7 @@ import Tippy from "@tippyjs/react";
 import { Check } from "lucide-react";
 import { themeType, themes } from "@/theme";
 import { UpdateTypeEnum, usePreference } from "@/app/PreferenceProvider";
+import { useRouter } from "next/navigation";
 
 function ThemeSelectModal({
   isOpen,

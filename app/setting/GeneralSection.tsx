@@ -9,7 +9,7 @@ import { UpdateTypeEnum, usePreference } from "@/app/PreferenceProvider";
 
 function GeneralSection() {
   const { themeId, isDub, updatePreference } = usePreference();
-  const theme = themes.find(theme=>theme.id===themeId) || themes[0];
+  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
 
   const [isThemeSelectModalOpen, setIsThemeSelectModalOpen] = useState(false);
 
@@ -26,10 +26,12 @@ function GeneralSection() {
 
   return (
     <div className="flex flex-col gap-2 pb-16 pt-6 border-b border-zinc-500">
-      <p className="text-xl text-black dark:text-white pb-6">General</p>
+      <p className="text-xl pb-6" style={{ color: theme.textColor }}>
+        General
+      </p>
       <div className="flex flex-col gap-2">
         <div className="flex gap-4">
-          <p className="text-gray-950 dark:text-slate-100 text-sm">
+          <p className="text-sm" style={{ color: theme.textColor }}>
             Dub as auto select language
           </p>
           <Radio

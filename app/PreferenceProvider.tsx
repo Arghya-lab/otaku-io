@@ -128,10 +128,10 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
             console.error("Error: invalid preference update payload.");
           } else {
             cookies.set("themeId", payload.toString(), { expires: 2147483647 }); // Maximum value: 2147483647
-            router.refresh();
             ({ data } = await axios.patch("/api/preference/themeid", {
               themeId: payload,
             }));
+            router.refresh();
           }
         } else {
           console.error("Error: invalid preference update type.");

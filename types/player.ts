@@ -19,9 +19,16 @@ export interface PlayerStateType {
   buffering: boolean;
   videoAspectRatio: number;
   playerFullScreen: boolean;
+  FullScreenType: ScreenFullTypeEnum;
   isMobileDevice: boolean;
   controllerVisibility: boolean;
   skipTimes: SkipTimeType[];
+}
+
+export enum ScreenFullTypeEnum {
+  "DEFAULT",
+  "MAXWIDTH",
+  "16:9",
 }
 
 interface MinimizeMaximizeActionType {
@@ -79,6 +86,15 @@ interface setVideoAspectRatioActionType {
   type: "setVideoAspectRatio";
   payload: number;
 }
+interface setDefaultFullScreenActionType {
+  type: "setDefaultFullScreen";
+}
+interface setMaxWidthFullScreenActionType {
+  type: "setMaxWidthFullScreen";
+}
+interface setVideoAspectRatioFullScreenActionType {
+  type: "setVideoAspectRatioFullScreen";
+}
 
 export type PlayerActionType =
   | MinimizeMaximizeActionType
@@ -93,4 +109,7 @@ export type PlayerActionType =
   | ChangeVolumeActionType
   | ToggleMutedActionType
   | changeControllerVisibilityActionType
-  | setVideoAspectRatioActionType;
+  | setVideoAspectRatioActionType
+  | setDefaultFullScreenActionType
+  | setMaxWidthFullScreenActionType
+  | setVideoAspectRatioFullScreenActionType;

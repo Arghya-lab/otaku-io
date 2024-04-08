@@ -23,7 +23,7 @@ function PlayerSkipBtns({
   };
 
   return (
-    <div className="flex flex-col gap-2 absolute bottom-14 sm:bottom-20 right-4 z-40">
+    <div className="flex flex-col gap-2 absolute bottom-20 right-4 z-40">
       {state.skipTimes.map((skipTime) => {
         if (playerRef.current) {
           const currentlyPlaying = playerRef.current.getCurrentTime();

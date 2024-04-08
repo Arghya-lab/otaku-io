@@ -39,7 +39,7 @@ async function DetailPage({
         }>
         <div className="w-full h-full bg-black opacity-70" />
       </div>
-      <TopNavbar />
+      <TopNavbar bgColor={detailInfo?.color || "#000"} />
       {/* Body */}
       <div className="w-full mt-20">
         <div className="pt-4 px-4 xxs:px-8 xs:px-16 sm:pr-48 md:pr-80 lg:pr-[416px]">
@@ -48,11 +48,7 @@ async function DetailPage({
         <div
           className="mx-4 xxs:mx-8 xs:mx-16 my-8 h-full p-8 px-4 bg-black bg-opacity-20 rounded-xl"
           style={{ backdropFilter: "blur(15px)" }}>
-          <EpBtnSheet
-            detailInfo={detailInfo}
-            isDubEnable={isDub}
-            modeResponsiveness={false}
-          />
+          <EpBtnSheet detailInfo={detailInfo} isDubEnable={isDub} />
         </div>
       </div>
     </div>

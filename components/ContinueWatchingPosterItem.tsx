@@ -9,6 +9,7 @@ import { usePreference } from "../app/PreferenceProvider";
 import { shade } from "@/utils/color";
 import setDetailInfoAndGetWatchPageLink from "@/utils/setDetailInfoAndGetWatchPageLink";
 import { WatchingAnimeType } from "@/types/anime";
+import { themes } from "@/theme";
 
 function ContinueWatchingPosterItem({
   WatchingAnime,
@@ -16,7 +17,8 @@ function ContinueWatchingPosterItem({
   WatchingAnime: WatchingAnimeType;
 }) {
   const { animeInfo, lastWatched } = WatchingAnime;
-  const { isDub } = usePreference();
+  const { themeId, isDub } = usePreference();
+  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
 
   const router = useRouter();
   const [isHover, setIsHover] = useState(false);
@@ -102,14 +104,13 @@ function ContinueWatchingPosterItem({
       </div>
       <div className="h-16 text-sm font-medium flex items-center overflow-visible">
         <p
-          className="px-2 w-full line-clamp-2 text-center text-neutral-950 dark:text-white"
-          style={
-            isHover
-              ? animeInfo?.color
-                ? { color: shade(animeInfo.color, -2).toString() }
-                : {}
-              : {}
-          }>
+          className="px-2 w-full line-clamp-2 text-center"
+          style={{
+            color:
+              isHover && animeInfo?.color
+                ? shade(animeInfo.color, -2).toString()
+                : theme.textColor,
+          }}>
           {title || ""}
         </p>
       </div>

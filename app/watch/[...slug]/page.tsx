@@ -1,16 +1,16 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import chroma from "chroma-js";
+import Skeleton from "react-loading-skeleton";
+import axios, { isAxiosError } from "axios";
 import EpBtnSheet from "@/components/EpBtnSheet";
 import TopNavbar from "@/components/TopNavbar";
-import axios, { isAxiosError } from "axios";
-import { useEffect, useState } from "react";
 import RecommendItem from "./RecommendItem";
 import Player from "./Player";
 import { AnimeEpisodeType, DetailAnimeInfoType } from "@/types/anime";
-import Skeleton from "react-loading-skeleton";
 import { themes } from "@/theme";
 import { usePreference } from "@/app/PreferenceProvider";
-import chroma from "chroma-js";
 
 function VideoWatchPage({
   params,
@@ -19,7 +19,8 @@ function VideoWatchPage({
   params: { slug: ["animeId", "epNo", "epId"] };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const theme = themes[usePreference().themeId];
+  const { themeId } = usePreference();
+  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
 
   const animeId = decodeURIComponent(params.slug[0]);
   const epNo = decodeURIComponent(params.slug[1]);
@@ -71,14 +72,14 @@ function VideoWatchPage({
 
   if (!detailInfo || !episode) {
     return (
-      <div className="max-w-[1600px] m-auto overflow-x-hidden">
-        <TopNavbar />
-        <Skeleton
-          className="rounded-md my-4 h-screen w-[90%] m-[5%]"
-          baseColor={chroma(theme.primaryColor).darken(1).toString()}
-          highlightColor={chroma(theme.primaryColor).darken(1.5).toString()}
-        />
-      </div>
+      <div className="w-full relative h-full">
+      <TopNavbar />
+      <Skeleton
+        className="rounded-md my-4 h-[75vh] w-[90%] m-[5%]"
+        baseColor={chroma(theme.primaryColor).darken(1).toString()}
+        highlightColor={chroma(theme.primaryColor).darken(1.5).toString()}
+      />
+    </div>
     );
   }
 
@@ -91,10 +92,10 @@ function VideoWatchPage({
         detailInfo.title?.userPreferred;
 
   return (
-    <div className="max-w-[1600px] m-auto overflow-x-hidden">
+    <>
       <TopNavbar />
       <div className="flex flex-col md:flex-row">
-        <div className="xxs:px-2 xs:px-6 lg:px-12 pb-8 flex flex-col md:min-w-[700px] md:w-[66%] lg:min-w-[1000px] lg:w-[75%]">
+        <div className="xxs:px-2 xs:px-6 lg:px-12 pb-8 pt-4 flex flex-col md:min-w-[700px] md:w-[66%] lg:min-w-[1000px] lg:w-[75%]">
           <Player
             animeId={animeId}
             title={
@@ -107,17 +108,18 @@ function VideoWatchPage({
             epNo={epNo}
             isDub={isDub}
           />
-            <p className="py-4 px-2 font-bold font-nunito text-xl text-neutral-900 dark:text-slate-100">
-              {detailInfo?.episodes?.length === 1
-                ? title ?? ""
-                : episode?.title}
-            </p>
-            <p className="pb-4 md:pb-18 lg:pb-12 text-neutral-900 dark:text-slate-100">
-              {episode?.description}
-            </p>
+          <p
+            className="py-4 px-2 font-bold font-nunito text-xl"
+            style={{ color: theme.textColor }}>
+            {detailInfo?.episodes?.length === 1 ? title ?? "" : episode?.title}
+          </p>
+          <p
+            className="pb-4 md:pb-18 lg:pb-12"
+            style={{ color: theme.textColor }}>
+            {episode?.description}
+          </p>
           <div className="px-2 xxs:px-0">
             <EpBtnSheet
-              modeResponsiveness={true}
               detailInfo={detailInfo}
               isDubEnable={isDub}
               episodeNo={Number(epNo)}
@@ -137,7 +139,7 @@ function VideoWatchPage({
           </div>
         ) : null}
       </div>
-    </div>
+    </>
   );
 }
 

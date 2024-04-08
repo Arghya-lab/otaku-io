@@ -1,5 +1,5 @@
 @import "react-alice-carousel/lib/alice-carousel.css";
-@import 'react-loading-skeleton/dist/skeleton.css';
+@import "react-loading-skeleton/dist/skeleton.css";
 
 body,
 #root {
@@ -13,7 +13,7 @@ body,
 
 @layer components {
   .side-nav-btn {
-    @apply w-16 h-16 mt-2 pt-2 cursor-pointer flex flex-col items-center rounded-[0.75rem] text-neutral-800 dark:text-slate-300 hover:bg-white hover:bg-opacity-10 hover:opacity-100 hover:text-neutral-900 hover:dark:text-slate-100;
+    @apply w-16 h-16 mt-2 pt-2 cursor-pointer flex flex-col items-center rounded-[0.75rem] hover:bg-white hover:bg-opacity-20 hover:opacity-85;
   }
 }
 

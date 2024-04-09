@@ -1,3 +1,4 @@
+// import "server-only";
 import {
   ANIME,
   META,
@@ -47,16 +48,16 @@ const generateAnilistMeta = (
 // Query Parameters for getTrending:  page, perPage
 export const getTrending = async (page = 1, perPage = 10) => {
   // try {
-    const anilist = generateAnilistMeta();
-    
-    const res = (await anilist.fetchTrendingAnime(
-      page,
-      perPage
-      )) as TrendingAnimeResType;
-      return res;
-    // } catch (error) {
-    //   console.error(error);
-    // }
+  const anilist = generateAnilistMeta();
+
+  const res = (await anilist.fetchTrendingAnime(
+    page,
+    perPage
+  )) as TrendingAnimeResType;
+  return res;
+  // } catch (error) {
+  //   console.error(error);
+  // }
 };
 
 // Query Parameters for getPopular:  page, perPage
@@ -154,23 +155,9 @@ export const getSearchData = async (
 
 export const getStreamingLinks = async (
   episodeId: string,
-  server?: StreamingServers,
   provider?: string
 ) => {
-  // if (server && !Object.values(StreamingServers).includes(server)) {
-  //   console.log("Invalid server");
-  // }
-  // let anilist = generateAnilistMeta(provider);
+  let anilist = generateAnilistMeta(provider);
 
-  // return  await anilist.fetchEpisodeSources(episodeId, server);
-
-  try {
-    const { data }: { data: AnimeStreamingSourceType } = await axios.get(
-      `https://march-api1.vercel.app/meta/anilist/watch/${episodeId}`
-    );
-
-    return data;
-  } catch (error) {
-    console.log(error);
-  }
+  return await anilist.fetchEpisodeSources(episodeId) as AnimeStreamingSourceType;
 };

@@ -1,3 +1,4 @@
+import "server-only";
 import { getServerSession } from "next-auth";
 import AnimeWatched from "@/models/AnimeWatched";
 import { advancedSearch } from "./getAnime";

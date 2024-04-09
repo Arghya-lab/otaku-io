@@ -13,3 +13,20 @@ export const shade = (
 
   return chroma(baseColor).darken(darkenValue).alpha(opacity);
 };
+
+export function adjustTextColor(textColor: string, bgColor: string) {
+  const textLuminance = chroma(textColor).luminance();
+  const bgLuminance = chroma(bgColor).luminance();
+  const contrastRatio =
+    (Math.max(textLuminance, bgLuminance) + 0.05) /
+    (Math.min(textLuminance, bgLuminance) + 0.05);
+
+  if (contrastRatio < 2) {
+    const labColor = chroma(textColor).lab();
+
+    labColor[0] = bgLuminance + 0.05;
+    const adjustedColor = chroma.lab(labColor[0], labColor[1], labColor[2]);
+    return adjustedColor.hex();
+  }
+  return textColor;
+}

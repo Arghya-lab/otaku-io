@@ -102,7 +102,7 @@ function EpBtnSheet({
             enabled={isDubEnable}
             setEnabled={handleChangeLang}
           />
-          <p style={{ color: isWatchPage ? theme.textColor : "unset" }}>dub</p>
+          <p style={{ color: isWatchPage ? theme.textColor : "#fff" }}>dub</p>
         </div>
         {/* <Select
             // name={"providers"}

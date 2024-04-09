@@ -37,7 +37,9 @@ function TopNavbar({ bgColor }: { bgColor?: string }) {
       style={{
         backgroundColor: scrolled
           ? `${
-              bgColor ? shade(bgColor, -1, 0.1) : chroma(theme.primaryColor).darken().alpha(0.6)
+              bgColor
+                ? shade(bgColor, -1, 0.1)
+                : chroma(theme.primaryColor).darken().alpha(0.6)
             }`
           : "transparent",
       }}>
@@ -52,7 +54,7 @@ function TopNavbar({ bgColor }: { bgColor?: string }) {
           width={50}
           height={50}
           className="scale-125"
-          src={`/logo-${themeId % 14}.png`}
+          src={`/images/logo-${themeId % 14}.png`}
         />
       </Link>
       <form

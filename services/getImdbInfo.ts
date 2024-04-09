@@ -1,3 +1,4 @@
+import "server-only";
 import { AnimeImdbInfoType } from "@/types/anime";
 import axios, { isAxiosError } from "axios";
 

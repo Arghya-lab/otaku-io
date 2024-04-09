@@ -65,10 +65,10 @@ function EpBtn({
   return (
     <button
       key={episode?.number}
-      disabled={watching}
-      className="h-7 w-14 flex items-center justify-center rounded-md border-2 opacity-70"
+      disabled={watching && isWatchPage}
+      className="h-7 w-14 flex items-center justify-center rounded-md border-2 opacity-80"
       style={{
-        color: isWatchPage || !watching ? theme.textColor : "white",
+        color: isWatchPage || !watching ? theme.textColor : "#fff",
         backgroundColor: watching
           ? style.bgColor.watching
           : isHovered

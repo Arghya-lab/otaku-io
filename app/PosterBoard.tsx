@@ -44,7 +44,7 @@ function PosterBoard({
         className="grid"
         style={{ gridTemplateColumns: `repeat(${posterItemCount}, 1fr)` }}>
         {content.slice(0, posterItemCount).map((item, id) => (
-          <PosterItem key={id} item={item} type={posterItemType.general} />
+          <PosterItem key={id} item={item} />
         ))}
       </div>
     </section>

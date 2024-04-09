@@ -13,9 +13,8 @@ import PlayerSkipBtns from "./PlayerSkipBtns";
 import PlayerControl from "./PlayerControl";
 import PlayerLoader from "./PlayerLoader";
 import reducer from "./reducerFunc";
-import { DetailAnimeInfoType } from "@/types/anime";
+import { AnimeStreamingSourceType, DetailAnimeInfoType } from "@/types/anime";
 import isMobileDevice from "@/utils/getIsMobileDevice";
-import { Fullscreen } from "lucide-react";
 import classNames from "classnames";
 
 let count = 0;
@@ -108,11 +107,19 @@ function Player({
       const currentEpIdx = detailInfo.episodes.findIndex(
         (ep) => ep.id === epId
       );
-      const nextEp = detailInfo.episodes[currentEpIdx + 1];
       screenfull.exit();
       if (screen.orientation.unlock) screen.orientation.unlock();
       dispatch({ type: "minimizeMaximize", payload: false });
 
+      // if the current episode is last episode
+      if (
+        detailInfo.episodes[detailInfo.episodes.length - 1].id ===
+        detailInfo.episodes[currentEpIdx].id
+      ) {
+        dispatch({ type: "pausePlaying" });
+      }
+
+      const nextEp = detailInfo.episodes[currentEpIdx + 1];
       router.push(
         `/watch/${detailInfo.id}/${nextEp.number}/${nextEp.id}?dub=${isDub}`
       );
@@ -125,7 +132,9 @@ function Player({
   useEffect(() => {
     (async () => {
       try {
-        const data = await getStreamingLinks(epId, StreamingServers.GogoCDN);
+        const { data }: { data: AnimeStreamingSourceType } = await axios.get(
+          `/api/anime/streaming-links/${epId}`
+        );
         if (data) {
           dispatch({
             type: "updateStreamingLinks",

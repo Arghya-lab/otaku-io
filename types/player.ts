@@ -2,7 +2,7 @@ import { AnimeStreamingLinkType, SkipTimeType } from "./anime";
 
 export interface PlayerStateType {
   // url: string | null;
-  // pip: boolean,
+  pip: boolean;
   playing: boolean;
   volume: number; //  value -> 0-1
   muted: boolean;
@@ -36,11 +36,23 @@ interface MinimizeMaximizeActionType {
   payload: boolean;
 }
 
-interface PausePlayingActionType {
-  type: "pausePlaying";
+interface EnablePlayingActionType {
+  type: "enablePlaying";
+}
+interface DisablePlayingActionType {
+  type: "disablePlaying";
 }
 interface TogglePlayingActionType {
   type: "togglePlaying";
+}
+interface EnablePipActionType {
+  type: "enablePip";
+}
+interface DisablePipActionType {
+  type: "disablePip";
+}
+interface TogglePipActionType {
+  type: "togglePip";
 }
 interface UpdateStreamingLinksActionType {
   type: "updateStreamingLinks";
@@ -98,8 +110,12 @@ interface setVideoAspectRatioFullScreenActionType {
 
 export type PlayerActionType =
   | MinimizeMaximizeActionType
-  | PausePlayingActionType
+  | EnablePlayingActionType
+  | DisablePlayingActionType
   | TogglePlayingActionType
+  | EnablePipActionType
+  | DisablePipActionType
+  | TogglePipActionType
   | UpdateStreamingLinksActionType
   | SetSkipTimesActionType
   | UpdateDurationActionType

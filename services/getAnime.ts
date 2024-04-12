@@ -1,13 +1,7 @@
-// import "server-only";
-import {
-  ANIME,
-  META,
-  PROVIDERS_LIST,
-  StreamingServers,
-} from "@consumet/extensions";
+import "server-only";
+import { ANIME, META, PROVIDERS_LIST } from "@consumet/extensions";
 import Anilist from "@consumet/extensions/dist/providers/meta/anilist";
 import NineAnime from "@consumet/extensions/dist/providers/anime/9anime";
-import axios from "axios";
 import {
   AdvancedAnimeSearchResType,
   AnimeSearchResType,
@@ -16,59 +10,68 @@ import {
   PopularAnimeResType,
   TrendingAnimeResType,
 } from "@/types/anime";
+import axios from "axios";
 
 const generateAnilistMeta = (
   provider: string | undefined = "gogoanime"
 ): Anilist => {
-  if (typeof provider !== "undefined") {
-    let possibleProvider = PROVIDERS_LIST.ANIME.find(
-      (p) => p.name.toLowerCase() === provider.toLocaleLowerCase()
-    );
-
-    if (possibleProvider instanceof NineAnime) {
-      possibleProvider = new ANIME.NineAnime(
-        process.env?.NINE_ANIME_HELPER_URL,
-        {
-          url: process.env?.NINE_ANIME_PROXY as string,
-        },
-        process.env?.NINE_ANIME_HELPER_KEY as string
+  try {
+    if (typeof provider !== "undefined") {
+      let possibleProvider = PROVIDERS_LIST.ANIME.find(
+        (p) => p.name.toLowerCase() === provider.toLocaleLowerCase()
       );
-    }
 
-    return new META.Anilist(possibleProvider, {
-      url: process.env.PROXY as string | string[],
-    });
-  } else {
-    return new Anilist(undefined, {
-      url: process.env.PROXY as string | string[],
-    });
+      if (possibleProvider instanceof NineAnime) {
+        possibleProvider = new ANIME.NineAnime(
+          process.env?.NINE_ANIME_HELPER_URL,
+          {
+            url: process.env?.NINE_ANIME_PROXY as string,
+          },
+          process.env?.NINE_ANIME_HELPER_KEY as string
+        );
+      }
+
+      return new META.Anilist(possibleProvider, {
+        url: process.env.PROXY as string | string[],
+      });
+    } else {
+      return new Anilist(undefined, {
+        url: process.env.PROXY as string | string[],
+      });
+    }
+  } catch {
+    throw new Error("Error occur while generating anilist meta.");
   }
 };
 
 // Query Parameters for getTrending:  page, perPage
 export const getTrending = async (page = 1, perPage = 10) => {
-  // try {
-  const anilist = generateAnilistMeta();
+  try {
+    const anilist = generateAnilistMeta();
 
-  const res = (await anilist.fetchTrendingAnime(
-    page,
-    perPage
-  )) as TrendingAnimeResType;
-  return res;
-  // } catch (error) {
-  //   console.error(error);
-  // }
+    const res = (await anilist.fetchTrendingAnime(
+      page,
+      perPage
+    )) as TrendingAnimeResType;
+    return res;
+  } catch {
+    throw new Error("Error occur while getting trending anime.");
+  }
 };
 
 // Query Parameters for getPopular:  page, perPage
 export const getPopular = async (page = 1, perPage = 10) => {
-  const anilist = generateAnilistMeta();
+  try {
+    const anilist = generateAnilistMeta();
 
-  const res = (await anilist.fetchPopularAnime(
-    page,
-    perPage
-  )) as PopularAnimeResType;
-  return res;
+    const res = (await anilist.fetchPopularAnime(
+      page,
+      perPage
+    )) as PopularAnimeResType;
+    return res;
+  } catch {
+    throw new Error("Error occur while getting popular anime.");
+  }
 };
 
 // Query Parameters for advancedSearch:
@@ -103,39 +106,49 @@ export const advancedSearch = async ({
   year: number;
   season: string;
 }> = {}) => {
-  if (!page) page = 1;
+  try {
+    if (!page) page = 1;
 
-  if (!perPage) perPage = 30;
+    if (!perPage) perPage = 30;
 
-  if (genres) genres = JSON.parse(genres as string);
+    if (genres) genres = JSON.parse(genres as string);
 
-  if (sort) sort = JSON.parse(sort as string);
+    if (sort) sort = JSON.parse(sort as string);
 
-  const anilist = generateAnilistMeta();
+    const anilist = generateAnilistMeta();
 
-  const res = (await anilist.advancedSearch(
-    query,
-    type,
-    page,
-    perPage,
-    format,
-    sort as string[],
-    genres as string[],
-    id,
-    year,
-    status,
-    season
-  )) as AdvancedAnimeSearchResType;
-  return res;
+    const res = (await anilist.advancedSearch(
+      query,
+      type,
+      page,
+      perPage,
+      format,
+      sort as string[],
+      genres as string[],
+      id,
+      year,
+      status,
+      season
+    )) as AdvancedAnimeSearchResType;
+    return res;
+  } catch {
+    throw new Error("Error occur while searching anime.");
+  }
 };
 
 export const getDetailInfo = async (id: string, isDub: boolean = false) => {
-  // const provider = (request.query as { provider?: string }).provider;
+  try {
+    // const provider = (request.query as { provider?: string }).provider;
+    let anilist = generateAnilistMeta();
 
-  let anilist = generateAnilistMeta();
-
-  const res = (await anilist.fetchAnimeInfo(id, isDub)) as DetailAnimeInfoType;
-  return res;
+    const res = (await anilist.fetchAnimeInfo(
+      id,
+      isDub
+    )) as DetailAnimeInfoType;
+    return res;
+  } catch {
+    throw new Error("Error occur while getting anime info.");
+  }
 };
 
 export const getSearchData = async (
@@ -143,21 +156,36 @@ export const getSearchData = async (
   page: number | undefined = 1,
   perPage: number | undefined = 30
 ) => {
-  const anilist = generateAnilistMeta();
+  try {
+    const anilist = generateAnilistMeta();
 
-  const res = (await anilist.search(
-    query,
-    page,
-    perPage
-  )) as AnimeSearchResType;
-  return res;
+    const res = (await anilist.search(
+      query,
+      page,
+      perPage
+    )) as AnimeSearchResType;
+    return res;
+  } catch {
+    throw new Error("Error occur while getting searching anime.");
+  }
 };
 
 export const getStreamingLinks = async (
   episodeId: string,
   provider?: string
 ) => {
-  let anilist = generateAnilistMeta(provider);
+  try {
+    const anilistPromise = generateAnilistMeta(provider).fetchEpisodeSources(
+      episodeId
+    ) as Promise<AnimeStreamingSourceType>;
 
-  return await anilist.fetchEpisodeSources(episodeId) as AnimeStreamingSourceType;
+    const axiosPromise = axios
+      .get(`https://march-api1.vercel.app/meta/anilist/watch/${episodeId}`)
+      .then((response) => response.data as AnimeStreamingSourceType);
+
+    // Use Promise.race() to return the first resolved promise
+    return Promise.race([anilistPromise, axiosPromise]);
+  } catch {
+    throw new Error("Error occur while fetching streaming links.");
+  }
 };

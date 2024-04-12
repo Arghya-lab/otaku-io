@@ -4,12 +4,12 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimeItemType } from "@/types/anime";
-import { usePreference } from "@/app/PreferenceProvider";
-import { themeEnum, themes } from "@/theme";
+import { usePreference } from "@/components/providers/PreferenceProvider";
+import { themes } from "@/theme";
 import chroma from "chroma-js";
 
 function RecommendItem({ item }: { item: AnimeItemType }) {
-  const { themeId } = usePreference();
+  const { themeId, isDub } = usePreference();
   const theme = themes.find((theme) => theme.id === themeId) || themes[0];
 
   const [isHover, setIsHover] = useState(false);
@@ -25,7 +25,7 @@ function RecommendItem({ item }: { item: AnimeItemType }) {
 
   return (
     <Link
-      href={`/detail/${item.id}/${title}`}
+      href={`/detail/${item.id}?title=${title}&dub=${isDub}`}
       style={{
         backgroundColor: chroma(theme.primaryColor)
           .darken(isHover ? 0.3 : 0.1)

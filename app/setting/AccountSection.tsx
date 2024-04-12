@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import Skeleton from "react-loading-skeleton";
 import { LogIn, LogOut, Mail, User } from "lucide-react";
 import { themes } from "@/theme";
-import { usePreference } from "@/app/PreferenceProvider";
+import { usePreference } from "@/components/providers/PreferenceProvider";
 import chroma from "chroma-js";
 
 function AccountSection() {
@@ -14,11 +14,11 @@ function AccountSection() {
   const theme = themes.find((theme) => theme.id === themeId) || themes[0];
 
   return (
-    <div className="flex flex-col gap-2 pb-16 pt-6 border-b border-zinc-500">
-      <p className="text-xl pb-6" style={{ color: theme.textColor }}>
+    <section className="flex flex-col gap-2 pb-16 pt-6 border-b border-zinc-500">
+      <h3 className="text-xl pb-6" style={{ color: theme.textColor }}>
         Account
-      </p>
-      <div>
+      </h3>
+      <div className="xs:pl-12">
         {status === "loading" ? (
           <div className="flex flex-col gap-2">
             <Skeleton
@@ -34,15 +34,11 @@ function AccountSection() {
           </div>
         ) : status === "authenticated" ? (
           <>
-            <p
-              className="flex items-center gap-2 pb-3"
-              style={{ color: theme.textColor }}>
+            <p className="flex items-center gap-2 pb-3">
               <User size={24} />
               {session?.user?.name}
             </p>
-            <p
-              className="text-sm flex items-center gap-2"
-              style={{ color: theme.textColor }}>
+            <p className="text-sm flex items-center gap-2">
               <Mail size={16} />
               {session?.user?.email}
             </p>
@@ -56,9 +52,7 @@ function AccountSection() {
           </>
         ) : (
           <div>
-            <p style={{ color: theme.textColor }}>
-              Connect your account for save your preferences in cloud.
-            </p>
+            <p>Connect your account for save your preferences in cloud.</p>
             <div className="flex items-center gap-2">
               <LogIn size={16} style={{ color: theme.secondaryColor }} />
               <Link
@@ -71,7 +65,7 @@ function AccountSection() {
           </div>
         )}
       </div>
-    </div>
+    </section>
   );
 }
 

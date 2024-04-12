@@ -3,7 +3,7 @@
 import { useState } from "react";
 import screenfull from "screenfull";
 import { Maximize, Minimize } from "lucide-react";
-import { usePreference } from "@/app/PreferenceProvider";
+import { usePreference } from "@/components/providers/PreferenceProvider";
 import { themes } from "@/theme";
 
 function MinMaximizeBtn() {
@@ -13,7 +13,7 @@ function MinMaximizeBtn() {
   const [isFullScreen, setIsFullScreen] = useState(false);
 
   const handleMaximizeClick = () => {
-    const appElement = document.getElementsByTagName("body")[0];
+    const appElement = document.getElementById("App");
     if (appElement) {
       screenfull.request(appElement);
       setIsFullScreen(true);

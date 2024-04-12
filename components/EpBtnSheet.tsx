@@ -15,7 +15,7 @@ import EpBtn from "./ui/EpBtn";
 import setDetailInfoAndGetWatchPageLink from "@/utils/setDetailInfoAndGetWatchPageLink";
 import { AnimeEpisodeType, DetailAnimeInfoType } from "@/types/anime";
 import { useSession } from "next-auth/react";
-import { usePreference } from "@/app/PreferenceProvider";
+import { usePreference } from "@/components/providers/PreferenceProvider";
 import { themes } from "@/theme";
 
 function EpBtnSheet({
@@ -72,8 +72,9 @@ function EpBtnSheet({
     if (isWatchPage && detailInfo) {
       setDetailInfoAndGetWatchPageLink(detailInfo.id, isDubEnable, episodeNo);
     } else {
-      let currentPath = window.location.pathname;
-      router.push(`${currentPath}?dub=${!isDubEnable}`);
+      const currentPath = window.location.pathname;
+      const title = new URLSearchParams(window.location.search).get("title");
+      router.push(`${currentPath}?title=${title}&dub=${!isDubEnable}`);
     }
   };
 

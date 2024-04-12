@@ -1,7 +1,5 @@
 import Filter from "@/app/discover/Filter";
 import InfiniteDiscoverScroll from "@/app/discover/InfiniteDiscoverScroll";
-import SideNavbar from "@/components/SideNavbar";
-import TopNavbar from "@/components/TopNavbar";
 import { advancedSearch } from "@/services/getAnime";
 
 async function DiscoverPage({
@@ -23,19 +21,14 @@ async function DiscoverPage({
 
   return (
     <>
-      <TopNavbar />
-      <div className="h-full relative">
-        <SideNavbar pathName="/discover" />
-        <main className="xs:pl-20 pt-24 flex flex-row">
-          {/* Selectable input container */}
-          <Filter />
-          {/* Meta items container */}
-          <InfiniteDiscoverScroll
-            initialData={results}
-            hasNextPage={!!hasNextPage}
-          />
-        </main>
-      </div>
+      {/* Selectable input container */}
+      <Filter />
+      {/* <div className="px-2 xxs:px-4"> */}
+        <InfiniteDiscoverScroll
+          initialData={results}
+          hasNextPage={!!hasNextPage}
+        />
+      {/* </div> */}
     </>
   );
 }

@@ -3,27 +3,26 @@ import { getImdbInfo } from "@/services/getImdbInfo";
 import { getDetailInfo } from "@/services/getAnime";
 import TopNavbar from "@/components/TopNavbar";
 import EpBtnSheet from "@/components/EpBtnSheet";
+import { AnimeImdbInfoType } from "@/types/anime";
 
 async function DetailPage({
   params,
   searchParams,
 }: {
-  params: { slug: ["id", "title"] };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: { id: string };
+  searchParams: { [key: string]: string | undefined };
 }) {
-  const id = decodeURIComponent(params.slug[0]);
-  const title = decodeURIComponent(params.slug[1]);
+  const id = decodeURIComponent(params.id);
+  const title = decodeURIComponent(searchParams.title || "");
   const isDub = searchParams.dub === "true" ? true : false;
 
-  if (!id || !title) {
-    return <p>Invalid url</p>;
-  }
+  const imdbInfoPromise = !!title
+    ? getImdbInfo(title)
+    : Promise.resolve(undefined);
 
-  // const imdbInfo: any = await getImdbInfo(title);
-  // const detailInfo = await getDetailInfo(id, isDub);
-  const [imdbInfo, detailInfo] = await Promise.all([
-    getImdbInfo(title),
+  const [detailInfo, imdbInfo] = await Promise.all([
     getDetailInfo(id, isDub),
+    imdbInfoPromise,
   ]);
 
   return (

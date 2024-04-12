@@ -6,7 +6,7 @@ import { WatchingAnimeType } from "@/types/anime";
 
 export const getUserWatching = async (
   page: number = 1,
-  perPage: number = 10
+  perPage: number = 20
 ) => {
   try {
     const session = await getServerSession();
@@ -55,8 +55,7 @@ export const getUserWatching = async (
         currentPage: page,
       };
     }
-  } catch (error) {
-    console.log(error);
-    // Return error response
+  } catch {
+    throw new Error("Error occur while fetching watching history.");
   }
 };

@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import AnimeWatched from "@/models/AnimeWatched";
 import { getSessionEmail } from "@/app/api/_lib/getSessionEmail";
+import connectDB from "@/db/db";
 
 export async function GET(req: NextRequest) {
   try {
+    await connectDB();
     const userEmail = await getSessionEmail();
 
     const searchParams = req.nextUrl.searchParams;

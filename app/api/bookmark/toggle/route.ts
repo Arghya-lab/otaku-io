@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { getSessionEmail } from "@/app/api/_lib/getSessionEmail";
 import User from "@/models/User";
+import connectDB from "@/db/db";
 
 export async function PATCH(req: Request) {
   try {
+    await connectDB();
     const userEmail = await getSessionEmail();
     const { animeId } = await req.json();
 

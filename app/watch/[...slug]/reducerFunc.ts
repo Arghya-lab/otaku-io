@@ -7,13 +7,25 @@ import {
 const reducer = (state: PlayerStateType, action: PlayerActionType) => {
   switch (action.type) {
     case "minimizeMaximize":
-      return { ...state, playerFullScreen: action.payload };
+      return { ...state, pip: false, playerFullScreen: action.payload };
       break;
-    case "pausePlaying":
+    case "enablePlaying":
+      return { ...state, playing: true };
+      break;
+    case "disablePlaying":
       return { ...state, playing: false };
       break;
     case "togglePlaying":
       return { ...state, playing: !state.playing };
+      break;
+    case "enablePip":
+      return { ...state, pip: true };
+      break;
+    case "disablePip":
+      return { ...state, pip: false };
+      break;
+    case "togglePip":
+      return { ...state, pip: !state.pip };
       break;
     case "updateStreamingLinks":
       return {
@@ -22,7 +34,6 @@ const reducer = (state: PlayerStateType, action: PlayerActionType) => {
         currentSource: action.payload.currentSource,
         playing: action.payload.playing,
         loaded: 0,
-        // url: action.payload.currentSource.url,
         // played: action.payload.played,
         // pip: false,
       };

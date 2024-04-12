@@ -1,28 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { Poppins, Nunito_Sans } from "next/font/google";
-import "./globals.css";
-import connectDB, { isMongoConnected } from "@/db/db";
-import AuthProvider from "./AuthProvider";
-import { themes } from "@/theme";
-import PreferencesProvider from "@/app/PreferenceProvider";
 import { cookies } from "next/headers";
-import { CookiesProvider } from "next-client-cookies/server";
 import { getServerSession } from "next-auth";
+import { CookiesProvider } from "next-client-cookies/server";
+import connectDB from "@/db/db";
+import AuthProvider from "@/components/providers/AuthProvider";
+import PreferencesProvider from "@/components/providers/PreferenceProvider";
+import { themes } from "@/theme";
 import Preference from "@/models/Preference";
-
-export const poppins_init = Poppins({
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-poppins",
-});
-
-export const nunito_Sans_init = Nunito_Sans({
-  weight: ["200", "300", "400", "500", "600", "700", "800", "900", "1000"],
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-nunito",
-});
+import { nunito_Sans, poppins } from "@/utils/fonts";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Otaku-io",
@@ -76,17 +62,16 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  if (!isMongoConnected) await connectDB();
+  await connectDB();
   const theme = await getUserTheme();
 
   return (
-    <html lang="en">
+    <html lang="en" id="App">
       <AuthProvider>
         <CookiesProvider>
           <PreferencesProvider>
             <body
-              id="App"
-              className={`${poppins_init.variable} ${nunito_Sans_init.variable} font-poppins w-full relative`}>
+              className={`${poppins} ${nunito_Sans} font-poppins w-full relative`}>
               <div
                 className="fixed -z-20 w-screen h-screen bg-cover"
                 style={{

@@ -1,13 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import usePosterItemCount from "@/hooks/usePosterItemCount";
-import PosterItem from "@/components/PosterItem";
 import { ChevronRight } from "lucide-react";
-import { posterItemType } from "@/types/constants";
+import PosterItem from "@/components/PosterItem";
 import { AnimeItemType } from "@/types/anime";
-import { usePreference } from "./PreferenceProvider";
+import { usePreference } from "@/components/providers/PreferenceProvider";
 import { themes } from "@/theme";
+import HorizontalScrollComponent from "@/app/home/HorizontalScrollComponent";
 
 function PosterBoard({
   name,
@@ -16,13 +15,11 @@ function PosterBoard({
   name: string;
   content: AnimeItemType[];
 }) {
-  const posterItemCount = usePosterItemCount();
-
   const { themeId } = usePreference();
   const theme = themes.find((theme) => theme.id === themeId) || themes[0];
 
   return (
-    <section className="mt-4 pb-8 px-2 xxs:px-4">
+    <section className="mt-4 pb-8">
       {/* Header */}
       <div
         className="mb-1 px-3 xxs:px-4 flex items-center justify-between"
@@ -40,13 +37,11 @@ function PosterBoard({
         </Link>
       </div>
       {/* Poster container */}
-      <div
-        className="grid"
-        style={{ gridTemplateColumns: `repeat(${posterItemCount}, 1fr)` }}>
-        {content.slice(0, posterItemCount).map((item, id) => (
-          <PosterItem key={id} item={item} />
+      <HorizontalScrollComponent
+        childComponents={content.map((item, id) => (
+          <PosterItem key={id} item={item} isHorizontalScroll={true} />
         ))}
-      </div>
+      />
     </section>
   );
 }

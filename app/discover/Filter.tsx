@@ -6,7 +6,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { FilterIcon } from "lucide-react";
 import chroma from "chroma-js";
 import Select from "@/components/ui/Select";
-import { usePreference } from "@/app/PreferenceProvider";
+import { usePreference } from "@/components/providers/PreferenceProvider";
 import {
   formatList,
   genreList,

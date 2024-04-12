@@ -10,7 +10,7 @@ import RecommendItem from "./RecommendItem";
 import Player from "./Player";
 import { AnimeEpisodeType, DetailAnimeInfoType } from "@/types/anime";
 import { themes } from "@/theme";
-import { usePreference } from "@/app/PreferenceProvider";
+import { usePreference } from "@/components/providers/PreferenceProvider";
 
 function VideoWatchPage({
   params,

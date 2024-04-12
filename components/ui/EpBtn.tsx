@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { shade } from "../../utils/color";
 import { themeEnum, themes } from "@/theme";
-import { usePreference } from "../../app/PreferenceProvider";
+import { usePreference } from "../providers/PreferenceProvider";
 import { AnimeEpisodeType } from "@/types/anime";
 import chroma from "chroma-js";
 

@@ -16,7 +16,7 @@ function PlayerLoader({ state }: { state: PlayerStateType }) {
     );
   }
 
-  if (state.buffering && !state.playing && !state.controllerVisibility) {
+  if (state.buffering && state.playing) {
     return (
       <div className="px-1 xs:px-2">
         <Loader2

@@ -5,7 +5,7 @@ import { LineWave } from "react-loader-spinner";
 import { useState } from "react";
 import usePosterItemCount from "@/hooks/usePosterItemCount";
 import axios from "axios";
-import { usePreference } from "@/app/PreferenceProvider";
+import { usePreference } from "@/components/providers/PreferenceProvider";
 import ContinueWatchingPosterItem from "@/components/ContinueWatchingPosterItem";
 import { themes } from "@/theme";
 import { WatchingAnimeType } from "@/types/anime";
@@ -13,33 +13,38 @@ import { WatchingAnimeType } from "@/types/anime";
 function InfiniteHistoryScroll({
   initialData,
   hasNextPage,
+  perPage,
 }: {
   initialData: WatchingAnimeType[];
   hasNextPage: boolean;
+  perPage: number;
 }) {
   const { themeId } = usePreference();
-  const theme = themes.find(theme=>theme.id===themeId) || themes[0];
-
+  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
   const posterItemCount = usePosterItemCount();
+
+  let currentPage = 1;
 
   const [data, setData] = useState(initialData);
   const [hasMore, setHasMore] = useState(hasNextPage);
-  const [pageNo, setPageNo] = useState(1);
 
   const handleFetchMoreData = async () => {
     try {
       const res = await axios.get(`/api/anime/history`, {
-        timeout: 15000,
         params: {
-          page: pageNo + 1,
+          page: currentPage + 1,
+          perPage: perPage,
         },
       });
 
-      const { currentPage, hasNextPage, results } = res.data;
+      const {
+        hasNextPage,
+        results,
+      }: { hasNextPage: boolean; results: WatchingAnimeType[] } = res.data;
 
-      setData((prev) => [...prev, ...results] as WatchingAnimeType[]);
-      setHasMore(hasNextPage as boolean);
-      setPageNo(currentPage as number);
+      setData((prev) => [...prev, ...results]);
+      setHasMore(hasNextPage);
+      currentPage++;
     } catch (error) {
       console.error("Error fetching more data:", error);
       // Handle other error scenarios as needed (e.g., display error message to user)

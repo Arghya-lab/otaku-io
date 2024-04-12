@@ -2,9 +2,12 @@ import Preference from "@/models/Preference";
 import { NextResponse } from "next/server";
 import { getSessionEmail } from "@/app/api/_lib/getSessionEmail";
 import { preferenceSelector } from "@/app/api/_lib/preferenceSelector";
+import connectDB from "@/db/db";
 
 export async function PATCH(req: Request) {
   try {
+    await connectDB();
+    
     const userEmail = await getSessionEmail();
     let { themeId } = await req.json();
 

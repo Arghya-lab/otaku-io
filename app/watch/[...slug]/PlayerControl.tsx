@@ -8,30 +8,28 @@ import {
   useEffect,
   useState,
 } from "react";
+import ReactPlayer from "react-player";
 import screenfull from "screenfull";
 import { Popover } from "@headlessui/react";
 import {
   Check,
   Expand,
   Minimize,
-  // Minimize2,
+  Minimize2,
   Pause,
   Play,
   FastForward,
   Rewind,
-  // Settings,
-  // Settings2,
   Subtitles,
   Fullscreen,
   RectangleHorizontal,
   BoxSelect,
-  Loader2,
+  Maximize2,
 } from "lucide-react";
 import VideoLoadedBar from "./VideoLoadedBar";
 import VolumeController from "./VolumeController";
-import ReactPlayer from "react-player";
 import useWindowSize from "@/hooks/useWindowSize";
-import { usePreference } from "@/app/PreferenceProvider";
+import { usePreference } from "@/components/providers/PreferenceProvider";
 import { secToMinSec } from "@/utils/time";
 import {
   PlayerActionType,
@@ -58,24 +56,26 @@ const PlayerControl = forwardRef(
     const [isRemainingTime, setIsRemainingTime] = useState(false);
     const { windowWidth } = useWindowSize();
 
-    const handleKeyPress = (e: any) => {
+    const handleKeyPress = (e: KeyboardEvent) => {
       e.preventDefault();
 
-      if (e.key === " " || e.keyCode === 32) {
+      if (e.key === " ") {
         handleTogglePlayPause();
-      } else if (e.key === "ArrowRight" || e.keyCode === 39) {
+      } else if (e.key === "ArrowRight") {
         handleSkipForward();
-      } else if (e.key === "ArrowLeft" || e.keyCode === 37) {
+      } else if (e.key === "ArrowLeft") {
         handleSkipBack();
-      } else if (e.key === "f" || e.keyCode === 70) {
+      } else if (e.key === "f") {
         handleFullScreen();
-        // } else if (e.key === "p" || e.keyCode === 80) {
-        //   handleTogglePIP();
-      } else if (e.key === "Escape" || e.keyCode === 27) {
+      } else if (e.key === "p") {
+        handleTogglePIP();
+      } else if (e.key === "m") {
+        dispatch({ type: "toggleMuted" });
+      } else if (e.key === "Escape") {
         handleExitFullScreen();
-      } else if (e.key === "ArrowUp" || e.keyCode === 38) {
+      } else if (e.key === "ArrowUp") {
         dispatch({ type: "updateVolume", payload: 0.1 });
-      } else if (e.key === "ArrowDown" || e.keyCode === 40) {
+      } else if (e.key === "ArrowDown") {
         dispatch({ type: "updateVolume", payload: -0.1 });
       }
     };
@@ -117,18 +117,18 @@ const PlayerControl = forwardRef(
       dispatch({ type: "minimizeMaximize", payload: false });
     };
 
-    // const handleTogglePIP = () => {
-    //   screenfull.exit(playerElement);
-    //   setPlayerState((prev) => ({ ...prev, pip: !prev.pip }));
-    //   setPlayerState((prev) => ({ ...prev, pip: !prev.pip }));
-    //   setPlayerState((prev) => ({ ...prev, playerFullScreen: false }));
-    // };
+    const handleTogglePIP = () => {
+      if (state.playerFullScreen) {
+        handleExitFullScreen();
+      }
+      dispatch({ type: "togglePip" });
+    };
 
     useEffect(() => {
       document.addEventListener("keydown", handleKeyPress);
 
       return () => {
-        document.removeEventListener("keydown", handleKeyPress);
+        document.addEventListener("keydown", handleKeyPress);
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -136,7 +136,7 @@ const PlayerControl = forwardRef(
     return (
       <div
         ref={ref}
-        className="flex items-center justify-center absolute bottom-0 left-0 right-0 top-0 z-20 text-white"
+        className="flex items-center justify-center absolute bottom-0 left-0 right-0 top-0 z-20 text-white opacity-100 transition-opacity duration-500"
         onDoubleClick={() => {
           if (state.playerFullScreen && screenfull.isFullscreen) {
             if (!state.isMobileDevice) handleExitFullScreen();
@@ -145,7 +145,7 @@ const PlayerControl = forwardRef(
           }
         }}>
         {state?.loaded && (
-          <div className="w-full flex items-center justify-center gap-[15%]">
+          <div className="w-full h-full flex items-center justify-center gap-[15%]">
             {(windowWidth <= 640 || state.isMobileDevice) && (
               <div
                 role="button"
@@ -154,31 +154,24 @@ const PlayerControl = forwardRef(
                 <Rewind className="h-6 w-6 xs:h-8 xs:w-8" color="#fff" />
               </div>
             )}
-            <div role="button" onClick={handleTogglePlayPause}>
-              {!state.buffering ? (
-                state.playing ? (
-                  <Pause
-                    className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
-                    strokeWidth={1}
-                    fill="#fff"
-                    color="#fff"
-                  />
-                ) : (
-                  <Play
-                    className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
-                    strokeWidth={3}
-                    fill="#fff"
-                    color="#fff"
-                  />
-                )
+            <div
+              role="button"
+              className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
+              onClick={handleTogglePlayPause}>
+              {!state.buffering && state.playing ? (
+                <Pause
+                  strokeWidth={1}
+                  fill="#fff"
+                  color="#fff"
+                  className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
+                />
               ) : (
-                <div className="px-1 xs:px-2">
-                  <Loader2
-                    strokeWidth={2.5}
-                    className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14 text-white animate-spin"
-                    color="#fff"
-                  />
-                </div>
+                <Play
+                  strokeWidth={3}
+                  fill="#fff"
+                  color="#fff"
+                  className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
+                />
               )}
             </div>
             {(windowWidth <= 640 || state.isMobileDevice) && (
@@ -221,15 +214,11 @@ const PlayerControl = forwardRef(
                 className="ml-2 xs:ml-4 text-xs xs:text-sm cursor-pointer font-nunito select-none"
                 onClick={() => setIsRemainingTime(!isRemainingTime)}>
                 <span>
-                  {
-                    isRemainingTime
-                      ? "-" + secToMinSec((1 - state.played) * state.duration)
-                      : secToMinSec(state.played * state.duration)
-                    // playerRef.current.getCurrentTime()
-                  }
+                  {isRemainingTime
+                    ? "-" + secToMinSec((1 - state.played) * state.duration)
+                    : secToMinSec(state.played * state.duration)}
                 </span>
                 <span>/{secToMinSec(state.duration)}</span>
-                {/* <span>/{secToMinSec(playerState?.duration)}</span> */}
               </div>
             </div>
             <div className="flex items-center">
@@ -308,12 +297,18 @@ const PlayerControl = forwardRef(
                   </div>
                 </Popover.Panel>
               </Popover>
-              {/* <div
-                role="button"
-                className="px-3 xs:px-6"
-                onClick={handleTogglePIP}>
-                <Minimize2 className="h-4 w-4 xs:h-6 xs:w-6" color="#fff" />
-              </div> */}
+              {!state.isMobileDevice && (
+                <div
+                  role="button"
+                  className="pl-3 xs:pl-6"
+                  onClick={handleTogglePIP}>
+                  {state.pip ? (
+                    <Maximize2 className="h-4 w-4 xs:h-6 xs:w-6" color="#fff" />
+                  ) : (
+                    <Minimize2 className="h-4 w-4 xs:h-6 xs:w-6" color="#fff" />
+                  )}
+                </div>
+              )}
               {state.playerFullScreen && screenfull.isFullscreen && (
                 <div role="button" className="pl-3 xs:pl-6">
                   {state.FullScreenType === ScreenFullTypeEnum.DEFAULT ? (

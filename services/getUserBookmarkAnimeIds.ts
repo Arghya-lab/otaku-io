@@ -13,8 +13,7 @@ export const getUserBookmarkAnime = async () => {
     const animeIds: string[] = user.bookmarks;
 
     return animeIds;
-  } catch (error) {
-    console.log(error);
-    // Return error response
+  } catch {
+    throw new Error("Error occur while fetching bookmarked animes.");
   }
 };

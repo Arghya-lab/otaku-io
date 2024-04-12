@@ -9,7 +9,7 @@ import { Search, X } from "lucide-react";
 import MinMaximizeBtn from "@/components/ui/MinMaximizeBtn";
 import useScroll from "@/hooks/useScroll";
 import useWindowSize from "@/hooks/useWindowSize";
-import { usePreference } from "../app/PreferenceProvider";
+import { usePreference } from "./providers/PreferenceProvider";
 import { themes } from "@/theme";
 import { shade } from "@/utils/color";
 
@@ -48,7 +48,7 @@ function TopNavbar({ bgColor }: { bgColor?: string }) {
         size={36}
         className="opacity-40 text-neutral-700 dark:text-slate-300"
       /> */}
-      <Link href="/" className="w-9 h-9">
+      <Link href="/home" className="w-9 h-9">
         <Image
           alt="logo"
           width={50}

@@ -6,19 +6,19 @@ import chroma from "chroma-js";
 import { Cog, Compass, Home, LibraryBig } from "lucide-react";
 import useWindowSize from "@/hooks/useWindowSize";
 import { themes } from "@/theme";
-import { usePreference } from "../app/PreferenceProvider";
+import { usePreference } from "./providers/PreferenceProvider";
 
 function SideNavbar({ pathName }: { pathName: string }) {
   const { windowWidth } = useWindowSize();
   const [hoverBtn, setHoverBtn] = useState<
     null | "Home" | "Discover" | "Library" | "Setting"
   >(null);
-  
+
   const { themeId } = usePreference();
   const theme = themes.find((theme) => theme.id === themeId) || themes[0];
 
   const selectedBtn =
-    pathName === "/"
+    pathName === "/home"
       ? "Home"
       : pathName === "/discover"
       ? "Discover"
@@ -30,7 +30,7 @@ function SideNavbar({ pathName }: { pathName: string }) {
 
   return (
     <div
-      className="xs:w-20 h-16 xs:h-auto fixed xs:top-[calc(4rem-0.5px)] left-0 right-0 xs:right-auto bottom-0 z-10 flex xs:flex-col items-center justify-around xs:justify-start"
+      className="xs:w-20 h-16 pb-2 xs:h-auto fixed xs:top-[calc(4rem-0.5px)] left-0 right-0 xs:right-auto bottom-0 z-10 flex xs:flex-col items-center justify-around xs:justify-start"
       style={
         windowWidth < 640
           ? {
@@ -41,7 +41,7 @@ function SideNavbar({ pathName }: { pathName: string }) {
           : {}
       }>
       <Link
-        href="/"
+        href="/home"
         onPointerEnter={() => setHoverBtn("Home")}
         onPointerLeave={() => setHoverBtn(null)}
         className={`side-nav-btn ${

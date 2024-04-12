@@ -4,11 +4,9 @@ import axios from "axios";
 import screenfull from "screenfull";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { StreamingServers } from "@consumet/extensions";
-import { usePreference } from "@/app/PreferenceProvider";
+import { usePreference } from "@/components/providers/PreferenceProvider";
 import useWindowSize from "@/hooks/useWindowSize";
-import { getStreamingLinks } from "@/services/getAnime";
-import { getSkipTimes } from "@/services/getSkipTimes";
+import { getSkipTimes } from "@/utils/getSkipTimes";
 import PlayerSkipBtns from "./PlayerSkipBtns";
 import PlayerControl from "./PlayerControl";
 import PlayerLoader from "./PlayerLoader";
@@ -51,15 +49,13 @@ function Player({
 
   const [markWatchedTill, setMarkWatchedTill] = useState(0);
   const [state, dispatch] = useReducer(reducer, {
-    // url: null,
-    // pip: false,
+    pip: false,
     playing: false,
     volume: isMobileDevice() ? 1 : 0.85, //  value -> 0-1
     muted: false,
     played: 0, //  value -> 0-1
     duration: 0,
     loaded: 0,
-    // controls: false,
     // light: false,
     // playbackRate: 1.0,
     // loop: false,
@@ -116,7 +112,7 @@ function Player({
         detailInfo.episodes[detailInfo.episodes.length - 1].id ===
         detailInfo.episodes[currentEpIdx].id
       ) {
-        dispatch({ type: "pausePlaying" });
+        dispatch({ type: "disablePlaying" });
       }
 
       const nextEp = detailInfo.episodes[currentEpIdx + 1];
@@ -124,30 +120,28 @@ function Player({
         `/watch/${detailInfo.id}/${nextEp.number}/${nextEp.id}?dub=${isDub}`
       );
     } else {
-      dispatch({ type: "pausePlaying" });
+      dispatch({ type: "disablePlaying" });
     }
   };
 
-  // On initial page load or episode change
+  // On initial page load or episode change fetch streaming links
   useEffect(() => {
     (async () => {
       try {
         const { data }: { data: AnimeStreamingSourceType } = await axios.get(
           `/api/anime/streaming-links/${epId}`
         );
-        if (data) {
-          dispatch({
-            type: "updateStreamingLinks",
-            payload: {
-              sources: data.sources,
-              currentSource:
-                data.sources.find(
-                  (source) => source.quality === state.playbackQuality
-                ) || data.sources[0],
-              playing: isAutoPlayEnabled,
-            },
-          });
-        }
+        dispatch({
+          type: "updateStreamingLinks",
+          payload: {
+            sources: data.sources,
+            currentSource:
+              data.sources.find(
+                (source) => source.quality === state.playbackQuality
+              ) || data.sources[0],
+            playing: isAutoPlayEnabled,
+          },
+        });
       } catch (error) {
         console.error(error);
       }
@@ -159,10 +153,10 @@ function Player({
         setWatched();
       }
     };
-    // check if already played if played then seek to that part
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [epId]);
 
+  // On initial page load or episode change and on load of video playing duration fetch skip times
   useEffect(() => {
     if (detailInfo?.malId && state.duration != 0) {
       (async () => {
@@ -181,12 +175,12 @@ function Player({
     }
   }, [detailInfo?.malId, epNo, state.duration]);
 
+  // on specific time during video playing the video played till save in db
   useEffect(() => {
-    const handlePlaybackProgress = () => {
-      if (state.played >= markWatchedTill + 0.04) {
-        // setMarkWatchedTill(played);
+    const handlePlaybackProgress = async () => {
+      if (state.played >= markWatchedTill + 0.04 && session) {
         setMarkWatchedTill(state.played);
-        if (session) setWatched();
+        await setWatched();
       }
     };
     handlePlaybackProgress();
@@ -194,7 +188,11 @@ function Player({
   }, [state.played, markWatchedTill, session, setWatched]);
 
   const handleMouseMove = () => {
-    if (appElement) {
+    if (appElement && controllerRef?.current) {
+      controllerRef.current.style.display = "block";
+      setTimeout(function () {
+        if (controllerRef?.current) controllerRef.current.style.opacity = "1";
+      }, 100);
       dispatch({ type: "changeControllerVisibility", payload: true });
       appElement.style.cursor = "auto";
       count = 0;
@@ -216,6 +214,7 @@ function Player({
       <div
         ref={playerContainerRef}
         className={classNames("relative bg-black", {
+          "h-full w-full": state.loaded === 0,
           "h-full max-w-full":
             state.playerFullScreen && windowWidth / windowHeight >= 16 / 9,
           "w-full max-h-full":
@@ -238,10 +237,7 @@ function Player({
           className="flex-1"
           width="100%"
           height="100%"
-          // pip={state.pip}
-          // playing={state.playing}
-          // volume={state.volume}
-          // muted={state.muted}
+          pip={state.pip}
           playing={state.playing}
           volume={state.volume}
           muted={state.muted}
@@ -249,13 +245,23 @@ function Player({
             dispatch({ type: "updateDuration", payload: duration });
           }}
           onProgress={(value) => {
-            if (count > 3 && appElement) {
-              dispatch({ type: "changeControllerVisibility", payload: false });
+            if (count > 3 && appElement && controllerRef?.current) {
               appElement.style.cursor = "none";
+              controllerRef.current.style.opacity = "0";
+              setTimeout(function () {
+                if (controllerRef?.current)
+                  controllerRef.current.style.display = "none";
+              }, 500);
               count = 0;
+              dispatch({ type: "changeControllerVisibility", payload: false });
             }
 
-            if (state.controllerVisibility) count++;
+            if (
+              controllerRef?.current &&
+              controllerRef.current.style.display === "block"
+            ) {
+              count++;
+            }
 
             dispatch({
               type: "updateProgress",
@@ -280,28 +286,27 @@ function Player({
               await setWatched();
             }
           }}
-          onPlay={() => console.log("play start")}
+          onPlay={() => dispatch({ type: "enablePlaying" })}
+          onPause={() => dispatch({ type: "disablePlaying" })}
           onBuffer={() => dispatch({ type: "updateBuffering", payload: true })}
+          onBufferEnd={() =>
+            dispatch({ type: "updateBuffering", payload: false })
+          }
           onSeek={(e) => {
-            console.log("onSeek", e);
             if (state.buffering == true) {
               dispatch({ type: "updateBuffering", payload: false });
             }
           }}
           onEnded={handleEnded}
-          // onEnablePIP={() =>
-          //   setstate((prevState) => ({ ...prevState, pip: true }))
-          // }
-          // onDisablePIP={() =>
-          //   setstate((prevState) => ({ ...prevState, pip: false }))
-          // }
+          onEnablePIP={() => dispatch({ type: "enablePip" })}
+          onDisablePIP={() => dispatch({ type: "disablePip" })}
           onError={(e) => console.log("onError", e)}
-          onPlaybackQualityChange={(e: any) =>
-            console.log("onPlaybackQualityChange", e)
-          }
+          // onPlaybackQualityChange={(e: any) =>
+          //   console.log("onPlaybackQualityChange", e)
+          // }
           config={{
             file: {
-              forceHLS: true, // change this
+              forceHLS: state.currentSource?.isM3U8,
             },
           }}
         />
@@ -309,33 +314,29 @@ function Player({
           title &&
           playerContainerRef.current &&
           state.controllerVisibility && (
-            <>
-              <p
-                className="select-none text-white absolute top-3 left-5 font-medium opacity-90"
-                style={{
-                  fontSize:
-                    playerContainerRef.current.clientWidth /
-                    (windowWidth > 1000 ? 45 : 30),
-                  textShadow: "0.25vw 0.25vw 6px rgba(0, 0, 0, 0.65)",
-                }}>
-                {title}
-                {detailInfo?.episodes && detailInfo?.episodes.length !== 1 && (
-                  <p style={{ fontSize: "70%" }}>Ep-{epNo}</p>
-                )}
-              </p>
-            </>
+            <p
+              className="select-none text-white absolute top-3 left-5 font-medium opacity-90"
+              style={{
+                fontSize:
+                  playerContainerRef.current.clientWidth /
+                  (windowWidth > 1000 ? 45 : 30),
+                textShadow: "0.25vw 0.25vw 6px rgba(0, 0, 0, 0.65)",
+              }}>
+              {title}
+              {detailInfo?.episodes && detailInfo?.episodes.length !== 1 && (
+                <p style={{ fontSize: "70%" }}>Ep-{epNo}</p>
+              )}
+            </p>
           )}
-        {state.controllerVisibility && (
-          <PlayerControl
-            ref={controllerRef}
-            playerRef={playerRef}
-            state={state}
-            dispatch={dispatch}
-            setWatched={setWatched}
-          />
-        )}
+        <PlayerControl
+          ref={controllerRef}
+          playerRef={playerRef}
+          state={state}
+          dispatch={dispatch}
+          setWatched={setWatched}
+        />
         <PlayerSkipBtns state={state} playerRef={playerRef} />
-        <div className="flex items-center justify-center">
+        <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center">
           <PlayerLoader state={state} />
         </div>
       </div>

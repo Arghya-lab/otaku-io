@@ -1,3 +1,5 @@
+"use server"
+
 import Link from "next/link";
 import { LogIn } from "lucide-react";
 import { getUserBookmarkAnime } from "@/services/getUserBookmarkAnimeIds";
@@ -30,8 +32,9 @@ async function HistoryPage() {
     );
   }
 
-  const results = await getAnimesByIds(bookmarkAnimeIds.slice(0, 20));
-  const hasNextPage = bookmarkAnimeIds.length >= 20;
+  const perPageResult = 20;
+  const results = await getAnimesByIds(bookmarkAnimeIds.slice(0, perPageResult));
+  const hasNextPage = bookmarkAnimeIds.length >= perPageResult;
 
   return (
     <>
@@ -43,9 +46,9 @@ async function HistoryPage() {
       <main className="xs:pl-20 flex flex-row">
         {/* Meta items container */}
         <InfiniteLibraryScroll
-          bookmarkAnimeIds={bookmarkAnimeIds}
           initialData={results}
           hasNextPage={hasNextPage}
+          perPage={perPageResult}
         />
       </main>
     </>

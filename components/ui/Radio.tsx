@@ -1,6 +1,6 @@
 "use client";
 
-import { usePreference } from "@/app/PreferenceProvider";
+import { usePreference } from "@/components/providers/PreferenceProvider";
 import { themes } from "@/theme";
 import { shade } from "@/utils/color";
 import { Switch } from "@headlessui/react";

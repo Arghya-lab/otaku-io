@@ -1,6 +1,6 @@
 import { MutableRefObject } from "react";
 import ReactPlayer from "react-player";
-import { usePreference } from "@/app/PreferenceProvider";
+import { usePreference } from "@/components/providers/PreferenceProvider";
 import { PlayerStateType } from "@/types/player";
 
 function PlayerSkipBtns({

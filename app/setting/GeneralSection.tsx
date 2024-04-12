@@ -5,7 +5,10 @@ import { Palette } from "lucide-react";
 import Radio from "@/components/ui/Radio";
 import ThemeSelectModal from "./ThemeSelectModal";
 import { themes } from "@/theme";
-import { UpdateTypeEnum, usePreference } from "@/app/PreferenceProvider";
+import {
+  UpdateTypeEnum,
+  usePreference,
+} from "@/components/providers/PreferenceProvider";
 
 function GeneralSection() {
   const { themeId, isDub, updatePreference } = usePreference();
@@ -25,15 +28,13 @@ function GeneralSection() {
   };
 
   return (
-    <div className="flex flex-col gap-2 pb-16 pt-6 border-b border-zinc-500">
-      <p className="text-xl pb-6" style={{ color: theme.textColor }}>
+    <section className="flex flex-col gap-2 pb-16 pt-6 border-b border-zinc-500">
+      <h3 className="text-xl pb-6" style={{ color: theme.textColor }}>
         General
-      </p>
-      <div className="flex flex-col gap-2">
+      </h3>
+      <div className="flex flex-col gap-2 xs:pl-12">
         <div className="flex gap-4">
-          <p className="text-sm" style={{ color: theme.textColor }}>
-            Dub as auto select language
-          </p>
+          <p className="text-sm">Dub as auto select language</p>
           <Radio
             color={theme.secondaryColor}
             enabled={isDub}
@@ -53,7 +54,7 @@ function GeneralSection() {
         isOpen={isThemeSelectModalOpen}
         handleClose={handleThemeSelectModalClose}
       />
-    </div>
+    </section>
   );
 }
 

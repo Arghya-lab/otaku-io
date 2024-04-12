@@ -15,6 +15,22 @@ body,
   .side-nav-btn {
     @apply w-16 h-16 mt-2 pt-2 cursor-pointer flex flex-col items-center rounded-[0.75rem] hover:bg-white hover:bg-opacity-20 hover:opacity-85;
   }
+
+  .shortcut-container {
+    @apply flex justify-between items-center pb-4;
+  }
+
+  .shortcut-title {
+    @apply flex-grow flex-shrink basis-1/2;
+  }
+
+  .shortcut-btn-container {
+    @apply flex-grow flex-shrink basis-1/2 flex justify-center;
+  }
+
+  .shortcut-btn {
+    @apply px-2 py-1 min-w-12 text-center rounded shadow-md flex items-center justify-center gap-1 xs:gap-2 flex-row text-xs xs:text-base;
+  }
 }
 
 /* Carousel custom styles */
@@ -36,4 +52,18 @@ body,
   font-weight: 300;
   color: unset;
   background-color: rgba(0, 0, 0, 0);
+}
+
+.react-horizontal-scrolling-menu--inner-wrapper {
+  position: relative;
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+.react-horizontal-scrolling-menu--scroll-container {
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+}
+.react-horizontal-scrolling-menu--scroll-container ::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
 }

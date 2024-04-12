@@ -6,7 +6,7 @@ import { Listbox, Transition } from "@headlessui/react";
 import { Check, ChevronDown } from "lucide-react";
 import { shade } from "../../utils/color";
 import { themes } from "@/theme";
-import { usePreference } from "../../app/PreferenceProvider";
+import { usePreference } from "../providers/PreferenceProvider";
 import chroma from "chroma-js";
 
 function classNames(...classes: string[]) {

@@ -6,9 +6,8 @@ import Select from "@/components/ui/Select";
 import { themes } from "@/theme";
 import {
   UpdateTypeEnum,
-  defaultPreference,
   usePreference,
-} from "@/app/PreferenceProvider";
+} from "@/components/providers/PreferenceProvider";
 
 function PlayerSection() {
   const {
@@ -59,15 +58,13 @@ function PlayerSection() {
   };
 
   return (
-    <div className="flex flex-col gap-2 pb-16 pt-6 border-b border-zinc-500">
-      <p className="text-xl pb-6" style={{ color: theme.textColor }}>
+    <section className="flex flex-col gap-2 pb-16 pt-6 border-b border-zinc-500">
+      <h3 className="text-xl pb-6" style={{ color: theme.textColor }}>
         Player
-      </p>
-      <div className="flex flex-col gap-3">
+      </h3>
+      <div className="flex flex-col gap-3 xs:pl-12">
         <div className="flex gap-4 items-center">
-          <p className="text-sm" style={{ color: theme.textColor }}>
-            Auto Play
-          </p>
+          <p className="text-sm">Auto Play</p>
           <Radio
             color={theme.secondaryColor}
             enabled={isAutoPlayEnabled}
@@ -75,9 +72,7 @@ function PlayerSection() {
           />
         </div>
         <div className="flex gap-4 items-center">
-          <p className="text-sm" style={{ color: theme.textColor }}>
-            Auto Skip (Into, Outro, Recap)
-          </p>
+          <p className="text-sm">Auto Skip (Into, Outro, Recap)</p>
           <Radio
             color={theme.secondaryColor}
             enabled={isAutoSkipEnabled}
@@ -85,9 +80,7 @@ function PlayerSection() {
           />
         </div>
         <div className="flex gap-4 items-center">
-          <p className="text-sm" style={{ color: theme.textColor }}>
-            Auto Next
-          </p>
+          <p className="text-sm">Auto Next</p>
           <Radio
             color={theme.secondaryColor}
             enabled={isAutoNextEnabled}
@@ -95,9 +88,7 @@ function PlayerSection() {
           />
         </div>
         <div className="flex gap-4 items-center">
-          <p className="text-sm" style={{ color: theme.textColor }}>
-            Seek time
-          </p>
+          <p className="text-sm">Seek time</p>
           <Select
             list={seekTimeList}
             selected={
@@ -109,9 +100,7 @@ function PlayerSection() {
           />
         </div>
         <div className="flex gap-4 items-center">
-          <p className="text-sm" style={{ color: theme.textColor }}>
-            Default playback quality
-          </p>
+          <p className="text-sm">Default playback quality</p>
           <Select
             list={playbackQualityList}
             selected={
@@ -125,7 +114,7 @@ function PlayerSection() {
           />
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 

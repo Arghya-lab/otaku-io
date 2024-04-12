@@ -3,21 +3,21 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LineWave } from "react-loader-spinner";
 import PosterItem from "@/components/PosterItem";
-import { usePreference } from "@/app/PreferenceProvider";
+import { usePreference } from "@/components/providers/PreferenceProvider";
 import { useState } from "react";
-import { getAnimesByIds } from "@/services/getAnimesByIds";
 import usePosterItemCount from "@/hooks/usePosterItemCount";
 import { themes } from "@/theme";
 import { AnimeItemType } from "@/types/anime";
+import axios from "axios";
 
 function InfiniteLibraryScroll({
-  bookmarkAnimeIds,
   initialData,
   hasNextPage,
+  perPage,
 }: {
-  bookmarkAnimeIds: string[];
   initialData: AnimeItemType[];
   hasNextPage: boolean;
+  perPage: number;
 }) {
   const { themeId } = usePreference();
   const theme = themes.find((theme) => theme.id === themeId) || themes[0];
@@ -29,13 +29,16 @@ function InfiniteLibraryScroll({
   const [hasMore, setHasMore] = useState(hasNextPage);
 
   const handleFetchMoreData = async () => {
-    const results = await getAnimesByIds(
-      bookmarkAnimeIds.slice(currentPage * 20, (currentPage + 1) * 20)
-    );
+    const {
+      data,
+    }: { data: { results: AnimeItemType[]; hasNextPage: boolean } } =
+      await axios.get("/api/anime/library-animes", {
+        params: { pageNo: currentPage + 1, perPage: perPage },
+      });
 
     currentPage++;
-    setData((prev) => [...prev, ...results]);
-    setHasMore(hasNextPage);
+    setData((prev) => [...prev, ...data.results]);
+    setHasMore(data.hasNextPage);
   };
 
   return (

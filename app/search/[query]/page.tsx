@@ -1,5 +1,3 @@
-import SideNavbar from "@/components/SideNavbar";
-import TopNavbar from "@/components/TopNavbar";
 import InfiniteSearchScroll from "./InfiniteSearchScroll";
 import { getSearchData } from "@/services/getAnime";
 
@@ -9,18 +7,11 @@ async function SearchPage({ params }: { params: { query: string } }) {
   );
 
   return (
-    <>
-      <TopNavbar />
-      <SideNavbar pathName="/search" />
-      <div className="xs:pl-20 flex flex-row">
-        {/* Meta items container */}
-        <InfiniteSearchScroll
-          query={params.query}
-          initialData={initialData}
-          hasNextPage={!!hasNextPage}
-        />
-      </div>
-    </>
+    <InfiniteSearchScroll
+      query={params.query}
+      initialData={initialData}
+      hasNextPage={!!hasNextPage}
+    />
   );
 }
 

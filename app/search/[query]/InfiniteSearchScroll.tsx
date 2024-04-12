@@ -7,7 +7,7 @@ import { themes } from "@/theme";
 import { useState } from "react";
 import usePosterItemCount from "@/hooks/usePosterItemCount";
 import axios from "axios";
-import { usePreference } from "@/app/PreferenceProvider";
+import { usePreference } from "@/components/providers/PreferenceProvider";
 import { AnimeItemType } from "@/types/anime";
 
 function InfiniteSearchScroll({

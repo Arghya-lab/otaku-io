@@ -1,11 +1,12 @@
+/* eslint-disable @next/next/no-img-element */
 import { getServerSession } from "next-auth";
-import Image from "next/image";
 import htmlParse from "html-react-parser";
 import Chip from "./Chip";
 import ChipBtn from "./ChipBtn";
 import BookmarkBtn from "./BookmarkBtn";
 import User from "@/models/User";
 import { AnimeImdbInfoType, DetailAnimeInfoType } from "@/types/anime";
+import classNames from "classnames";
 
 async function MetaPreviewContainer({
   detailInfo,
@@ -31,17 +32,30 @@ async function MetaPreviewContainer({
 
   return (
     <>
-      <div className="flex items-center justify-between flex-wrap max-w-96 gap-4">
+      <div
+        className={classNames(
+          "flex items-center justify-between flex-wrap md:max-w-[576px] gap-4",
+          {
+            "max-w-96": imdbInfo?.imdbID,
+            "max-w-96 xxs:max-w-[324px] xs:max-w-[536px] sm:max-w-[696px] md:max-w-full":
+              !imdbInfo?.imdbID,
+          }
+        )}>
         {imdbInfo?.imdbID ? (
-          <Image
-            className="object-contain object-center h-auto w-auto"
-            height={128}
-            width={256}
+          <img
+            className="object-contain object-center max-w-64 max-h-32 md:max-w-80 md:max-h-48"
             alt={title}
-            src={`https://images.metahub.space/logo/medium/${imdbInfo.imdbID}/img`}
+            src={`https://images.metahub.space/logo/small/${imdbInfo.imdbID}/img`}
           />
         ) : (
-          <div className="min-h-32 text-6xl font-extrabold font-nunito text-white">
+          <div
+            className={classNames("min-h-32 font-nunito text-white", {
+              "text-3xl xxs:text-4xl font-bold xxs:font-extrabold":
+                title.length > 50,
+              "text-4xl xxs:text-5xl font-extrabold":
+                title.length > 30 && title.length <= 50,
+              "text-6xl font-extrabold": title.length > 0 && title.length <= 30,
+            })}>
             {title}
           </div>
         )}

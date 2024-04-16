@@ -24,7 +24,10 @@ export async function GET(req: NextRequest) {
     );
     const hasNextPage = bookmarkAnimeIds.length > pageNo * perPage;
 
-    return NextResponse.json({ results, hasNextPage }, { status: 200 });
+    return NextResponse.json(
+      { results, hasNextPage, currentPage: pageNo },
+      { status: 200 }
+    );
   } catch (error) {
     return NextResponse.json(
       { error: "Something went wrong." },

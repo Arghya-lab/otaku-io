@@ -26,6 +26,8 @@ import {
   BoxSelect,
   Maximize2,
 } from "lucide-react";
+import classNames from "classnames";
+import Tooltip from "rc-tooltip";
 import VideoLoadedBar from "./VideoLoadedBar";
 import VolumeController from "./VolumeController";
 import useWindowSize from "@/hooks/useWindowSize";
@@ -36,6 +38,7 @@ import {
   PlayerStateType,
   ScreenFullTypeEnum,
 } from "@/types/player";
+import PopupToolTip from "@/components/ui/PopupToolTip";
 
 interface PlayerControlProps {
   playerRef: MutableRefObject<ReactPlayer | null>;
@@ -136,7 +139,12 @@ const PlayerControl = forwardRef(
     return (
       <div
         ref={ref}
-        className="flex items-center justify-center absolute bottom-0 left-0 right-0 top-0 z-20 text-white opacity-100 transition-opacity duration-500"
+        className={classNames(
+          "flex items-center justify-center absolute bottom-0 left-0 right-0 top-0 z-20 text-white opacity-100 transition-opacity duration-500",
+          {
+            "bg-black bg-opacity-70": state.playerFullScreen,
+          }
+        )}
         onDoubleClick={() => {
           if (state.playerFullScreen && screenfull.isFullscreen) {
             if (!state.isMobileDevice) handleExitFullScreen();
@@ -144,7 +152,7 @@ const PlayerControl = forwardRef(
             handleFullScreen();
           }
         }}>
-        {state?.loaded && (
+        {state?.loaded > 0 && (
           <div className="w-full h-full flex items-center justify-center gap-[15%]">
             {(windowWidth <= 640 || state.isMobileDevice) && (
               <div
@@ -158,21 +166,22 @@ const PlayerControl = forwardRef(
               role="button"
               className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
               onClick={handleTogglePlayPause}>
-              {!state.buffering && state.playing ? (
-                <Pause
-                  strokeWidth={1}
-                  fill="#fff"
-                  color="#fff"
-                  className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
-                />
-              ) : (
-                <Play
-                  strokeWidth={3}
-                  fill="#fff"
-                  color="#fff"
-                  className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
-                />
-              )}
+              {!state.buffering &&
+                (state.playing ? (
+                  <Pause
+                    strokeWidth={1}
+                    fill="#fff"
+                    color="#fff"
+                    className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
+                  />
+                ) : (
+                  <Play
+                    strokeWidth={3}
+                    fill="#fff"
+                    color="#fff"
+                    className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
+                  />
+                ))}
             </div>
             {(windowWidth <= 640 || state.isMobileDevice) && (
               <div

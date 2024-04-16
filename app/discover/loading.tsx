@@ -7,7 +7,8 @@ async function loading() {
 
   return (
     <Skeleton
-      className="rounded-md my-4 h-[75vh] w-[90%] m-[5%]"
+      containerClassName="flex-1"
+      className="rounded-md h-[75vh] w-[90%] m-[5%] mt-0"
       baseColor={chroma(theme.primaryColor).darken(1).toString()}
       highlightColor={chroma(theme.primaryColor).darken(1.5).toString()}
     />

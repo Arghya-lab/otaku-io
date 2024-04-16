@@ -22,18 +22,10 @@ function InfiniteDiscoverScroll({
   const theme = themes.find((theme) => theme.id === themeId) || themes[0];
   const posterItemCount = usePosterItemCount();
   const searchParams = useSearchParams();
-  const searchParamsString = searchParams.toString();
 
   const [data, setData] = useState(initialData);
   const [hasMore, setHasMore] = useState(hasNextPage);
   const [pageNo, setPageNo] = useState(1);
-
-  useEffect(() => {
-    setData(initialData);
-    setHasMore(hasNextPage);
-    setPageNo(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParamsString]);
 
   const handleFetchMoreData = async () => {
     try {
@@ -77,7 +69,7 @@ function InfiniteDiscoverScroll({
       }
       endMessage={<p style={{ textAlign: "center" }}>nothing to show more</p>}>
       <div
-        className="px-2 xxs:px-4 grid"
+        className="px-2 xxs:px-4 grid pb-16 xs:pb-0"
         style={{
           gridTemplateColumns: `repeat( ${posterItemCount}, 1fr)`,
         }}>

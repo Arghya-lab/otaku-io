@@ -5,8 +5,10 @@ import { Dialog, Transition } from "@headlessui/react";
 import Tippy from "@tippyjs/react";
 import { Check } from "lucide-react";
 import { themeType, themes } from "@/theme";
-import { UpdateTypeEnum, usePreference } from "@/components/providers/PreferenceProvider";
-import { useRouter } from "next/navigation";
+import {
+  UpdateTypeEnum,
+  usePreference,
+} from "@/components/providers/PreferenceProvider";
 
 function ThemeSelectModal({
   isOpen,
@@ -57,6 +59,7 @@ function ThemeSelectModal({
                       key={themeItem.id}
                       onClick={() => handleChangeTheme(themeItem)}>
                       <Tippy
+                        hideOnClick={true}
                         content={
                           <div className="bg-white dark:bg-black text-neutral-900 dark:text-neutral-100 rounded-xl px-2">
                             {themeItem.name}

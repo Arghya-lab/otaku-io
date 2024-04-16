@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -22,7 +22,6 @@ function TopNavbar({ bgColor }: { bgColor?: string }) {
   const router = useRouter();
 
   const [searchQuery, setSearchQuery] = useState("");
-  // const logoId = useMemo(() => Math.ceil(Math.random() * 16), []);
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -68,9 +67,11 @@ function TopNavbar({ bgColor }: { bgColor?: string }) {
           spellCheck="false"
           tabIndex={-1}
           type="text"
-          placeholder="Search ..."
+          placeholder="Search anything..."
           value={searchQuery}
           onChange={(e) => {
+            console.log("k");
+            
             setSearchQuery(e.target.value);
           }}
           className="pl-7 h-full focus:outline-none bg-transparent w-[calc(100%-24px-24px-2.5rem)] font-medium"

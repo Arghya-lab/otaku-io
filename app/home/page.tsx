@@ -20,13 +20,12 @@ export default async function Home() {
       <Carousel trending={trending} />
       {/* continue watching segment */}
       {userWatchingRes && !!userWatchingRes.results.length && (
-        <div className="mt-4 pb-8">
-          {/* Header */}
+        <section className="mt-4 pb-8">
           <div
             className="mb-1 px-3 xxs:px-4 flex items-center justify-between"
             style={{ color: theme.textColor }}>
             <p className="text-2xl capitalize font-nunito">continue watching</p>
-            {/* See all btn */}
+            {/* continue watching btn */}
             <Link
               href="/history"
               role="button"
@@ -51,7 +50,7 @@ export default async function Home() {
               />
             ))}
           />
-        </div>
+        </section>
       )}
       <PosterBoard name={"trending"} content={trending} />
       <PosterBoard name={"popular"} content={popular} />

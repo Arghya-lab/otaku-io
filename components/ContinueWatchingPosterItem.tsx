@@ -1,8 +1,8 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { Oval } from "react-loader-spinner";
 import { PlayCircle } from "lucide-react";
 import { usePreference } from "./providers/PreferenceProvider";
@@ -52,7 +52,7 @@ function ContinueWatchingPosterItem({
 
   return (
     <div
-      className={classNames("p-2 xxs:p-3", {
+      className={classNames("p-2 xxs:p-3 cursor-pointer", {
         "w-[152px] sm:w-48": isHorizontalScroll,
       })}>
       <div
@@ -99,12 +99,10 @@ function ContinueWatchingPosterItem({
             className={`flex items-start relative mb-auto select-none w-full h-full aspect-[5/7] overflow-hidden transition-transform duration-200 ease-in transform-gpu ${
               isHover ? "scale-110" : null
             }`}>
-            <Image
-              width={173}
-              height={370}
+            <img
               alt={title || ""}
               className="object-cover object-center h-full w-full"
-              src={animeInfo?.image || ""}
+              src={animeInfo?.image}
             />
           </div>
         </div>

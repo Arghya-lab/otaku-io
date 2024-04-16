@@ -88,14 +88,14 @@ function EpBtnSheet({
     }
   };
 
-  if (!detailInfo || !detailInfo?.episodes || !detailInfo?.episodes.length) {
+  if (!detailInfo || !detailInfo?.episodes) {
     return null;
   }
 
   return (
     <>
       {/* radio dub / sub btn */}
-      <div className="pb-4 max-w-lg flex items-center justify-between">
+      <section className="pb-4 max-w-lg flex items-center justify-between">
         <div className="flex gap-1 capitalize items-center\">
           <Radio
             color={detailInfo?.color}
@@ -114,60 +114,61 @@ function EpBtnSheet({
               console.log(data);
             }}
           /> */}
-      </div>
-      {detailInfo?.episodes.length === 1 ? (
-        isWatchPage ? null : (
-          <div
-            role="button"
-            className="px-4 py-2 w-36 m-auto my-4 bg-opacity-20 border-2 rounded-[45px] flex justify-center items-center gap-2"
-            style={{
-              color: isHovered ? detailInfo?.color || "#fff" : "#fff",
-              borderColor: isHovered ? detailInfo?.color || "#fff" : "#fff",
-              transition: "color 0.3s, border-color 0.3s",
-            }}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            onClick={() => {
-              if (detailInfo.episodes) {
-                handleClick(detailInfo.episodes[0]);
+      </section>
+      {detailInfo?.episodes.length > 0 &&
+        (detailInfo?.episodes.length === 1 ? (
+          isWatchPage ? null : (
+            <div
+              role="button"
+              className="px-4 py-2 w-36 m-auto my-4 bg-opacity-20 border-2 rounded-[45px] flex justify-center items-center gap-2"
+              style={{
+                color: isHovered ? detailInfo?.color || "#fff" : "#fff",
+                borderColor: isHovered ? detailInfo?.color || "#fff" : "#fff",
+                transition: "color 0.3s, border-color 0.3s",
+              }}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+              onClick={() => {
+                if (detailInfo.episodes) {
+                  handleClick(detailInfo.episodes[0]);
+                }
+              }}>
+              <p className="text-xl font-medium">Watch</p>
+              <Play strokeWidth={3} size={20} />
+            </div>
+          )
+        ) : (
+          <>
+            <Select
+              color={detailInfo?.color}
+              list={epSelectableList(detailInfo?.episodes)}
+              selected={
+                epSelectableList(detailInfo?.episodes)[selectedEpRangeIdx]
               }
-            }}>
-            <p className="text-xl font-medium">Watch</p>
-            <Play strokeWidth={3} size={20} />
-          </div>
-        )
-      ) : (
-        <>
-          <Select
-            color={detailInfo?.color}
-            list={epSelectableList(detailInfo?.episodes)}
-            selected={
-              epSelectableList(detailInfo?.episodes)[selectedEpRangeIdx]
-            }
-            onChange={(data) => {
-              setSelectedEpRangeIdx(Number(data.value));
-            }}
-            isWatchPage={isWatchPage}
-          />
-          <div
-            className="grid gap-4 mt-3 justify-center"
-            style={{
-              gridTemplateColumns: "repeat(auto-fit, minmax(3.5rem, 3.5rem))",
-            }}>
-            {episodes.map((episode, id) => (
-              <EpBtn
-                key={id}
-                episode={episode}
-                color={detailInfo?.color}
-                isWatchPage={isWatchPage}
-                watching={episodeNo === episode.number}
-                watched={watchedEp.includes(episode.number)}
-                handleClick={() => handleClick(episode)}
-              />
-            ))}
-          </div>
-        </>
-      )}
+              onChange={(data) => {
+                setSelectedEpRangeIdx(Number(data.value));
+              }}
+              isWatchPage={isWatchPage}
+            />
+            <div
+              className="grid gap-4 mt-3 justify-center"
+              style={{
+                gridTemplateColumns: "repeat(auto-fit, minmax(3.5rem, 3.5rem))",
+              }}>
+              {episodes.map((episode, id) => (
+                <EpBtn
+                  key={id}
+                  episode={episode}
+                  color={detailInfo?.color}
+                  isWatchPage={isWatchPage}
+                  watching={episodeNo === episode.number}
+                  watched={watchedEp.includes(episode.number)}
+                  handleClick={() => handleClick(episode)}
+                />
+              ))}
+            </div>
+          </>
+        ))}
     </>
   );
 }

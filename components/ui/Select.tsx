@@ -73,7 +73,7 @@ function Select({
               leave="transition ease-in duration-100"
               leaveFrom="opacity-100"
               leaveTo="opacity-0">
-              <Listbox.Options className="absolute z-10 mt-1 w-52 rounded-xl bg-[#141e30] py-1 text-base shadow-lg focus:outline-none">
+              <Listbox.Options className="absolute z-10 mt-1 w-52 rounded-xl bg-[#141e30] py-1 text-base shadow-lg focus:outline-none overflow-y-scroll">
                 <SimpleBar className="max-h-56">
                   {list.map((person, id) => (
                     <Listbox.Option

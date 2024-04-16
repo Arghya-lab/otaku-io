@@ -23,20 +23,24 @@ function InfiniteLibraryScroll({
   const theme = themes.find((theme) => theme.id === themeId) || themes[0];
   const posterItemCount = usePosterItemCount();
 
-  let currentPage = 1;
-
+  const [pageNo, setPageNo] = useState(1);
   const [data, setData] = useState(initialData);
   const [hasMore, setHasMore] = useState(hasNextPage);
 
   const handleFetchMoreData = async () => {
     const {
       data,
-    }: { data: { results: AnimeItemType[]; hasNextPage: boolean } } =
-      await axios.get("/api/anime/library-animes", {
-        params: { pageNo: currentPage + 1, perPage: perPage },
-      });
+    }: {
+      data: {
+        results: AnimeItemType[];
+        hasNextPage: boolean;
+        currentPage: number;
+      };
+    } = await axios.get("/api/anime/library-animes", {
+      params: { pageNo: pageNo + 1, perPage: perPage },
+    });
 
-    currentPage++;
+    setPageNo(data.currentPage);
     setData((prev) => [...prev, ...data.results]);
     setHasMore(data.hasNextPage);
   };
@@ -59,7 +63,7 @@ function InfiniteLibraryScroll({
       }
       endMessage={<p style={{ textAlign: "center" }}>nothing to show more</p>}>
       <div
-        className="px-2 xxs:px-4 grid"
+        className="px-2 xxs:px-4 grid pb-16 xs:pb-0"
         style={{
           gridTemplateColumns: `repeat( ${posterItemCount}, 1fr)`,
         }}>

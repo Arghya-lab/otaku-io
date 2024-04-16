@@ -1,7 +1,7 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { AnimeItemType } from "@/types/anime";
 import { usePreference } from "@/components/providers/PreferenceProvider";
@@ -34,21 +34,19 @@ function RecommendItem({ item }: { item: AnimeItemType }) {
           ? chroma(theme.primaryColor).darken(1).toString()
           : chroma(theme.primaryColor).darken(0.5).toString(),
       }}
-      className={`p-3 mr-4 max-w-md min-w-40 h-48 flex flex-row rounded-xl border-2`}
+      className={`p-3 mr-4 max-w-md min-w-40 h-40 flex flex-row rounded-xl border-2`}
       onPointerEnter={() => setIsHover(true)}
       onPointerLeave={() => setIsHover(false)}>
-      <div className={`pl-24 relative overflow-hidden`}>
+      <div className={`pl-24 relative overflow-hidden rounded-lg`}>
         <div
           className={`absolute left-0 rounded-md transition-transform duration-200 ease-in transform-gpu ${
             isHover ? "scale-110" : null
           }`}>
           {item?.image && (
-            <Image
-              width={100}
-              height={143}
+            <img
               alt={title}
               title={title}
-              className="object-cover w-24 rounded-lg"
+              className="object-cover w-24 h-[136px]"
               src={item.image}
             />
           )}

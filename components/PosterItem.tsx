@@ -1,7 +1,7 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { shade } from "@/utils/color";
 import { usePreference } from "./providers/PreferenceProvider";
 import { AnimeItemType } from "@/types/anime";
@@ -53,9 +53,7 @@ function PosterItem({
               isHover ? "scale-110" : null
             }`}>
             {item.image && (
-              <Image
-                width={173}
-                height={370}
+              <img
                 alt={title ?? ""}
                 className="object-cover object-center h-full w-full"
                 src={item.image}

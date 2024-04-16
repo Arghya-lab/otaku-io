@@ -14,6 +14,7 @@ import reducer from "./reducerFunc";
 import { AnimeStreamingSourceType, DetailAnimeInfoType } from "@/types/anime";
 import isMobileDevice from "@/utils/getIsMobileDevice";
 import classNames from "classnames";
+import { ScreenFullTypeEnum } from "@/types/player";
 
 let count = 0;
 
@@ -216,7 +217,12 @@ function Player({
         className={classNames("relative bg-black", {
           "h-full w-full": state.loaded === 0,
           "h-full max-w-full":
-            state.playerFullScreen && windowWidth / windowHeight >= 16 / 9,
+            state.playerFullScreen &&
+            windowWidth / windowHeight >= 16 / 9 &&
+            state.FullScreenType === ScreenFullTypeEnum.DEFAULT,
+          "w-full h-full":
+            state.playerFullScreen &&
+            state.FullScreenType === ScreenFullTypeEnum.MAXWIDTH,
           "w-full max-h-full":
             state.playerFullScreen && windowWidth / windowHeight < 16 / 9,
           "m-auto xxs:rounded-lg overflow-hidden": !state.playerFullScreen,
@@ -224,7 +230,11 @@ function Player({
             !state.playerFullScreen && windowWidth >= 800,
         })}
         style={{
-          aspectRatio: windowWidth >= 800 ? state.videoAspectRatio : "auto",
+          aspectRatio:
+            windowWidth >= 800 ||
+            state.FullScreenType === ScreenFullTypeEnum["16:9"]
+              ? state.videoAspectRatio
+              : "auto",
         }}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
@@ -310,12 +320,19 @@ function Player({
             },
           }}
         />
+        <PlayerControl
+          ref={controllerRef}
+          playerRef={playerRef}
+          state={state}
+          dispatch={dispatch}
+          setWatched={setWatched}
+        />
         {state.playerFullScreen &&
           title &&
           playerContainerRef.current &&
           state.controllerVisibility && (
             <p
-              className="select-none text-white absolute top-3 left-5 font-medium opacity-90"
+              className="select-none text-white absolute z-50 top-3 left-5 font-medium opacity-80"
               style={{
                 fontSize:
                   playerContainerRef.current.clientWidth /
@@ -328,13 +345,6 @@ function Player({
               )}
             </p>
           )}
-        <PlayerControl
-          ref={controllerRef}
-          playerRef={playerRef}
-          state={state}
-          dispatch={dispatch}
-          setWatched={setWatched}
-        />
         <PlayerSkipBtns state={state} playerRef={playerRef} />
         <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center">
           <PlayerLoader state={state} />

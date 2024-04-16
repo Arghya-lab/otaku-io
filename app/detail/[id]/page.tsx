@@ -3,7 +3,6 @@ import { getImdbInfo } from "@/services/getImdbInfo";
 import { getDetailInfo } from "@/services/getAnime";
 import TopNavbar from "@/components/TopNavbar";
 import EpBtnSheet from "@/components/EpBtnSheet";
-import { AnimeImdbInfoType } from "@/types/anime";
 
 async function DetailPage({
   params,

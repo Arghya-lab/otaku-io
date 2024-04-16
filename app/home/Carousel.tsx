@@ -1,6 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
-import Image from "next/image";
 import AliceCarousel from "react-alice-carousel";
 import htmlParse from "html-react-parser";
 import useWindowSize from "@/hooks/useWindowSize";
@@ -12,14 +12,11 @@ function Carousel({ trending }: { trending: AnimeItemType[] }) {
   const items = trending.map((data, id) =>
     data?.cover ? (
       <div key={id} className="flex items-center">
-        <Image
+        <img
           key={id}
-          width={960}
-          height={540}
           className="w-full aspect-[3/1] xxs:aspect-[4/1] object-cover"
           src={data.cover}
           alt="Cover"
-          priority={true}
         />
       </div>
     ) : null

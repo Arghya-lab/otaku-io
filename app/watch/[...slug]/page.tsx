@@ -73,13 +73,13 @@ function VideoWatchPage({
   if (!detailInfo || !episode) {
     return (
       <div className="w-full relative h-full">
-      <TopNavbar />
-      <Skeleton
-        className="rounded-md my-4 h-[75vh] w-[90%] m-[5%]"
-        baseColor={chroma(theme.primaryColor).darken(1).toString()}
-        highlightColor={chroma(theme.primaryColor).darken(1.5).toString()}
-      />
-    </div>
+        <TopNavbar />
+        <Skeleton
+          className="rounded-md my-4 h-[75vh] w-[90%] m-[5%]"
+          baseColor={chroma(theme.primaryColor).darken(1).toString()}
+          highlightColor={chroma(theme.primaryColor).darken(1.5).toString()}
+        />
+      </div>
     );
   }
 
@@ -129,7 +129,7 @@ function VideoWatchPage({
         </div>
         {detailInfo?.recommendations ? (
           <div
-            className="flex-1 grid gap-4 justify-evenly pb-8 px-2 md:p-0"
+            className="flex-1 grid gap-4 justify-evenly pb-8 px-2 md:p-0 md:pb-8"
             style={{
               gridTemplateColumns: "repeat(auto-fit, minmax(16rem, 24rem))",
             }}>

@@ -3,17 +3,18 @@ import { NextResponse } from "next/server";
 import { getSessionEmail } from "@/app/api/_lib/getSessionEmail";
 import { preferenceSelector } from "@/app/api/_lib/preferenceSelector";
 import connectDB from "@/db/db";
+import { themes } from "@/theme";
 
 export async function PATCH(req: Request) {
   try {
     await connectDB();
-    
+
     const userEmail = await getSessionEmail();
     let { themeId } = await req.json();
 
     themeId = Number(themeId);
 
-    if (!themeId || themeId < 1 || themeId > 28) {
+    if (!themeId || themeId < 1 || themeId > themes.length) {
       return NextResponse.json(
         { error: "Proper request body is not set." },
         { status: 400 }

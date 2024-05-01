@@ -27,7 +27,6 @@ import {
   Maximize2,
 } from "lucide-react";
 import classNames from "classnames";
-import Tooltip from "rc-tooltip";
 import VideoLoadedBar from "./VideoLoadedBar";
 import VolumeController from "./VolumeController";
 import useWindowSize from "@/hooks/useWindowSize";
@@ -38,7 +37,6 @@ import {
   PlayerStateType,
   ScreenFullTypeEnum,
 } from "@/types/player";
-import PopupToolTip from "@/components/ui/PopupToolTip";
 
 interface PlayerControlProps {
   playerRef: MutableRefObject<ReactPlayer | null>;
@@ -59,27 +57,11 @@ const PlayerControl = forwardRef(
     const [isRemainingTime, setIsRemainingTime] = useState(false);
     const { windowWidth } = useWindowSize();
 
-    const handleKeyPress = (e: KeyboardEvent) => {
-      e.preventDefault();
+    const handleSkipTo = (sec: number) => {
+      console.log(sec);
 
-      if (e.key === " ") {
-        handleTogglePlayPause();
-      } else if (e.key === "ArrowRight") {
-        handleSkipForward();
-      } else if (e.key === "ArrowLeft") {
-        handleSkipBack();
-      } else if (e.key === "f") {
-        handleFullScreen();
-      } else if (e.key === "p") {
-        handleTogglePIP();
-      } else if (e.key === "m") {
-        dispatch({ type: "toggleMuted" });
-      } else if (e.key === "Escape") {
-        handleExitFullScreen();
-      } else if (e.key === "ArrowUp") {
-        dispatch({ type: "updateVolume", payload: 0.1 });
-      } else if (e.key === "ArrowDown") {
-        dispatch({ type: "updateVolume", payload: -0.1 });
+      if (playerRef.current) {
+        playerRef.current.seekTo(sec);
       }
     };
 
@@ -128,13 +110,79 @@ const PlayerControl = forwardRef(
     };
 
     useEffect(() => {
-      document.addEventListener("keydown", handleKeyPress);
+      const handlePlayerKeyPress = (e: KeyboardEvent) => {
+        e.preventDefault();
+
+        switch (e.key) {
+          case " ":
+            handleTogglePlayPause();
+            break;
+          case "ArrowRight":
+            handleSkipForward();
+            break;
+          case "ArrowLeft":
+            handleSkipBack();
+            break;
+          case "f":
+            handleFullScreen();
+            break;
+          case "p":
+            handleTogglePIP();
+            break;
+          case "m":
+            dispatch({ type: "toggleMuted" });
+            break;
+          case "Escape":
+            handleExitFullScreen();
+            break;
+          case "ArrowUp":
+            dispatch({ type: "updateVolume", payload: 0.1 });
+            break;
+          case "ArrowDown":
+            dispatch({ type: "updateVolume", payload: -0.1 });
+            break;
+          case "0":
+            handleSkipTo((state.duration * 0) / 10);
+
+            break;
+          case "1":
+            handleSkipTo((state.duration * 1) / 10);
+            break;
+          case "2":
+            handleSkipTo((state.duration * 2) / 10);
+            break;
+          case "3":
+            handleSkipTo((state.duration * 3) / 10);
+            break;
+          case "4":
+            handleSkipTo((state.duration * 4) / 10);
+            break;
+          case "5":
+            handleSkipTo((state.duration * 5) / 10);
+            break;
+          case "6":
+            handleSkipTo((state.duration * 6) / 10);
+            break;
+          case "7":
+            handleSkipTo((state.duration * 7) / 10);
+            break;
+          case "8":
+            handleSkipTo((state.duration * 8) / 10);
+            break;
+          case "9":
+            handleSkipTo((state.duration * 9) / 10);
+            break;
+          default:
+            break;
+        }
+      };
+      document.addEventListener("keydown", handlePlayerKeyPress);
 
       return () => {
-        document.addEventListener("keydown", handleKeyPress);
+        document.addEventListener("keydown", handlePlayerKeyPress);
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [state.duration]);
 
     return (
       <div

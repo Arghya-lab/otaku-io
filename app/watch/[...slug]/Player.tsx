@@ -4,16 +4,18 @@ import axios from "axios";
 import screenfull from "screenfull";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import classNames from "classnames";
 import { usePreference } from "@/components/providers/PreferenceProvider";
 import useWindowSize from "@/hooks/useWindowSize";
 import { getSkipTimes } from "@/utils/getSkipTimes";
+import isMobileDevice from "@/utils/getIsMobileDevice";
+import getPreviouslyWatchedTill from "@/utils/getPreviouslyWatchedTill";
+import setWatchedTill from "@/utils/setWatchedTill";
 import PlayerSkipBtns from "./PlayerSkipBtns";
 import PlayerControl from "./PlayerControl";
 import PlayerLoader from "./PlayerLoader";
 import reducer from "./reducerFunc";
 import { AnimeStreamingSourceType, DetailAnimeInfoType } from "@/types/anime";
-import isMobileDevice from "@/utils/getIsMobileDevice";
-import classNames from "classnames";
 import { ScreenFullTypeEnum } from "@/types/player";
 
 let count = 0;
@@ -73,31 +75,16 @@ function Player({
   });
 
   const handleSeekToUnwatched = async () => {
-    const { data } = await axios.get(
-      `/api/anime/watched-till?animeId=${animeId}&episodeNo=${epNo}`
+    const previouslyWatchedTill = await getPreviouslyWatchedTill(
+      animeId,
+      epNo,
+      session
     );
-    const previouslyWatchedTill = data.watchedTill;
 
     if (previouslyWatchedTill && playerRef.current) {
       playerRef.current.seekTo(previouslyWatchedTill * state.duration);
     }
   };
-
-  const setWatched = useCallback(async () => {
-    await axios.patch("/api/anime/watched-till", {
-      animeId,
-      episodeNo: epNo,
-      watchedTill: state.played,
-    });
-  }, [animeId, epNo, state.played]);
-
-  // const setWatched = async () => {
-  //   await axios.patch("/api/anime/watched-till", {
-  //     animeId,
-  //     episodeNo: epNo,
-  //     watchedTill: state.played,
-  //   });
-  // };
 
   const handleEnded = () => {
     if (isAutoNextEnabled && detailInfo?.episodes) {
@@ -150,9 +137,9 @@ function Player({
 
     // before name change update watchTill
     return () => {
-      if (session) {
-        setWatched();
-      }
+      (async () => {
+        await setWatchedTill(animeId, epNo, state.played, session);
+      })();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [epId]);
@@ -179,14 +166,13 @@ function Player({
   // on specific time during video playing the video played till save in db
   useEffect(() => {
     const handlePlaybackProgress = async () => {
-      if (state.played >= markWatchedTill + 0.04 && session) {
+      if (state.played >= markWatchedTill + 0.04) {
         setMarkWatchedTill(state.played);
-        await setWatched();
+        await setWatchedTill(animeId, epNo, state.played, session);
       }
     };
     handlePlaybackProgress();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.played, markWatchedTill, session, setWatched]);
+  }, [state.played, markWatchedTill, session, animeId, epNo]);
 
   const handleMouseMove = () => {
     if (appElement && controllerRef?.current) {
@@ -279,7 +265,6 @@ function Player({
             });
           }}
           onReady={() => {
-            console.log("onReady");
             if (playerRef?.current) {
               const videoElement = playerRef.current.getInternalPlayer();
               dispatch({
@@ -290,11 +275,8 @@ function Player({
             }
           }}
           onStart={async () => {
-            // find intro & outro
-            if (session) {
-              await handleSeekToUnwatched();
-              await setWatched();
-            }
+            await handleSeekToUnwatched();
+            await setWatchedTill(animeId, epNo, state.played, session);
           }}
           onPlay={() => dispatch({ type: "enablePlaying" })}
           onPause={() => dispatch({ type: "disablePlaying" })}
@@ -325,7 +307,9 @@ function Player({
           playerRef={playerRef}
           state={state}
           dispatch={dispatch}
-          setWatched={setWatched}
+          setWatched={async () =>
+            await setWatchedTill(animeId, epNo, state.played, session)
+          }
         />
         {state.playerFullScreen &&
           title &&

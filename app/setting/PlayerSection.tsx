@@ -37,7 +37,7 @@ function PlayerSection() {
     value,
     name,
   }: {
-    value: string | number | undefined;
+    value?: string | number;
     name: string;
   }) => {
     if (value) {
@@ -49,7 +49,7 @@ function PlayerSection() {
     value,
     name,
   }: {
-    value: string | number | undefined;
+    value?: string | number;
     name: string;
   }) => {
     if (value) {

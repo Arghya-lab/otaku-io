@@ -11,32 +11,30 @@ import usePosterItemCount from "@/hooks/usePosterItemCount";
 import { themes } from "@/theme";
 import { AnimeItemType } from "@/types/anime";
 
-function InfiniteDiscoverScroll({
-  initialData,
-  hasNextPage,
-}: {
-  initialData: AnimeItemType[];
-  hasNextPage: boolean;
-}) {
+function InfiniteDiscoverScroll() {
   const { themeId } = usePreference();
-  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
   const posterItemCount = usePosterItemCount();
   const searchParams = useSearchParams();
 
-  const [data, setData] = useState(initialData);
-  const [hasMore, setHasMore] = useState(hasNextPage);
-  const [pageNo, setPageNo] = useState(1);
+  const [data, setData] = useState<AnimeItemType[]>([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [pageNo, setPageNo] = useState(0);
 
-  const handleFetchMoreData = async () => {
+  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
+  const format = searchParams.get("format");
+  const genres = searchParams.get("genres");
+  const sort = searchParams.get("sort");
+  const status = searchParams.get("status");
+
+  const fetchData = async () => {
     try {
       const response = await axios.get(`/api/discover`, {
-        timeout: 15000,
         params: {
           page: pageNo + 1,
-          format: searchParams.get("format"),
-          genres: searchParams.get("genres"),
-          sort: searchParams.get("sort"),
-          status: searchParams.get("status"),
+          format,
+          genres,
+          sort,
+          status,
         },
       });
 
@@ -51,11 +49,35 @@ function InfiniteDiscoverScroll({
     }
   };
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await axios.get(`/api/discover`, {
+          params: {
+            format,
+            genres,
+            sort,
+            status,
+          },
+        });
+
+        const { currentPage, hasNextPage, results } = response.data;
+
+        setData(results);
+        setHasMore(hasNextPage);
+        setPageNo(currentPage);
+      } catch (error) {
+        console.error("Error fetching more data:", error);
+        // Handle other error scenarios as needed (e.g., display error message to user)
+      }
+    })();
+  }, [format, genres, sort, status]);
+
   return (
     <InfiniteScroll
       className="h-full"
       dataLength={data.length} //This is important field to render the next data
-      next={handleFetchMoreData}
+      next={fetchData}
       hasMore={hasMore}
       loader={
         <div className="w-28 m-auto">

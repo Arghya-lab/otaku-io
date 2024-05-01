@@ -12,6 +12,7 @@ import axios from "axios";
 import { themes } from "@/theme";
 import { useCookies } from "next-client-cookies";
 import { useRouter } from "next/navigation";
+import { PreferenceType } from "@/types/States";
 
 export const defaultPreference = {
   themeId: 1,
@@ -72,18 +73,21 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    if (!localStorage.getItem("preferences")) {
-      localStorage.setItem("preferences", JSON.stringify(defaultPreference));
-    }
-    setPreferences(
-      JSON.parse(
-        localStorage.getItem("preferences") || JSON.stringify(defaultPreference)
-      )
-    );
+    const savePreferences = JSON.parse(
+      localStorage.getItem("preferences") || JSON.stringify(defaultPreference)
+    ) as PreferenceType;
+
+    savePreferences.themeId =
+      Number(cookies.get("themeId")) || savePreferences.themeId;
+
+    localStorage.setItem("preferences", JSON.stringify(savePreferences));
+
+    setPreferences(savePreferences);
 
     if (session) {
       fetchPreferences();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
   const updatePreferences = async (
@@ -127,7 +131,10 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
           if (!payload || payload < 1 || payload > themes.length) {
             console.error("Error: invalid preference update payload.");
           } else {
-            cookies.set("themeId", payload.toString(), { expires: 2147483647 }); // Maximum value: 2147483647
+            cookies.set("themeId", payload.toString(), {
+              expires: 1000 * 60 * 60 * 24 * 365,
+              path: "/",
+            }); // Maximum value: 2147483647
             ({ data } = await axios.patch("/api/preference/themeid", {
               themeId: payload,
             }));
@@ -174,7 +181,10 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
           if (!payload || payload < 1 || payload > themes.length) {
             console.error("Error: invalid preference update payload.");
           } else {
-            cookies.set("themeId", payload.toString(), { expires: 2147483647 }); // Maximum value: 2147483647
+            cookies.set("themeId", payload.toString(), {
+              expires: 1000 * 60 * 60 * 24 * 365,
+              path: "/",
+            }); // Maximum value: 2147483647
             router.refresh();
 
             data = { ...data, themeId: Number(payload) };

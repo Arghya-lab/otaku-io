@@ -71,7 +71,7 @@ function TopNavbar({ bgColor }: { bgColor?: string }) {
           value={searchQuery}
           onChange={(e) => {
             console.log("k");
-            
+
             setSearchQuery(e.target.value);
           }}
           className="pl-7 h-full focus:outline-none bg-transparent w-[calc(100%-24px-24px-2.5rem)] font-medium"

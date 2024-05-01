@@ -16,10 +16,11 @@ import {
 import useWindowSize from "@/hooks/useWindowSize";
 import useScroll from "@/hooks/useScroll";
 import { themes } from "@/theme";
+import { shade } from "@/utils/color";
 
 function Filter() {
   const { themeId } = usePreference();
-  const theme = themes.find(theme=>theme.id===themeId) || themes[0];
+  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -74,7 +75,6 @@ function Filter() {
       .join("&");
 
     router.push(`/discover${queries ? `?${queries}` : ""}`);
-    router.refresh();
   }
 
   return (
@@ -103,16 +103,16 @@ function Filter() {
         <>
           <div>
             <div className="pl-2">
-              <p className="text-white capitalize">filter</p>
+              <p className="capitalize" style={{ color: theme.textColor }}>
+                filter
+              </p>
             </div>
             <div
               role="button"
-              className="h-9 px-4 rounded-[45px] shadow-sm bg-white bg-opacity-20 flex items-center justify-center"
+              className="h-9 px-4 rounded-[45px] shadow-lg flex items-center justify-center"
               style={{
-                backgroundColor: chroma(theme.primaryColor)
-                  .darken(1.75)
-                  .alpha(0.7)
-                  .toString(),
+                backgroundColor: shade(theme.primaryColor, 0, 0.2).hex(),
+                color: "#fff",
               }}
               onClick={() => setIsModalOpen(!isModalOpen)}>
               <FilterIcon size={18} color="#fff" fill="#fff" />

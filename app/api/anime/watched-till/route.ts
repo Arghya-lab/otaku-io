@@ -12,6 +12,13 @@ export async function GET(req: NextRequest) {
     const animeId = searchParams.get("animeId");
     const episodeNo = searchParams.get("episodeNo");
 
+    if (!animeId || !episodeNo) {
+      return NextResponse.json(
+        { error: "animeId & episodeNo search params require." },
+        { status: 400 }
+      );
+    }
+
     const watchedAnime = await AnimeWatched.findOne(
       { email: userEmail, animeId },
       { episodes: { $elemMatch: { episodeNo } } }

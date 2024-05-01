@@ -1,11 +1,19 @@
-// import { addSeconds, format, formatDuration, secondsToMilliseconds } from "date-fns";
-
 export const secToMinSec = (s: number) => {
-  return (
-    convertToTwoDigits(Math.floor(s / 60)) +
-    "." +
-    convertToTwoDigits(Math.floor(s % 60))
-  );
+  if (Math.floor(s / 60) > 60) {
+    return (
+      convertToTwoDigits(Math.floor(s / (60 * 60))) +
+      "." +
+      convertToTwoDigits(Math.floor((s % (60 * 60)) / 60)) +
+      "." +
+      convertToTwoDigits(Math.floor(s % 60))
+    );
+  } else {
+    return (
+      convertToTwoDigits(Math.floor(s / 60)) +
+      "." +
+      convertToTwoDigits(Math.floor(s % 60))
+    );
+  }
 };
 
 function convertToTwoDigits(number: number) {

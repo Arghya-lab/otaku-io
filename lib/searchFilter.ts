@@ -3,7 +3,7 @@ import { FormatEnum, GenresEnum, SortEnum, StatusEnum } from "@/types/discover";
 export const formatList = [
   { value: undefined, name: "None" },
   { value: FormatEnum.TV, name: "Tv" },
-  { value: FormatEnum.TV_SHORT, name: "TV Short" },
+  { value: FormatEnum.TV_SHORT, name: "Tv Short" },
   { value: FormatEnum.MOVIE, name: "Movie" },
   { value: FormatEnum.SPECIAL, name: "Special" },
   { value: FormatEnum.MUSIC, name: "Music" },

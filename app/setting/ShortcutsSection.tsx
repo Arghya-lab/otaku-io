@@ -20,7 +20,7 @@ function ShortcutsSection() {
       <h3 className="text-xl pb-6" style={{ color: theme.textColor }}>
         Shortcuts
       </h3>
-      <div className="max-w-[448px] xs:pl-12">
+      <div className="max-w-lg xs:pl-12">
         <div className="shortcut-container">
           <p className="flex-grow flex-shrink basis-1/2">Toggle Play/Pause</p>
           <div className="shortcut-btn-container">
@@ -153,6 +153,23 @@ function ShortcutsSection() {
                   .hex(),
               }}>
               <ArrowBigDownDash />( DOWN ARROW )
+            </div>
+          </div>
+        </div>
+        <div className="shortcut-container">
+          <p className="flex-grow flex-shrink basis-1/2">
+            Seek to specific point in the video (7 advances to 70% of duration)
+          </p>
+          <div className="shortcut-btn-container">
+            <div
+              className="shortcut-btn"
+              style={{
+                backgroundColor: chroma(theme.primaryColor)
+                  .darken(1)
+                  .alpha(0.2)
+                  .hex(),
+              }}>
+              0..9
             </div>
           </div>
         </div>

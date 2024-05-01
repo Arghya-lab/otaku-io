@@ -1,4 +1,5 @@
 import "server-only";
+
 import { ANIME, META, PROVIDERS_LIST } from "@consumet/extensions";
 import Anilist from "@consumet/extensions/dist/providers/meta/anilist";
 import NineAnime from "@consumet/extensions/dist/providers/anime/9anime";
@@ -185,6 +186,46 @@ export const getStreamingLinks = async (
 
     // Use Promise.race() to return the first resolved promise
     return Promise.race([anilistPromise, axiosPromise]);
+    // return {
+    //   headers: {
+    //     Referer:
+    //       "https://embtaku.pro/embedplus?id=MTQ3OTA3&token=9kS6Drw68_FkCirvebVQdw&expires=1714502330",
+    //   },
+    //   sources: [
+    //     {
+    //       url: "https://www088.vipanicdn.net/streamhls/83a227d867325122bc1a93622cf0fb3d/ep.1.1709061920.360.m3u8",
+    //       isM3U8: true,
+    //       quality: "360p",
+    //     },
+    //     {
+    //       url: "https://www088.vipanicdn.net/streamhls/83a227d867325122bc1a93622cf0fb3d/ep.1.1709061920.480.m3u8",
+    //       isM3U8: true,
+    //       quality: "480p",
+    //     },
+    //     {
+    //       url: "https://www088.vipanicdn.net/streamhls/83a227d867325122bc1a93622cf0fb3d/ep.1.1709061920.720.m3u8",
+    //       isM3U8: true,
+    //       quality: "720p",
+    //     },
+    //     {
+    //       url: "https://www088.vipanicdn.net/streamhls/83a227d867325122bc1a93622cf0fb3d/ep.1.1709061920.1080.m3u8",
+    //       isM3U8: true,
+    //       quality: "1080p",
+    //     },
+    //     {
+    //       url: "https://www088.vipanicdn.net/streamhls/83a227d867325122bc1a93622cf0fb3d/ep.1.1709061920.m3u8",
+    //       isM3U8: true,
+    //       quality: "default",
+    //     },
+    //     {
+    //       url: "https://www088.anicdnstream.info/videos/hls/JEXf5r109GSaRSBaTkpuIA/1714509530/147907/83a227d867325122bc1a93622cf0fb3d/ep.1.1709061920.m3u8",
+    //       isM3U8: true,
+    //       quality: "backup",
+    //     },
+    //   ],
+    //   download:
+    //     "https://gogohd.net/download?id=MTQ3OTA3&token=9kS6Drw68_FkCirvebVQdw&expires=1714502330",
+    // };
   } catch {
     throw new Error("Error occur while fetching streaming links.");
   }

@@ -1,61 +1,85 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getSessionEmail } from "@/app/api/_lib/getSessionEmail";
-import AnimeWatched from "@/models/AnimeWatched";
+import { NextRequest } from "next/server";
+import { validateSession } from "@/app/api/_lib/validateSession";
+import AnimeWatched, { IEpisodeWatched } from "@/models/AnimeWatched";
 import connectDB from "@/db/db";
+import apiError from "@/app/api/_lib/apiError";
+import apiSuccess from "@/app/api/_lib/apiSuccess";
+import mongoose from "mongoose";
 
+/**
+ * Route: GET /api/anime/watched-till
+ * Description: To get user's watched till for a particular anime episodes.
+ * Request Query:
+ *   - animeId (required): animeId for that anime.
+ *   - episodeNo (required): episodeNo for the episode.
+ * Note: user have to login.
+ */
 export async function GET(req: NextRequest) {
   try {
     await connectDB();
-    const userEmail = await getSessionEmail();
 
     const searchParams = req.nextUrl.searchParams;
     const animeId = searchParams.get("animeId");
     const episodeNo = searchParams.get("episodeNo");
 
     if (!animeId || !episodeNo) {
-      return NextResponse.json(
-        { error: "animeId & episodeNo search params require." },
-        { status: 400 }
-      );
+      return apiError({
+        errorMessage: "animeId & episodeNo search params require.",
+        status: 400,
+      });
     }
 
+    const { email } = await validateSession();
     const watchedAnime = await AnimeWatched.findOne(
-      { email: userEmail, animeId },
+      { email, animeId },
       { episodes: { $elemMatch: { episodeNo } } }
     ).exec();
 
-    if (watchedAnime?.episodes[0].episodeNo) {
+    if (watchedAnime && watchedAnime.episodes[0].episodeNo) {
       const data = {
         animeId,
         episodeNo: watchedAnime.episodes[0].episodeNo,
         watchedTill: watchedAnime.episodes[0].watchedTill,
       };
 
-      return NextResponse.json(data, { status: 200 });
+      return apiSuccess({
+        data,
+        message: `Successfully fetched user watched till for animeId: ${animeId} & episode: ${episodeNo}`,
+      });
     } else {
-      const data = {
-        animeId,
-        episodeNo,
-        watchedTill: 0,
-      };
-
-      return NextResponse.json(data, { status: 200 });
+      return apiError({
+        errorMessage: "Result not found based on given data.",
+        status: 400,
+      });
     }
   } catch (error) {
-    return NextResponse.json(
-      { error: "Something went wrong." },
-      { status: 500 }
-    ); // Return error response
+    return apiError();
   }
 }
 
+/**
+ * Route: PATCH /api/anime/watched-till
+ * Description: To update user's users watched till for a particular anime episodes.
+ * Request Query:
+ *   - animeId (required): animeId for that anime.
+ *   - episodeNo (required): episodeNo for the episode.
+ *   - watchedTill (required): User's watchedTill for the episode.
+ * Note: user have to login.
+ */
 export async function PATCH(req: Request) {
   try {
-    const userEmail = await getSessionEmail();
     const { animeId, episodeNo, watchedTill = 0 } = await req.json();
 
+    if (!animeId || !Number(episodeNo)) {
+      return apiError({
+        errorMessage: "animeId & episodeNo search params require.",
+        status: 400,
+      });
+    }
+
+    const { email } = await validateSession();
     let animeWatched = await AnimeWatched.findOne({
-      email: userEmail,
+      email,
       animeId,
     });
 
@@ -66,29 +90,32 @@ export async function PATCH(req: Request) {
       );
 
       if (episodeIdx === -1) {
-        animeWatched.episodes.push({ episodeNo, watchedTill });
+        const newEpisode = {
+          _id: new mongoose.Types.ObjectId(),
+          episodeNo: Number(episodeNo),
+          watchedTill: Number(watchedTill),
+        } as IEpisodeWatched;
+
+        animeWatched.episodes.push(newEpisode);
       } else if (animeWatched.episodes[episodeIdx].watchedTill < watchedTill) {
         animeWatched.episodes[episodeIdx].watchedTill = watchedTill;
       }
       animeWatched.lastWatched = episodeNo;
       // Save the updated document
       await animeWatched.save();
-
-      return NextResponse.json(animeWatched, { status: 200 });
     } else {
       animeWatched = await AnimeWatched.create({
-        email: userEmail,
+        email,
         animeId,
         episodes: [{ episodeNo, watchedTill }],
         lastWatched: episodeNo,
       });
-
-      return NextResponse.json(animeWatched, { status: 200 });
     }
+    return apiSuccess({
+      data: animeWatched,
+      message: `Successfully updated user watched till for animeId: ${animeId} & episode: ${episodeNo}`,
+    });
   } catch (error) {
-    return NextResponse.json(
-      { error: "Something went wrong." },
-      { status: 500 }
-    ); // Return error response
+    return apiError();
   }
 }

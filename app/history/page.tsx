@@ -20,7 +20,6 @@ async function HistoryPage() {
         style={{ color: theme.textColor }}>
         continue watching
       </h2>
-      {/* Meta items container */}
       <InfiniteHistoryScroll
         initialData={results}
         hasNextPage={hasNextPage}

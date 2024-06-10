@@ -9,6 +9,7 @@ import { themes } from "@/theme";
 import Preference from "@/models/Preference";
 import { nunito_Sans, poppins } from "@/utils/fonts";
 import "./globals.css";
+import ReactQueryProvider from "@/components/providers/ReactQueryProvider";
 
 export const metadata: Metadata = {
   title: "Otaku-io",
@@ -29,13 +30,29 @@ export const metadata: Metadata = {
     },
   ],
   icons: [
-    { rel: "apple-touch-icon", url: "icons/logo-512x512.png" },
-    { rel: "icon", url: "icons/logo-512x512.png" },
+    {
+      rel: "apple-touch-icon",
+      url: "/apple-touch-icon.png",
+      sizes: "180x180",
+    },
+    {
+      rel: "icon",
+      url: "/favicon-32x32.png",
+      sizes: "32x32",
+      type: "image/png",
+    },
+    {
+      rel: "icon",
+      url: "/favicon-16x16.png",
+      sizes: "16x16",
+      type: "image/png",
+    },
+    { rel: "mask-icon", url: "/safari-pinned-tab.svg", color: "#5bbad5" },
   ],
 };
 
 export const viewport: Viewport = {
-  themeColor: "#000000",
+  themeColor: "#ffffff",
   initialScale: 1,
 };
 
@@ -48,7 +65,7 @@ export const getUserTheme = async () => {
     const userPreference = await Preference.findOne({
       email: userEmail,
     }).select("themeId");
-    themeId = userPreference.themeId;
+    themeId = userPreference?.themeId;
   }
 
   let themeCookie = cookies().get("themeId");
@@ -67,23 +84,25 @@ export default async function RootLayout({
 
   return (
     <html lang="en" id="App">
-      <AuthProvider>
-        <CookiesProvider>
-          <PreferencesProvider>
-            <body
-              className={`${poppins} ${nunito_Sans} font-poppins w-full relative`}>
-              <div
-                className="fixed -z-20 w-screen h-screen bg-cover"
-                style={{
-                  backgroundColor: theme.primaryColor,
-                  background: theme.bgImg,
-                }}
-              />
-              {children}
-            </body>
-          </PreferencesProvider>
-        </CookiesProvider>
-      </AuthProvider>
+      <ReactQueryProvider>
+        <AuthProvider>
+          <CookiesProvider>
+            <PreferencesProvider>
+              <body
+                className={`${poppins} ${nunito_Sans} font-poppins w-full relative`}>
+                <div
+                  className="fixed -z-20 w-screen h-screen bg-cover"
+                  style={{
+                    backgroundColor: theme.primaryColor,
+                    background: theme.bgImg,
+                  }}
+                />
+                {children}
+              </body>
+            </PreferencesProvider>
+          </CookiesProvider>
+        </AuthProvider>
+      </ReactQueryProvider>
     </html>
   );
 }

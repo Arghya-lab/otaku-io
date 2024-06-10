@@ -1,15 +1,29 @@
-import { NextResponse } from "next/server";
-import { getSessionEmail } from "@/app/api/_lib/getSessionEmail";
+import { validateSession } from "@/app/api/_lib/validateSession";
 import User from "@/models/User";
 import connectDB from "@/db/db";
+import apiError from "@/app/api/_lib/apiError";
+import apiSuccess from "@/app/api/_lib/apiSuccess";
 
+/**
+ * Route: PATCH /api/bookmark/toggle
+ * Description: To add or remove bookmark from user's anime bookmark.
+ * Request body:
+ *   - animeId (required): animeId for that anime.
+ * Note: user have to login.
+ */
 export async function PATCH(req: Request) {
   try {
     await connectDB();
-    const userEmail = await getSessionEmail();
     const { animeId } = await req.json();
 
-    const user = await User.findOne({ email: userEmail });
+    if (!animeId) {
+      return apiError({
+        errorMessage: "animeId require in req body.",
+        status: 400,
+      });
+    }
+
+    const user = await validateSession();
 
     const isBookmarked = user.bookmarks.includes(animeId);
 
@@ -22,13 +36,11 @@ export async function PATCH(req: Request) {
     }
     await user.save();
 
-    return NextResponse.json(user.bookmarks, { status: 200 });
+    return apiSuccess({
+      data: user.bookmarks,
+      message: "Successfully update user bookmark.",
+    });
   } catch (error) {
-    console.log(error);
-
-    return NextResponse.json(
-      { error: "Something went wrong." },
-      { status: 500 }
-    ); // Return error response
+    return apiError();
   }
 }

@@ -1,19 +1,19 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Model } from "mongoose";
 
 // Interface for user document
-interface User {
+export interface IUser extends Document {
   name: string;
   email: string;
   password?: string; // Make password optional
   image?: string;
   authType: string;
   provider?: string;
-  bookmarks?: string[];
+  bookmarks: string[];
   createdAt: Date;
   updatedAt: Date;
 }
 
-const userSchema = new mongoose.Schema<User>(
+const userSchema = new mongoose.Schema<IUser>(
   {
     name: {
       type: String,
@@ -43,6 +43,8 @@ const userSchema = new mongoose.Schema<User>(
 );
 
 // Create the model with type safety
-const User = mongoose.models.User || mongoose.model<User>("User", userSchema);
+const User =
+  (mongoose.models.User as Model<IUser>) ||
+  mongoose.model<IUser>("User", userSchema);
 
 export default User;

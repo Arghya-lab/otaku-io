@@ -23,8 +23,8 @@ async function MetaPreviewContainer({
     typeof detailInfo.title === "string"
       ? detailInfo.title
       : detailInfo.title?.english ||
-        detailInfo.title?.native ||
         detailInfo.title?.romaji ||
+        detailInfo.title?.native ||
         detailInfo.title?.userPreferred ||
         "";
 
@@ -49,7 +49,7 @@ async function MetaPreviewContainer({
           />
         ) : (
           <div
-            className={classNames("min-h-32 font-nunito text-white", {
+            className={classNames("min-h-32 font-nunito text-white break-all", {
               "text-3xl xxs:text-4xl font-bold xxs:font-extrabold":
                 title.length > 50,
               "text-4xl xxs:text-5xl font-extrabold":

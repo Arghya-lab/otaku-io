@@ -4,12 +4,13 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LineWave } from "react-loader-spinner";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import PosterItem from "@/components/PosterItem";
 import { usePreference } from "@/components/providers/PreferenceProvider";
 import usePosterItemCount from "@/hooks/usePosterItemCount";
 import { themes } from "@/theme";
-import { AnimeItemType } from "@/types/anime";
+import { AdvancedAnimeSearchResType, AnimeItemType } from "@/types/anime";
+import { ApiSuccessType } from "@/types/apiResponse";
 
 function InfiniteDiscoverScroll() {
   const { themeId } = usePreference();
@@ -28,32 +29,10 @@ function InfiniteDiscoverScroll() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`/api/discover`, {
-        params: {
-          page: pageNo + 1,
-          format,
-          genres,
-          sort,
-          status,
-        },
-      });
-
-      const { currentPage, hasNextPage, results } = response.data;
-
-      setData((prev) => [...prev, ...results]);
-      setHasMore(hasNextPage);
-      setPageNo(currentPage);
-    } catch (error) {
-      console.error("Error fetching more data:", error);
-      // Handle other error scenarios as needed (e.g., display error message to user)
-    }
-  };
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const response = await axios.get(`/api/discover`, {
+      const { data }: { data: ApiSuccessType<AdvancedAnimeSearchResType> } =
+        await axios.get(`/api/anime/discover`, {
           params: {
+            page: pageNo + 1,
             format,
             genres,
             sort,
@@ -61,22 +40,45 @@ function InfiniteDiscoverScroll() {
           },
         });
 
-        const { currentPage, hasNextPage, results } = response.data;
+      setData((prev) => [...prev, ...data.data.results]);
+      setHasMore(data.data.hasNextPage || false);
+      setPageNo(data.data.currentPage || pageNo + 1);
+    } catch (error) {
+      if (isAxiosError(error)) {
+        console.log(error.message);
+      }
+    }
+  };
 
-        setData(results);
-        setHasMore(hasNextPage);
-        setPageNo(currentPage);
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data }: { data: ApiSuccessType<AdvancedAnimeSearchResType> } =
+          await axios.get(`/api/anime/discover`, {
+            params: {
+              format,
+              genres,
+              sort,
+              status,
+            },
+          });
+
+        setData(data.data.results);
+        setHasMore(data.data.hasNextPage || false);
+        setPageNo(data.data.currentPage || pageNo + 1);
       } catch (error) {
-        console.error("Error fetching more data:", error);
-        // Handle other error scenarios as needed (e.g., display error message to user)
+        if (isAxiosError(error)) {
+          console.log(error.message);
+        }
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [format, genres, sort, status]);
 
   return (
     <InfiniteScroll
       className="h-full"
-      dataLength={data.length} //This is important field to render the next data
+      dataLength={data.length}
       next={fetchData}
       hasMore={hasMore}
       loader={
@@ -91,16 +93,12 @@ function InfiniteDiscoverScroll() {
       }
       endMessage={<p style={{ textAlign: "center" }}>nothing to show more</p>}>
       <div
-        className="px-2 xxs:px-4 grid pb-16 xs:pb-0"
+        className="px-4 grid gap-2 xxs:gap-3 xs:gap-4 pb-16 xs:pb-0 grid-cols-2 xxs:grid-cols-3"
         style={{
           gridTemplateColumns: `repeat( ${posterItemCount}, 1fr)`,
         }}>
-        {data.map((item, id) => (
-          <PosterItem
-            key={id}
-            item={item}
-            // type={posterItemType.filter}
-          />
+        {data.map((item) => (
+          <PosterItem key={item.id} item={item} />
         ))}
       </div>
     </InfiniteScroll>

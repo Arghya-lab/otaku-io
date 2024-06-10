@@ -1,7 +1,7 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Model } from "mongoose";
 
 // Interface for preference document
-interface Preference {
+interface IPreference extends Document {
   userId: mongoose.Types.ObjectId;
   email: string;
   isDub: boolean;
@@ -12,9 +12,11 @@ interface Preference {
   bookmarks: string[];
   autoSkip: boolean;
   playbackQuality: "360p" | "480p" | "720p" | "1080p";
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-const preferenceSchema = new mongoose.Schema<Preference>(
+const preferenceSchema = new mongoose.Schema<IPreference>(
   {
     email: {
       type: String,
@@ -59,7 +61,7 @@ const preferenceSchema = new mongoose.Schema<Preference>(
 
 // Export the model
 const Preference =
-  mongoose.models.Preference ||
-  mongoose.model<Preference>("Preference", preferenceSchema);
+  (mongoose.models.Preference as Model<IPreference>) ||
+  mongoose.model<IPreference>("Preference", preferenceSchema);
 
 export default Preference;

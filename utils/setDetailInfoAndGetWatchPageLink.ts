@@ -1,5 +1,6 @@
 import axios from "axios";
 import { AnimeEpisodeType, DetailAnimeInfoType } from "@/types/anime";
+import { ApiSuccessType } from "@/types/apiResponse";
 
 const setDetailInfoAndGetWatchPageLink = async (
   id: string,
@@ -17,10 +18,9 @@ const setDetailInfoAndGetWatchPageLink = async (
     if (savedDetailInfo && savedDetailInfo.id === id) {
       detailInfo = savedDetailInfo;
     } else {
-      const { data }: { data: DetailAnimeInfoType } = await axios.get(
-        `/api/detail-info/${id}?dub=${isDub}`
-      );
-      detailInfo = data;
+      const { data }: { data: ApiSuccessType<DetailAnimeInfoType> } =
+        await axios.get(`/api/anime/detail-info/${id}?dub=${isDub}`);
+      detailInfo = data.data;
       localStorage.setItem("detailInfo", JSON.stringify(detailInfo));
     }
 
@@ -34,10 +34,9 @@ const setDetailInfoAndGetWatchPageLink = async (
         currentEpisode.id
       }?dub=${detailInfo?.subOrDub === "dub"}`;
     } else {
-      const { data }: { data: DetailAnimeInfoType } = await axios.get(
-        `/api/detail-info/${id}?dub=${!isDub}`
-      );
-      detailInfo = data;
+      const { data }: { data: ApiSuccessType<DetailAnimeInfoType> } =
+        await axios.get(`/api/anime/detail-info/${id}?dub=${!isDub}`);
+      detailInfo = data.data;
       localStorage.setItem("detailInfo", JSON.stringify(detailInfo));
 
       resEpisodes = detailInfo?.episodes;

@@ -1,14 +1,15 @@
 "use client";
 
+import axios, { isAxiosError } from "axios";
+import { useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LineWave } from "react-loader-spinner";
-import { useState } from "react";
 import usePosterItemCount from "@/hooks/usePosterItemCount";
-import axios from "axios";
 import { usePreference } from "@/components/providers/PreferenceProvider";
 import ContinueWatchingPosterItem from "@/components/ContinueWatchingPosterItem";
 import { themes } from "@/theme";
 import { WatchingAnimeType } from "@/types/anime";
+import { ApiSuccessType } from "@/types/apiResponse";
 
 function InfiniteHistoryScroll({
   initialData,
@@ -30,36 +31,35 @@ function InfiniteHistoryScroll({
 
   const handleFetchMoreData = async () => {
     try {
-      const res = await axios.get(`/api/anime/history`, {
+      const {
+        data,
+      }: {
+        data: ApiSuccessType<{
+          results: WatchingAnimeType[];
+          hasNextPage: boolean;
+          currentPage: number;
+        }>;
+      } = await axios.get(`/api/anime/history`, {
         params: {
           page: pageNo + 1,
           perPage: perPage,
         },
       });
 
-      const {
-        currentPage,
-        hasNextPage,
-        results,
-      }: {
-        currentPage: number;
-        hasNextPage: boolean;
-        results: WatchingAnimeType[];
-      } = res.data;
-
-      setData((prev) => [...prev, ...results]);
-      setHasMore(hasNextPage);
-      setPageNo(currentPage);
+      setData((prev) => [...prev, ...data.data.results]);
+      setHasMore(data.data.hasNextPage);
+      setPageNo(data.data.currentPage);
     } catch (error) {
-      console.error("Error fetching more data:", error);
-      // Handle other error scenarios as needed (e.g., display error message to user)
+      if (isAxiosError(error)) {
+        console.log(error.message);
+      }
     }
   };
 
   return (
     <InfiniteScroll
       className="h-full"
-      dataLength={data.length} //This is important field to render the next data
+      dataLength={data.length}
       next={handleFetchMoreData}
       hasMore={hasMore}
       loader={
@@ -74,7 +74,7 @@ function InfiniteHistoryScroll({
       }
       endMessage={<p style={{ textAlign: "center" }}>nothing to show more</p>}>
       <div
-        className="px-2 xxs:px-4 grid pb-16 xs:pb-0"
+        className="px-4 grid gap-2 xxs:gap-3 xs:gap-4 pb-16 xs:pb-0 grid-cols-2 xxs:grid-cols-3"
         style={{
           gridTemplateColumns: `repeat( ${posterItemCount}, 1fr)`,
         }}>

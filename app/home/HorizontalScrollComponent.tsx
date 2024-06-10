@@ -6,6 +6,7 @@ import {
   VisibilityContext,
   publicApiType,
 } from "react-horizontal-scrolling-menu";
+import { motion } from "framer-motion";
 import { DragManager } from "@/utils/dragManager";
 import "react-horizontal-scrolling-menu/dist/styles.css";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -60,11 +61,11 @@ const HorizontalScrollComponent = ({
 const LeftArrow = React.memo(() => {
   const { themeId } = usePreference();
   const theme = themes.find((theme) => theme.id === themeId) || themes[0];
-  
+
   const visibility = React.useContext<publicApiType>(VisibilityContext);
   const isFirstItemVisible = visibility.useIsVisible("first", true);
 
-  if (isMobileDevice()) return null
+  if (isMobileDevice()) return null;
 
   return (
     <Arrow
@@ -84,8 +85,8 @@ const RightArrow = React.memo(() => {
   const visibility = React.useContext<publicApiType>(VisibilityContext);
   const isLastItemVisible = visibility.useIsVisible("last", false);
 
-  if (isMobileDevice()) return null
-  
+  if (isMobileDevice()) return null;
+
   return (
     <Arrow
       disabled={isLastItemVisible}
@@ -113,7 +114,7 @@ const Arrow = ({
   const [_isPending, startTransition] = React.useTransition();
 
   return (
-    <button
+    <motion.button
       disabled={disabled}
       onClick={() => startTransition(onClick)}
       className={"arrow" + `-${className}`}
@@ -122,9 +123,15 @@ const Arrow = ({
         opacity: disabled ? "0" : "1",
         userSelect: "none",
         backgroundColor: chroma(theme.primaryColor).alpha(0.8).hex(),
+      }}
+      whileHover={{
+        scale: 1.1,
+      }}
+      whileTap={{
+        scale: 0.9,
       }}>
       {children}
-    </button>
+    </motion.button>
   );
 };
 RightArrow.displayName = "RightArrow";

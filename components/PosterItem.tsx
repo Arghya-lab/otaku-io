@@ -32,8 +32,9 @@ function PosterItem({
 
   return (
     <div
-      className={classNames("p-2 xxs:p-3", {
-        "w-[152px] sm:w-48": isHorizontalScroll,
+      className={classNames({
+        "w-[152px] sm:w-48 p-2 xxs:p-3": isHorizontalScroll,
+        "min-w-24 max-w-48 p-1": !isHorizontalScroll,
       })}>
       <Link
         href={`/detail/${item.id}?title=${title}&dub=${isDub}`}
@@ -49,21 +50,21 @@ function PosterItem({
             isHover ? "ring-slate-50" : "ring-transparent"
           }`}>
           <div
-            className={`flex items-start relative mb-auto select-none w-full h-full aspect-[5/7] overflow-hidden transition-transform duration-200 ease-in transform-gpu ${
+            className={`flex items-start relative mb-auto select-none w-full aspect-[5/7] overflow-hidden transition-transform duration-200 ease-in transform-gpu ${
               isHover ? "scale-110" : null
             }`}>
             {item.image && (
               <img
-                alt={title ?? ""}
-                className="object-cover object-center h-full w-full"
+                alt={title || ""}
+                className="object-cover object-center w-full"
                 src={item.image}
               />
             )}
           </div>
         </div>
-        <div className="h-16 text-sm font-medium flex items-center overflow-visible">
+        <div className="h-16 flex items-center overflow-visible">
           <p
-            className="px-2 w-full line-clamp-2 text-center text-neutral-950 dark:text-white"
+            className="px-2 w-full text-xs font-medium line-clamp-2 text-center text-neutral-950 dark:text-white"
             style={{
               color:
                 isHover && item?.color

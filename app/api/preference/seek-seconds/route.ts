@@ -1,36 +1,47 @@
 import Preference from "@/models/Preference";
-import { NextResponse } from "next/server";
-import { getSessionEmail } from "@/app/api/_lib/getSessionEmail";
+import { validateSession } from "@/app/api/_lib/validateSession";
 import { preferenceSelector } from "@/app/api/_lib/preferenceSelector";
 import connectDB from "@/db/db";
+import apiError from "@/app/api/_lib/apiError";
+import apiSuccess from "@/app/api/_lib/apiSuccess";
 
+/**
+ * Route: PATCH /api/preference/seek-seconds
+ * Description: To update user's seek seconds pref for anime streaming
+ * Request Body:
+ *   - seekSeconds (required): playback seekSeconds to update.
+ * Note: user have to login.
+ */
 export async function PATCH(req: Request) {
   try {
     await connectDB();
-    
-    const userEmail = await getSessionEmail();
+
     let { seekSeconds } = await await req.json();
     seekSeconds = Number(seekSeconds);
 
     if (!seekSeconds || ![5, 10, 15, 20].includes(seekSeconds)) {
-      return NextResponse.json(
-        { error: "Proper request body is not set." },
-        { status: 400 }
-      ); // Return error response
+      return apiError({
+        errorMessage: "Proper request body is not set.",
+        status: 400,
+      });
     }
 
-    const userPreference = await Preference.findOne({ email: userEmail });
-    const updatedPreference = await Preference.findByIdAndUpdate(
-      userPreference._id,
+    const { email } = await validateSession();
+    const updatedPreference = await Preference.findOneAndUpdate(
+      { email },
       { seekSeconds },
       { new: true }
     ).select(preferenceSelector);
 
-    return NextResponse.json(updatedPreference, { status: 200 });
+    if (!updatedPreference) {
+      return apiError({ errorMessage: "Some thing went wrong.", status: 400 });
+    }
+
+    return apiSuccess({
+      data: updatedPreference,
+      message: "Successfully updated user preference.",
+    });
   } catch (error) {
-    return NextResponse.json(
-      { error: "Something went wrong." },
-      { status: 500 }
-    ); // Return error response
+    return apiError();
   }
 }

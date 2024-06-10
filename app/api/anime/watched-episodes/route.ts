@@ -1,31 +1,50 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import AnimeWatched from "@/models/AnimeWatched";
-import { getSessionEmail } from "@/app/api/_lib/getSessionEmail";
 import connectDB from "@/db/db";
+import { validateSession } from "@/app/api/_lib/validateSession";
+import apiSuccess from "@/app/api/_lib/apiSuccess";
+import apiError from "@/app/api/_lib/apiError";
 
+/**
+ * Route: GET /api/anime/watched-episodes
+ * Description: To get user watched episodes based og animeId.
+ * Request Query:
+ *   - animeId (required): animeId to get watched episodes.
+ * Note: user have to login.
+ */
 export async function GET(req: NextRequest) {
   try {
     await connectDB();
-    const userEmail = await getSessionEmail();
 
     const searchParams = req.nextUrl.searchParams;
     const animeId = searchParams.get("animeId");
+    if (!animeId)
+      return apiError({
+        errorMessage: "SearchParam animeId required.",
+        status: 400,
+      });
+
+    const { email } = await validateSession();
 
     const watchedAnime = await AnimeWatched.findOne({
-      email: userEmail,
+      email,
       animeId,
     }).exec();
 
-    if (watchedAnime && watchedAnime?.episodes.length) {
+    if (watchedAnime) {
       const data = watchedAnime.episodes.map((item: any) => item.episodeNo);
-      return NextResponse.json(data, { status: 200 });
+
+      return apiSuccess({
+        data,
+        message: "Successfully fetched watched episodes.",
+      });
     } else {
-      return NextResponse.json([], { status: 200 });
+      return apiError({
+        errorMessage: "Result not found based on given data.",
+        status: 400,
+      });
     }
   } catch (error) {
-    return NextResponse.json(
-      { error: "Something went wrong." },
-      { status: 500 }
-    ); // Return error response
+    return apiError();
   }
 }

@@ -52,11 +52,12 @@ function ContinueWatchingPosterItem({
 
   return (
     <div
-      className={classNames("p-2 xxs:p-3 cursor-pointer", {
+      className={classNames("p-1", {
         "w-[152px] sm:w-48": isHorizontalScroll,
+        "min-w-24 max-w-48": !isHorizontalScroll,
       })}>
       <div
-        className="w-full"
+        className="w-full cursor-pointer"
         onPointerEnter={() => {
           setIsHover(true);
         }}
@@ -106,9 +107,9 @@ function ContinueWatchingPosterItem({
             />
           </div>
         </div>
-        <div className="h-16 text-sm font-medium flex items-center overflow-visible">
+        <div className="h-16 flex items-center overflow-visible">
           <p
-            className="px-2 w-full line-clamp-2 text-center"
+            className="px-2 w-full text-xs font-medium line-clamp-2 text-center"
             style={{
               color:
                 isHover && animeInfo?.color

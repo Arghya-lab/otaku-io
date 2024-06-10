@@ -9,6 +9,7 @@ import usePosterItemCount from "@/hooks/usePosterItemCount";
 import { themes } from "@/theme";
 import { AnimeItemType } from "@/types/anime";
 import axios from "axios";
+import { ApiSuccessType } from "@/types/apiResponse";
 
 function InfiniteLibraryScroll({
   initialData,
@@ -23,7 +24,7 @@ function InfiniteLibraryScroll({
   const theme = themes.find((theme) => theme.id === themeId) || themes[0];
   const posterItemCount = usePosterItemCount();
 
-  const [pageNo, setPageNo] = useState(1);
+  const [page, setPage] = useState(1);
   const [data, setData] = useState(initialData);
   const [hasMore, setHasMore] = useState(hasNextPage);
 
@@ -31,18 +32,18 @@ function InfiniteLibraryScroll({
     const {
       data,
     }: {
-      data: {
+      data: ApiSuccessType<{
         results: AnimeItemType[];
         hasNextPage: boolean;
         currentPage: number;
-      };
+      }>;
     } = await axios.get("/api/anime/library-animes", {
-      params: { pageNo: pageNo + 1, perPage: perPage },
+      params: { page: page + 1, perPage: perPage },
     });
 
-    setPageNo(data.currentPage);
-    setData((prev) => [...prev, ...data.results]);
-    setHasMore(data.hasNextPage);
+    setPage(data.data.currentPage);
+    setData((prev) => [...prev, ...data.data.results]);
+    setHasMore(data.data.hasNextPage);
   };
 
   return (
@@ -63,16 +64,12 @@ function InfiniteLibraryScroll({
       }
       endMessage={<p style={{ textAlign: "center" }}>nothing to show more</p>}>
       <div
-        className="px-2 xxs:px-4 grid pb-16 xs:pb-0"
+        className="px-4 grid gap-2 xxs:gap-3 xs:gap-4 pb-16 xs:pb-0 grid-cols-2 xxs:grid-cols-3"
         style={{
           gridTemplateColumns: `repeat( ${posterItemCount}, 1fr)`,
         }}>
         {data.map((item, id) => (
-          <PosterItem
-            key={id}
-            item={item}
-            // type={posterItemType.filter}
-          />
+          <PosterItem key={id} item={item} />
         ))}
       </div>
     </InfiniteScroll>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import { Play } from "lucide-react";
 import {
   getInitialEpRangeIdx,
@@ -17,6 +17,7 @@ import { AnimeEpisodeType, DetailAnimeInfoType } from "@/types/anime";
 import { useSession } from "next-auth/react";
 import { usePreference } from "@/components/providers/PreferenceProvider";
 import { themes } from "@/theme";
+import { ApiSuccessType } from "@/types/apiResponse";
 
 function EpBtnSheet({
   detailInfo = null,
@@ -51,12 +52,14 @@ function EpBtnSheet({
     if (detailInfo?.id && session) {
       (async () => {
         try {
-          const { data }: { data: number[] } = await axios.get(
+          const { data }: { data: ApiSuccessType<number[]> } = await axios.get(
             `/api/anime/watched-episodes?animeId=${detailInfo.id}`
           );
-          setWatchedEp(data);
+          setWatchedEp(data.data);
         } catch (error) {
-          console.log("error occur while fetching watched ep data :", error);
+          if (isAxiosError(error)) {
+            console.error(error.message);
+          }
         }
       })();
     }

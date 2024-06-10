@@ -1,23 +1,22 @@
 {
   "short_name": "Otaku-io",
-  "name": "Otaku-io: Watch anime for free.",
-  "theme_color": "#000000",
-  "background_color": "#000000",
+  "name": "Otaku-io",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
   "display": "standalone",
   "scope": "/",
   "start_url": "/",
   "description": "Watch anime for free.",
   "icons": [
     {
-      "src": "/images/icon-512x512.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
     },
     {
-      "src": "/images/icon-512x512.png",
-      "type": "image/png",
-      "sizes": "512x512",
-      "purpose": "maskable"
+      "src": "/android-chrome-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png"
     }
   ]
 }

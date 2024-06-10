@@ -116,7 +116,7 @@ export interface DetailAnimeInfoType extends AnimeItemType {
   hasDub?: boolean;
   synonyms?: string[];
   /**
-   * two letter representation of coutnry: e.g JP for japan
+   * two letter representation of country: e.g JP for japan
    */
   isAdult?: boolean;
   isLicensed?: boolean;

@@ -1,6 +1,14 @@
 import connectDB from "@/db/db";
 import { getStreamingLinks } from "@/services/getAnime";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
+import apiSuccess from "@/app/api/_lib/apiSuccess";
+import apiError from "@/app/api/_lib/apiError";
+
+/**
+ * Route: GET /api/anime/streaming-links/:epId
+ * Description: To get anime episode streaming links.
+ * Request Param(Dynamic EpId param) -(Required).
+ */
 
 export async function GET(
   _: NextRequest,
@@ -9,11 +17,11 @@ export async function GET(
   try {
     await connectDB();
     const data = await getStreamingLinks(params.EpId);
-    return NextResponse.json(data, { status: 200 });
+    return apiSuccess({
+      data,
+      message: "Successfully fetched streaming urls.",
+    });
   } catch (error) {
-    return NextResponse.json(
-      { error: "Something went wrong." },
-      { status: 500 }
-    ); // Return error response
+    return apiError();
   }
 }

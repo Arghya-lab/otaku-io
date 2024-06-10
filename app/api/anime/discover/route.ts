@@ -1,6 +1,24 @@
+import { NextRequest } from "next/server";
 import { advancedSearch } from "@/services/getAnime";
-import { NextRequest, NextResponse } from "next/server";
+import apiError from "@/app/api/_lib/apiError";
+import apiSuccess from "@/app/api/_lib/apiSuccess";
 
+/**
+ * Route: GET /api/anime/discover
+ * Description: To get discover animes.
+ * Request Query:
+ *   - query (optional): query to search for animes.
+ *   - page (optional): Current page no for anime result.
+ *   - perPage (optional): Per page result for anime.
+ *   - type (optional): Type of anime anime.
+ *   - genres (optional): Genres for anime anime result.
+ *   - id (optional): Id of the anime to get that particular result.
+ *   - format (optional): Format of anime.
+ *   - sort (optional): Sorting order of anime.
+ *   - status (optional): Current status of anime.
+ *   - year (optional): Year of anime published.
+ *   - season (optional): Season of anime published.
+ */
 export async function GET(req: NextRequest) {
   try {
     const query = req.nextUrl.searchParams.get("query") ?? undefined;
@@ -16,7 +34,7 @@ export async function GET(req: NextRequest) {
     const status = req.nextUrl.searchParams.get("status") ?? undefined;
     const year =
       parseInt(req.nextUrl.searchParams.get("year") ?? "", 10) ?? undefined;
-    const season = req.nextUrl.searchParams.get("query") ?? undefined;
+    const season = req.nextUrl.searchParams.get("season") ?? undefined;
 
     const data = await advancedSearch({
       query,
@@ -31,8 +49,9 @@ export async function GET(req: NextRequest) {
       year,
       season,
     });
-    return NextResponse.json(data); // Return JSON data
+
+    return apiSuccess({ data, message: "Successfully fetched animes." });
   } catch (error) {
-    return NextResponse.json({ error: "Something went wrong" }); // Return error response
+    return apiError();
   }
 }

@@ -10,9 +10,9 @@ export const getUserBookmarkAnime = async () => {
     if (!userEmail) return null;
 
     const user = await User.findOne({ email: userEmail });
-    const animeIds: string[] = user.bookmarks;
+    if (!user) throw new Error("Unauthorize access denied.");
 
-    return animeIds;
+    return user.bookmarks;
   } catch {
     throw new Error("Error occur while fetching bookmarked animes.");
   }

@@ -1,37 +1,43 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { getAnimesByIds } from "@/services/getAnimesByIds";
 import { getUserBookmarkAnime } from "@/services/getUserBookmarkAnimeIds";
 import connectDB from "@/db/db";
+import { validateSession } from "@/app/api/_lib/validateSession";
+import apiError from "@/app/api/_lib/apiError";
+import apiSuccess from "@/app/api/_lib/apiSuccess";
 
+/**
+ * Route: GET /api/anime/library-animes
+ * Description: To get user's bookmark marked anime.
+ * Request Query:
+ *   - page (optional): result to get for page.
+ *   - perPage (optional): perPage result to get.
+ * Note: user have to login.
+ */
 export async function GET(req: NextRequest) {
   try {
     await connectDB();
     const url = new URL(req.url);
-    const pageNo = Number(url.searchParams.get("pageNo")) || 1;
+    const page = Number(url.searchParams.get("page")) || 1;
     let perPage = Number(url.searchParams.get("perPage")) || 20;
     if (perPage > 20) perPage = 20;
 
+    await validateSession();
     const bookmarkAnimeIds = await getUserBookmarkAnime();
     if (!bookmarkAnimeIds) {
-      return NextResponse.json(
-        { error: "UNauthorize access." },
-        { status: 400 }
-      );
+      return apiError({ errorMessage: "Unauthorize access.", status: 400 });
     }
 
     const results = await getAnimesByIds(
-      bookmarkAnimeIds.slice((pageNo - 1) * perPage, pageNo * perPage)
+      bookmarkAnimeIds.slice((page - 1) * perPage, page * perPage)
     );
-    const hasNextPage = bookmarkAnimeIds.length > pageNo * perPage;
+    const hasNextPage = bookmarkAnimeIds.length > page * perPage;
 
-    return NextResponse.json(
-      { results, hasNextPage, currentPage: pageNo },
-      { status: 200 }
-    );
+    return apiSuccess({
+      data: { results, hasNextPage, currentPage: page },
+      message: "Successfully fetched user bookmarked animes.",
+    });
   } catch (error) {
-    return NextResponse.json(
-      { error: "Something went wrong." },
-      { status: 500 }
-    ); // Return error response
+    return apiError();
   }
 }

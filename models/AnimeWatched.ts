@@ -1,19 +1,11 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Model } from "mongoose";
 
-// Interface for AnimeWatched document
-export interface AnimeWatchedModelType {
-  email: string;
-  animeId: string;
-  episodes: EpisodeWatchedModelType[];
-  lastWatched: number;
-}
-
-interface EpisodeWatchedModelType {
+export interface IEpisodeWatched extends Document {
   episodeNo: number;
   watchedTill: number;
 }
 
-const episodeWatched = new mongoose.Schema<EpisodeWatchedModelType>({
+const episodeWatched = new mongoose.Schema<IEpisodeWatched>({
   episodeNo: {
     type: Number,
     required: true,
@@ -24,7 +16,17 @@ const episodeWatched = new mongoose.Schema<EpisodeWatchedModelType>({
   },
 });
 
-const animeWatchedSchema = new mongoose.Schema<AnimeWatchedModelType>(
+// Interface for AnimeWatched document
+export interface IAnimeWatched extends Document {
+  email: string;
+  animeId: string;
+  episodes: IEpisodeWatched[];
+  lastWatched: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const animeWatchedSchema = new mongoose.Schema<IAnimeWatched>(
   {
     email: {
       type: String,
@@ -50,7 +52,7 @@ const animeWatchedSchema = new mongoose.Schema<AnimeWatchedModelType>(
 
 // Export the model
 const AnimeWatched =
-  mongoose.models.AnimeWatched ||
-  mongoose.model<AnimeWatchedModelType>("AnimeWatched", animeWatchedSchema);
+  (mongoose.models.AnimeWatched as Model<IAnimeWatched>) ||
+  mongoose.model<IAnimeWatched>("AnimeWatched", animeWatchedSchema);
 
 export default AnimeWatched;

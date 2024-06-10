@@ -11,6 +11,7 @@ import Player from "./Player";
 import { AnimeEpisodeType, DetailAnimeInfoType } from "@/types/anime";
 import { themes } from "@/theme";
 import { usePreference } from "@/components/providers/PreferenceProvider";
+import { ApiSuccessType } from "@/types/apiResponse";
 
 function VideoWatchPage({
   params,
@@ -47,14 +48,12 @@ function VideoWatchPage({
         }
       } else {
         try {
-          const res = await axios.get(
-            `/api/detail-info/${animeId}?dub=${isDub}`
-          );
-          const data: DetailAnimeInfoType = res.data;
+          const { data }: { data: ApiSuccessType<DetailAnimeInfoType> } =
+            await axios.get(`/api/anime/detail-info/${animeId}?dub=${isDub}`);
 
-          setDetailInfo(data);
-          if (data?.episodes) {
-            setEpisode(data.episodes.find((ep) => ep.id === epId) ?? null);
+          setDetailInfo(data.data);
+          if (data.data?.episodes) {
+            setEpisode(data.data.episodes.find((ep) => ep.id === epId) ?? null);
           }
         } catch (error) {
           if (isAxiosError(error)) {

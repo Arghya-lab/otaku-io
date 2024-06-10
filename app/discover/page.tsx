@@ -1,7 +1,7 @@
-import Filter from "@/app/discover/Filter";
-import InfiniteDiscoverScroll from "@/app/discover/InfiniteDiscoverScroll";
 import SideNavbar from "@/components/SideNavbar";
 import TopNavbar from "@/components/TopNavbar";
+import Filter from "@/app/discover/Filter";
+import InfiniteDiscoverScroll from "@/app/discover/InfiniteDiscoverScroll";
 
 async function DiscoverPage() {
   return (

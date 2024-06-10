@@ -7,7 +7,9 @@ const usePosterItemCount = () => {
     const updatePosterItemCount = () => {
       const screenWidth = window.innerWidth;
 
-      if (screenWidth < 640) {
+      if (screenWidth < 425) {
+        setPosterItemCount(2);
+      } else if (screenWidth < 640) {
         setPosterItemCount(3);
       } else if (screenWidth < 800) {
         setPosterItemCount(4);

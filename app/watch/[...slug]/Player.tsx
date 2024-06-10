@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import ReactPlayer from "react-player";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import screenfull from "screenfull";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -17,6 +17,7 @@ import PlayerLoader from "./PlayerLoader";
 import reducer from "./reducerFunc";
 import { AnimeStreamingSourceType, DetailAnimeInfoType } from "@/types/anime";
 import { ScreenFullTypeEnum } from "@/types/player";
+import { ApiSuccessType } from "@/types/apiResponse";
 
 let count = 0;
 
@@ -116,22 +117,23 @@ function Player({
   useEffect(() => {
     (async () => {
       try {
-        const { data }: { data: AnimeStreamingSourceType } = await axios.get(
-          `/api/anime/streaming-links/${epId}`
-        );
+        const { data }: { data: ApiSuccessType<AnimeStreamingSourceType> } =
+          await axios.get(`/api/anime/streaming-links/${epId}`);
         dispatch({
           type: "updateStreamingLinks",
           payload: {
-            sources: data.sources,
+            sources: data.data.sources,
             currentSource:
-              data.sources.find(
+              data.data.sources.find(
                 (source) => source.quality === state.playbackQuality
-              ) || data.sources[0],
+              ) || data.data.sources[0],
             playing: isAutoPlayEnabled,
           },
         });
       } catch (error) {
-        console.error(error);
+        if (isAxiosError(error)) {
+          console.log(error.message);
+        }
       }
     })();
 

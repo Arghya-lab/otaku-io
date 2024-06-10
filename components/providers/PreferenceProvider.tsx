@@ -8,11 +8,12 @@ import React, {
   ReactNode,
 } from "react";
 import { useSession } from "next-auth/react";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import { themes } from "@/theme";
 import { useCookies } from "next-client-cookies";
 import { useRouter } from "next/navigation";
 import { PreferenceType } from "@/types/States";
+import { PreferenceApiSuccessResType } from "@/types/apiResponse";
 
 export const defaultPreference = {
   themeId: 1,
@@ -63,12 +64,16 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchPreferences = async () => {
     try {
-      const res = await axios.get("/api/preference");
+      const { data }: { data: PreferenceApiSuccessResType } = await axios.get(
+        "/api/preference"
+      );
 
-      setPreferences(res.data);
-      localStorage.setItem("preferences", JSON.stringify(res.data));
-    } catch (err) {
-      console.warn("Error occur while fetching data from server error ::", err);
+      setPreferences(data.data);
+      localStorage.setItem("preferences", JSON.stringify(data.data));
+    } catch (error) {
+      if (isAxiosError(error)) {
+        console.error(error.message);
+      }
     }
   };
 
@@ -94,18 +99,26 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
     updateType: UpdateTypeEnum,
     payload: string | number | undefined | void = undefined
   ) => {
-    try {
-      if (session) {
-        let data;
+    if (session) {
+      let preferencesData;
 
+      try {
         if (updateType === UpdateTypeEnum.TOGGLE_AUTO_NEXT) {
-          ({ data } = await axios.patch("/api/preference/auto-next"));
+          const { data }: { data: PreferenceApiSuccessResType } =
+            await axios.patch("/api/preference/auto-next");
+          preferencesData = data.data;
         } else if (updateType === UpdateTypeEnum.TOGGLE_AUTO_PLAY) {
-          ({ data } = await axios.patch("/api/preference/auto-play"));
+          const { data }: { data: PreferenceApiSuccessResType } =
+            await axios.patch("/api/preference/auto-play");
+          preferencesData = data.data;
         } else if (updateType === UpdateTypeEnum.TOGGLE_AUTO_SKIP) {
-          ({ data } = await axios.patch("/api/preference/auto-skip"));
+          const { data }: { data: PreferenceApiSuccessResType } =
+            await axios.patch("/api/preference/auto-skip");
+          preferencesData = data.data;
         } else if (updateType === UpdateTypeEnum.TOGGLE_IS_DUB) {
-          ({ data } = await axios.patch("/api/preference/isDub"));
+          const { data }: { data: PreferenceApiSuccessResType } =
+            await axios.patch("/api/preference/isDub");
+          preferencesData = data.data;
         } else if (updateType === UpdateTypeEnum.CHANGE_PLAYBACK_QUALITY) {
           if (
             !payload ||
@@ -113,17 +126,22 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
           ) {
             console.error("Error: invalid preference update payload.");
           } else {
-            ({ data } = await axios.patch("/api/preference/playback-quality", {
-              playbackQuality: payload.toString(),
-            }));
+            const { data }: { data: PreferenceApiSuccessResType } =
+              await axios.patch("/api/preference/playback-quality", {
+                playbackQuality: payload.toString(),
+              });
+            preferencesData = data.data;
           }
         } else if (updateType === UpdateTypeEnum.CHANGE_SEEK_SECONDS) {
           if (!payload || ![5, 10, 15, 20].includes(Number(payload))) {
             console.error("Error: invalid preference update payload.");
           } else {
-            ({ data } = await axios.patch("/api/preference/seek-seconds", {
-              seekSeconds: Number(payload),
-            }));
+            const { data }: { data: PreferenceApiSuccessResType } =
+              await axios.patch("/api/preference/seek-seconds", {
+                seekSeconds: Number(payload),
+              });
+            preferencesData = data.data;
+            preferencesData = data.data;
           }
         } else if (updateType === UpdateTypeEnum.CHANGE_THEME_ID) {
           payload = Number(payload);
@@ -135,68 +153,69 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
               expires: 1000 * 60 * 60 * 24 * 365,
               path: "/",
             }); // Maximum value: 2147483647
-            ({ data } = await axios.patch("/api/preference/themeid", {
-              themeId: payload,
-            }));
+            const { data }: { data: PreferenceApiSuccessResType } =
+              await axios.patch("/api/preference/themeid", {
+                themeId: payload,
+              });
+            preferencesData = data.data;
             router.refresh();
           }
         } else {
           console.error("Error: invalid preference update type.");
         }
+      } catch (error) {
+        console.error("Error updating preferences:", error);
+      }
+      if (preferencesData) {
+        setPreferences(preferencesData);
+        localStorage.setItem("preferences", JSON.stringify(preferencesData));
+      }
+    } else {
+      let data = preferences;
 
-        if (data) {
-          setPreferences(data);
-          localStorage.setItem("preferences", JSON.stringify(data));
+      if (updateType === UpdateTypeEnum.TOGGLE_AUTO_NEXT) {
+        data = { ...data, autoNext: !data.autoNext };
+      } else if (updateType === UpdateTypeEnum.TOGGLE_AUTO_PLAY) {
+        data = { ...data, autoPlay: !data.autoPlay };
+      } else if (updateType === UpdateTypeEnum.TOGGLE_AUTO_SKIP) {
+        data = { ...data, autoSkip: !data.autoSkip };
+      } else if (updateType === UpdateTypeEnum.TOGGLE_IS_DUB) {
+        data = { ...data, isDub: !data.isDub };
+      } else if (updateType === UpdateTypeEnum.CHANGE_PLAYBACK_QUALITY) {
+        if (
+          !payload ||
+          !["360p", "480p", "720p", "1080p"].includes(payload.toString())
+        ) {
+          console.error("Error: invalid preference update payload.");
+        }
+        if (typeof payload === "string") {
+          data = { ...data, playbackQuality: payload };
+        }
+      } else if (updateType === UpdateTypeEnum.CHANGE_SEEK_SECONDS) {
+        if (!payload || ![5, 10, 15, 20].includes(Number(payload))) {
+          console.error("Error: invalid preference update payload.");
+        } else {
+          data = { ...data, seekSeconds: Number(payload) };
+        }
+      } else if (updateType === UpdateTypeEnum.CHANGE_THEME_ID) {
+        payload = Number(payload);
+
+        if (!payload || payload < 1 || payload > themes.length) {
+          console.error("Error: invalid preference update payload.");
+        } else {
+          cookies.set("themeId", payload.toString(), {
+            expires: 1000 * 60 * 60 * 24 * 365,
+            path: "/",
+          }); // Maximum value: 2147483647
+          router.refresh();
+
+          data = { ...data, themeId: Number(payload) };
         }
       } else {
-        let data = preferences;
-
-        if (updateType === UpdateTypeEnum.TOGGLE_AUTO_NEXT) {
-          data = { ...data, autoNext: !data.autoNext };
-        } else if (updateType === UpdateTypeEnum.TOGGLE_AUTO_PLAY) {
-          data = { ...data, autoPlay: !data.autoPlay };
-        } else if (updateType === UpdateTypeEnum.TOGGLE_AUTO_SKIP) {
-          data = { ...data, autoSkip: !data.autoSkip };
-        } else if (updateType === UpdateTypeEnum.TOGGLE_IS_DUB) {
-          data = { ...data, isDub: !data.isDub };
-        } else if (updateType === UpdateTypeEnum.CHANGE_PLAYBACK_QUALITY) {
-          if (
-            !payload ||
-            !["360p", "480p", "720p", "1080p"].includes(payload.toString())
-          ) {
-            console.error("Error: invalid preference update payload.");
-          }
-          if (typeof payload === "string") {
-            data = { ...data, playbackQuality: payload };
-          }
-        } else if (updateType === UpdateTypeEnum.CHANGE_SEEK_SECONDS) {
-          if (!payload || ![5, 10, 15, 20].includes(Number(payload))) {
-            console.error("Error: invalid preference update payload.");
-          } else {
-            data = { ...data, seekSeconds: Number(payload) };
-          }
-        } else if (updateType === UpdateTypeEnum.CHANGE_THEME_ID) {
-          payload = Number(payload);
-
-          if (!payload || payload < 1 || payload > themes.length) {
-            console.error("Error: invalid preference update payload.");
-          } else {
-            cookies.set("themeId", payload.toString(), {
-              expires: 1000 * 60 * 60 * 24 * 365,
-              path: "/",
-            }); // Maximum value: 2147483647
-            router.refresh();
-
-            data = { ...data, themeId: Number(payload) };
-          }
-        } else {
-          console.error("Error: invalid preference update type.");
-        }
-        localStorage.setItem("preferences", JSON.stringify(data));
-        setPreferences(data);
+        console.error("Error: invalid preference update type.");
       }
-    } catch (error) {
-      console.error("Error updating preferences:", error);
+      localStorage.setItem("preferences", JSON.stringify(data));
+      setPreferences(data);
     }
   };
 

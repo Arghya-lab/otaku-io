@@ -1,9 +1,10 @@
-// import axios from "axios";
+// import axios, { isAxiosError } from "axios";
 
 // export const setPreference = async () => {
 //   try {
-//     const res = await axios.get("/api/preference");
-//     const data = res.data;
+//     const { data }: { data: PreferenceApiSuccessResType } = await axios.get(
+//       "/api/preference"
+//     );
 //     localStorage.setItem("autoNext", JSON.stringify(data.autoNext));
 //     localStorage.setItem("autoPlay", JSON.stringify(data.autoPlay));
 //     localStorage.setItem("autoSkip", JSON.stringify(data.autoSkip));
@@ -14,7 +15,9 @@
 //     );
 //     localStorage.setItem("seekSeconds", JSON.stringify(data.seekSeconds));
 //   } catch (error) {
-//     console.error(error.message);
+//     if (isAxiosError(error)) {
+//       console.error(error.message);
+//     }
 //   }
 // };
 
@@ -28,5 +31,5 @@
 //   );
 //   const seekSeconds = JSON.parse(localStorage.getItem("seekSeconds") || "");
 
-//   return
+//   return;
 // };

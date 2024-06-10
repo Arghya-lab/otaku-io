@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import axios, { AxiosError } from "axios";
+import axios, { isAxiosError } from "axios";
 import { Bookmark } from "lucide-react";
+import { ApiSuccessType } from "@/types/apiResponse";
 
 function BookmarkBtn({
   userBookmarks,
@@ -22,13 +23,17 @@ function BookmarkBtn({
 
   const handleToggleBookmark = async () => {
     try {
-      const { data } = await axios.patch("/api/bookmark/toggle", {
-        animeId,
-      });
-      setBookmarks(data);
+      const { data }: { data: ApiSuccessType<string[]> } = await axios.patch(
+        "/api/bookmark/toggle",
+        {
+          animeId,
+        }
+      );
+      setBookmarks(data.data);
     } catch (error) {
-      const axiosErr = error as AxiosError;
-      console.log(axiosErr.message);
+      if (isAxiosError(error)) {
+        console.log(error.message);
+      }
     }
   };
 

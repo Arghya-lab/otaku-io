@@ -1,7 +1,7 @@
 export const secToMinSec = (s: number) => {
   if (Math.floor(s / 60) > 60) {
     return (
-      convertToTwoDigits(Math.floor(s / (60 * 60))) +
+      Math.floor(s / (60 * 60)) +
       "." +
       convertToTwoDigits(Math.floor((s % (60 * 60)) / 60)) +
       "." +

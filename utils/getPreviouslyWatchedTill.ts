@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Session } from "next-auth";
 import { AnimeWatchedType } from "@/types/States";
+import { ApiSuccessType } from "@/types/apiResponse";
 
 export default async function getPreviouslyWatchedTill(
   animeId: string,
@@ -12,15 +13,15 @@ export default async function getPreviouslyWatchedTill(
       const {
         data,
       }: {
-        data: {
+        data: ApiSuccessType<{
           animeId: string;
           episodeNo: string;
           watchedTill: number;
-        };
+        }>;
       } = await axios.get(
         `/api/anime/watched-till?animeId=${animeId}&episodeNo=${epNo}`
       );
-      return data.watchedTill;
+      return data.data.watchedTill;
     } catch {
       return OfflinePreviouslyWatchedTill(animeId, epNo);
     }

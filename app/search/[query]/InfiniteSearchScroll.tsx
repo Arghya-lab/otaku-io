@@ -1,14 +1,15 @@
 "use client";
 
+import { useState } from "react";
+import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LineWave } from "react-loader-spinner";
 import PosterItem from "@/components/PosterItem";
 import { themes } from "@/theme";
-import { useState } from "react";
 import usePosterItemCount from "@/hooks/usePosterItemCount";
-import axios from "axios";
 import { usePreference } from "@/components/providers/PreferenceProvider";
-import { AnimeItemType } from "@/types/anime";
+import { AnimeItemType, AnimeSearchResType } from "@/types/anime";
+import { ApiSuccessType } from "@/types/apiResponse";
 
 function InfiniteSearchScroll({
   query,
@@ -20,7 +21,7 @@ function InfiniteSearchScroll({
   hasNextPage: boolean;
 }) {
   const { themeId } = usePreference();
-  const theme = themes.find(theme=>theme.id===themeId) || themes[0];
+  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
 
   const posterItemCount = usePosterItemCount();
 
@@ -30,29 +31,27 @@ function InfiniteSearchScroll({
 
   const handleFetchMoreData = async () => {
     try {
-      const response = await axios.get(`/api/search`, {
-        timeout: 15000,
-        params: {
-          page: pageNo + 1,
-          query,
-        },
-      });
+      const { data }: { data: ApiSuccessType<AnimeSearchResType> } =
+        await axios.get(`/api/anime/search`, {
+          timeout: 15000,
+          params: {
+            page: pageNo + 1,
+            query,
+          },
+        });
 
-      const { currentPage, hasNextPage, results } = response.data;
-
-      setData((prev) => [...prev, ...results]);
-      setHasMore(hasNextPage);
-      setPageNo(currentPage);
+      setData((prev) => [...prev, ...data.data.results]);
+      setHasMore(data.data.hasNextPage || false);
+      setPageNo(data.data.currentPage || pageNo + 1);
     } catch (error) {
       console.error("Error fetching more data:", error);
-      // Handle other error scenarios as needed (e.g., display error message to user)
     }
   };
 
   return (
     <InfiniteScroll
       className="h-full"
-      dataLength={data.length} //This is important field to render the next data
+      dataLength={data.length}
       next={handleFetchMoreData}
       hasMore={hasMore}
       loader={
@@ -67,16 +66,12 @@ function InfiniteSearchScroll({
       }
       endMessage={<p style={{ textAlign: "center" }}>nothing to show more</p>}>
       <div
-        className="px-2 xxs:px-4 grid pb-16 xs:pb-0"
+        className="px-4 grid gap-2 xxs:gap-3 xs:gap-4 pb-16 xs:pb-0 grid-cols-2 xxs:grid-cols-3"
         style={{
           gridTemplateColumns: `repeat( ${posterItemCount}, 1fr)`,
         }}>
         {data.map((item, id) => (
-          <PosterItem
-            key={id}
-            item={item}
-            // type={posterItemType.filter}
-          />
+          <PosterItem key={id} item={item} />
         ))}
       </div>
     </InfiniteScroll>

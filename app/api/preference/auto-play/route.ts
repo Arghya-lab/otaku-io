@@ -1,27 +1,40 @@
 import Preference from "@/models/Preference";
-import { NextResponse } from "next/server";
-import { getSessionEmail } from "@/app/api/_lib/getSessionEmail";
+import { validateSession } from "@/app/api/_lib/validateSession";
 import { preferenceSelector } from "@/app/api/_lib/preferenceSelector";
 import connectDB from "@/db/db";
+import apiError from "@/app/api/_lib/apiError";
+import apiSuccess from "@/app/api/_lib/apiSuccess";
 
+/**
+ * Route: PATCH /api/preference/auto-play
+ * Description: To update user's auto play for next episode type.
+ * Note: user have to login.
+ */
 export async function PATCH() {
   try {
     await connectDB();
-    
-    const userEmail = await getSessionEmail();
 
-    const userPreference = await Preference.findOne({ email: userEmail });
+    const { email } = await validateSession();
+
+    const userPreference = await Preference.findOne({ email });
+    if (!userPreference) {
+      return apiError({ errorMessage: "Some thing went wrong.", status: 400 });
+    }
+
     const updatedPreference = await Preference.findByIdAndUpdate(
       userPreference._id,
       { autoPlay: !userPreference.autoPlay },
       { new: true }
     ).select(preferenceSelector);
-    
-    return NextResponse.json(updatedPreference, { status: 200 });
+    if (!updatedPreference) {
+      return apiError({ errorMessage: "Some thing went wrong.", status: 400 });
+    }
+
+    return apiSuccess({
+      data: updatedPreference,
+      message: "Successfully updated user preference.",
+    });
   } catch (error) {
-    return NextResponse.json(
-      { error: "Something went wrong." },
-      { status: 500 }
-    ); // Return error response
+    return apiError();
   }
 }

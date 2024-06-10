@@ -1,5 +1,6 @@
 import "server-only";
 
+import axios from "axios";
 import { ANIME, META, PROVIDERS_LIST } from "@consumet/extensions";
 import Anilist from "@consumet/extensions/dist/providers/meta/anilist";
 import NineAnime from "@consumet/extensions/dist/providers/anime/9anime";
@@ -11,7 +12,6 @@ import {
   PopularAnimeResType,
   TrendingAnimeResType,
 } from "@/types/anime";
-import axios from "axios";
 
 const generateAnilistMeta = (
   provider: string | undefined = "gogoanime"
@@ -45,7 +45,10 @@ const generateAnilistMeta = (
   }
 };
 
-// Query Parameters for getTrending:  page, perPage
+/**
+ * @param page page number to search for (optional)
+ * @param perPage number of results per page (optional)
+ */
 export const getTrending = async (page = 1, perPage = 10) => {
   try {
     const anilist = generateAnilistMeta();
@@ -60,7 +63,10 @@ export const getTrending = async (page = 1, perPage = 10) => {
   }
 };
 
-// Query Parameters for getPopular:  page, perPage
+/**
+ * @param page page number to search for (optional)
+ * @param perPage number of results per page (optional)
+ */
 export const getPopular = async (page = 1, perPage = 10) => {
   try {
     const anilist = generateAnilistMeta();
@@ -75,12 +81,20 @@ export const getPopular = async (page = 1, perPage = 10) => {
   }
 };
 
-// Query Parameters for advancedSearch:
-// query, type = "ANIME", page, perPage, year
-// format = enum["TV", "TV_SHORT", "OVA", "ONA", "MOVIE", "SPECIAL", "MUSIC"]
-// sort = ["POPULARITY_DESC", "POPULARITY", "TRENDING_DESC", "TRENDING", "UPDATED_AT_DESC", "UPDATED_AT", "START_DATE_DESC", "START_DATE", "END_DATE_DESC", "END_DATE", "SCORE_DESC", "SCORE", "TITLE_ROMAJI", "TITLE_ROMAJI_DESC"]   => multiple accepted & should be inside array
-// genres = [ "Action", "Adventure", "Comedy", "Drama", "Fantasy", "Horror", "Mecha", "Music", "Mystery", "Psychological", "Romance", "Sci-Fi", "Slice of Life", "Sports", "Supernatural", "Thriller" ]   => multiple accepted & should be inside array
-// status = enum[ "RELEASING", "NOT_YET_RELEASED", "FINISHED", "CANCELLED", "HIATUS", ]
+/**
+ *
+ * @param query Search query (optional)
+ * @param type Media type (optional) (default: `ANIME`) (options: `ANIME`, `MANGA`)
+ * @param page Page number (optional)
+ * @param perPage Number of results per page (optional) (default: `20`) (max: `50`)
+ * @param format Format (optional) (options: `TV`, `TV_SHORT`, `MOVIE`, `SPECIAL`, `OVA`, `ONA`, `MUSIC`)
+ * @param sort Sort (optional, as array multiple accepted) (Default: `[POPULARITY_DESC, SCORE_DESC]`) (options: `POPULARITY_DESC`, `POPULARITY`, `TRENDING_DESC`, `TRENDING`, `UPDATED_AT_DESC`, `UPDATED_AT`, `START_DATE_DESC`, `START_DATE`, `END_DATE_DESC`, `END_DATE`, `FAVOURITES_DESC`, `FAVOURITES`, `SCORE_DESC`, `SCORE`, `TITLE_ROMAJI_DESC`, `TITLE_ROMAJI`, `TITLE_ENGLISH_DESC`, `TITLE_ENGLISH`, `TITLE_NATIVE_DESC`, `TITLE_NATIVE`, `EPISODES_DESC`, `EPISODES`, `ID`, `ID_DESC`)
+ * @param genres Genres (optional, as array multiple accepted) (options: `Action`, `Adventure`, `Cars`, `Comedy`, `Drama`, `Fantasy`, `Horror`, `Mahou Shoujo`, `Mecha`, `Music`, `Mystery`, `Psychological`, `Romance`, `Sci-Fi`, `Slice of Life`, `Sports`, `Supernatural`, `Thriller`)
+ * @param id anilist Id (optional)
+ * @param year Year (optional) e.g. `2022`
+ * @param status Status (optional) (options: `RELEASING`, `FINISHED`, `NOT_YET_RELEASED`, `CANCELLED`, `HIATUS`)
+ * @param season Season (optional) (options: `WINTER`, `SPRING`, `SUMMER`, `FALL`)
+ */
 export const advancedSearch = async ({
   query,
   page,
@@ -137,7 +151,12 @@ export const advancedSearch = async ({
   }
 };
 
-export const getDetailInfo = async (id: string, isDub: boolean = false) => {
+/**
+ *
+ * @param id Anime id
+ * @param dub to get dubbed episodes (optional) set to `true` to get dubbed episodes. **ONLY WORKS FOR GOGOANIME**
+ */
+export const getDetailInfo = async (id: string, isDub?: boolean) => {
   try {
     // const provider = (request.query as { provider?: string }).provider;
     let anilist = generateAnilistMeta();
@@ -152,10 +171,15 @@ export const getDetailInfo = async (id: string, isDub: boolean = false) => {
   }
 };
 
+/**
+ * @param query Search query
+ * @param page Page number (optional)
+ * @param perPage Number of results per page (optional) (default: 30) (max: 50)
+ */
 export const getSearchData = async (
   query: string,
-  page: number | undefined = 1,
-  perPage: number | undefined = 30
+  page?: number,
+  perPage?: number
 ) => {
   try {
     const anilist = generateAnilistMeta();
@@ -163,7 +187,7 @@ export const getSearchData = async (
     const res = (await anilist.search(
       query,
       page,
-      perPage
+      perPage || 30
     )) as AnimeSearchResType;
     return res;
   } catch {
@@ -171,6 +195,11 @@ export const getSearchData = async (
   }
 };
 
+/**
+ *
+ * @param episodeId Episode id
+ * @param provider The provider to get the episode Ids from (optional) default: `gogoanime` (options: `gogoanime`, `zoro`)
+ */
 export const getStreamingLinks = async (
   episodeId: string,
   provider?: string

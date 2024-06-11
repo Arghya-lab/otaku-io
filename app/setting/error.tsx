@@ -15,13 +15,15 @@ export default function Error({
   return (
     <>
       <h2
-        className="font-poppins text-lg text-center pt-16"
-        style={{ color: theme.textColor }}>
+        className="pt-16 text-center font-poppins text-lg"
+        style={{ color: theme.textColor }}
+      >
         Something went wrong!
       </h2>
       <p
-        className="font-poppins text-md text-center pt-4"
-        style={{ color: theme.textColor }}>
+        className="text-md pt-4 text-center font-poppins"
+        style={{ color: theme.textColor }}
+      >
         {error.message}
       </p>
       {/* <div className="font-nunito flex justify-center pt-4">

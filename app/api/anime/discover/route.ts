@@ -1,7 +1,7 @@
-import { NextRequest } from "next/server";
-import { advancedSearch } from "@/services/getAnime";
 import apiError from "@/app/api/_lib/apiError";
 import apiSuccess from "@/app/api/_lib/apiSuccess";
+import { advancedSearch } from "@/services/getAnime";
+import { NextRequest } from "next/server";
 
 /**
  * Route: GET /api/anime/discover

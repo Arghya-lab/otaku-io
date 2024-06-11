@@ -1,9 +1,9 @@
-import { NextRequest } from "next/server";
-import { getUserWatching } from "@/services/getUserWatching";
-import connectDB from "@/db/db";
-import { validateSession } from "@/app/api/_lib/validateSession";
-import apiSuccess from "@/app/api/_lib/apiSuccess";
 import apiError from "@/app/api/_lib/apiError";
+import apiSuccess from "@/app/api/_lib/apiSuccess";
+import { validateSession } from "@/app/api/_lib/validateSession";
+import connectDB from "@/db/db";
+import { getUserWatching } from "@/services/getUserWatching";
+import { NextRequest } from "next/server";
 
 /**
  * Route: GET /api/anime/history

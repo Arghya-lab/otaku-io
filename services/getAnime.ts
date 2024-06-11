@@ -1,9 +1,5 @@
 import "server-only";
 
-import axios from "axios";
-import { ANIME, META, PROVIDERS_LIST } from "@consumet/extensions";
-import Anilist from "@consumet/extensions/dist/providers/meta/anilist";
-import NineAnime from "@consumet/extensions/dist/providers/anime/9anime";
 import {
   AdvancedAnimeSearchResType,
   AnimeSearchResType,
@@ -12,6 +8,10 @@ import {
   PopularAnimeResType,
   TrendingAnimeResType,
 } from "@/types/anime";
+import { ANIME, META, PROVIDERS_LIST } from "@consumet/extensions";
+import NineAnime from "@consumet/extensions/dist/providers/anime/9anime";
+import Anilist from "@consumet/extensions/dist/providers/meta/anilist";
+import axios from "axios";
 
 const generateAnilistMeta = (
   provider: string | undefined = "gogoanime"

@@ -1,7 +1,7 @@
-import axios from "axios";
-import { Session } from "next-auth";
 import { AnimeWatchedType } from "@/types/States";
 import { ApiSuccessType } from "@/types/apiResponse";
+import axios from "axios";
+import { Session } from "next-auth";
 
 export default async function getPreviouslyWatchedTill(
   animeId: string,

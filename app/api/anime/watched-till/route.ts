@@ -1,10 +1,10 @@
-import { NextRequest } from "next/server";
-import { validateSession } from "@/app/api/_lib/validateSession";
-import AnimeWatched, { IEpisodeWatched } from "@/models/AnimeWatched";
-import connectDB from "@/db/db";
 import apiError from "@/app/api/_lib/apiError";
 import apiSuccess from "@/app/api/_lib/apiSuccess";
+import { validateSession } from "@/app/api/_lib/validateSession";
+import connectDB from "@/db/db";
+import AnimeWatched, { IEpisodeWatched } from "@/models/AnimeWatched";
 import mongoose from "mongoose";
+import { NextRequest } from "next/server";
 
 /**
  * Route: GET /api/anime/watched-till

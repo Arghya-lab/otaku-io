@@ -1,19 +1,19 @@
 "use client";
 
+import { themes } from "@/theme";
+import { DragManager } from "@/utils/dragManager";
+import isMobileDevice from "@/utils/getIsMobileDevice";
+import chroma from "chroma-js";
+import { motion } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import React from "react";
 import {
   ScrollMenu,
   VisibilityContext,
   publicApiType,
 } from "react-horizontal-scrolling-menu";
-import { motion } from "framer-motion";
-import { DragManager } from "@/utils/dragManager";
 import "react-horizontal-scrolling-menu/dist/styles.css";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { usePreference } from "../../components/providers/PreferenceProvider";
-import { themes } from "@/theme";
-import chroma from "chroma-js";
-import isMobileDevice from "@/utils/getIsMobileDevice";
 
 type scrollVisibilityApiType = React.ContextType<typeof VisibilityContext>;
 
@@ -51,7 +51,8 @@ const HorizontalScrollComponent = ({
         // onWheel={onWheel}
         onMouseDown={onMouseDown}
         onMouseUp={onMouseUp}
-        onMouseMove={handleDrag}>
+        onMouseMove={handleDrag}
+      >
         {childComponents}
       </ScrollMenu>
     </div>
@@ -71,7 +72,8 @@ const LeftArrow = React.memo(() => {
     <Arrow
       disabled={isFirstItemVisible}
       onClick={visibility.scrollPrev}
-      className="left absolute z-50 left-4 top-[76px] xs:top-[112px] h-10 w-10 rounded-full flex items-center justify-center">
+      className="left absolute left-4 top-[76px] z-50 flex h-10 w-10 items-center justify-center rounded-full xs:top-[112px]"
+    >
       <ChevronLeft strokeWidth={2.75} color={theme.secondaryColor} />
     </Arrow>
   );
@@ -91,7 +93,8 @@ const RightArrow = React.memo(() => {
     <Arrow
       disabled={isLastItemVisible}
       onClick={visibility.scrollNext}
-      className="right absolute z-50 right-4 top-[112px] h-10 w-10 rounded-full flex items-center justify-center">
+      className="right absolute right-4 top-[112px] z-50 flex h-10 w-10 items-center justify-center rounded-full"
+    >
       <ChevronRight strokeWidth={2.75} color={theme.secondaryColor} />
     </Arrow>
   );
@@ -129,7 +132,8 @@ const Arrow = ({
       }}
       whileTap={{
         scale: 0.9,
-      }}>
+      }}
+    >
       {children}
     </motion.button>
   );

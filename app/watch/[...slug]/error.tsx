@@ -15,16 +15,18 @@ export default function Error({
   return (
     <>
       <h2
-        className="font-poppins text-lg text-center pt-16"
-        style={{ color: theme.textColor }}>
+        className="pt-16 text-center font-poppins text-lg"
+        style={{ color: theme.textColor }}
+      >
         Something went wrong!
       </h2>
       <p
-        className="font-poppins text-base text-center pt-4"
-        style={{ color: theme.textColor }}>
+        className="pt-4 text-center font-poppins text-base"
+        style={{ color: theme.textColor }}
+      >
         {error.message}
       </p>
-      <div className="font-nunito flex justify-center pt-4">
+      <div className="flex justify-center pt-4 font-nunito">
         <button style={{ color: theme.secondaryColor }} onClick={() => reset()}>
           Try again
         </button>

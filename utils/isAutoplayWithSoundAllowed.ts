@@ -8,5 +8,5 @@ function isAutoplayWithSoundAllowed() {
   // Check if autoplay is allowed by the browser
   const isAllowed = !!(document.documentElement as any)?.autoplayAllowed;
 
-  return isSupported && isAllowed ;
+  return isSupported && isAllowed;
 }

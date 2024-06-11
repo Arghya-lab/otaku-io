@@ -1,7 +1,7 @@
-import { MutableRefObject } from "react";
-import ReactPlayer from "react-player";
 import { usePreference } from "@/components/providers/PreferenceProvider";
 import { PlayerStateType } from "@/types/player";
+import { MutableRefObject } from "react";
+import ReactPlayer from "react-player";
 
 function PlayerSkipBtns({
   state,
@@ -23,7 +23,7 @@ function PlayerSkipBtns({
   };
 
   return (
-    <div className="flex flex-col gap-2 absolute bottom-20 right-4 z-40">
+    <div className="absolute bottom-20 right-4 z-40 flex flex-col gap-2">
       {state.skipTimes.map((skipTime) => {
         if (playerRef.current) {
           const currentlyPlaying = playerRef.current.getCurrentTime();
@@ -43,8 +43,9 @@ function PlayerSkipBtns({
                 currentlyPlaying <= skipTime.endTime && (
                   <div
                     role="button"
-                    className="capitalize text-right px-2 font-nunito text-white rounded-md bg-purple-600 bg-opacity-25 border-2 border-purple-600"
-                    onClick={() => handleSkip(skipTime.endTime)}>
+                    className="rounded-md border-2 border-purple-600 bg-purple-600 bg-opacity-25 px-2 text-right font-nunito capitalize text-white"
+                    onClick={() => handleSkip(skipTime.endTime)}
+                  >
                     skip intro
                   </div>
                 )}
@@ -54,8 +55,9 @@ function PlayerSkipBtns({
                   <div
                     key={skipTime.type}
                     role="button"
-                    className="capitalize text-right px-2 font-nunito text-white rounded-md bg-yellow-300 bg-opacity-25 border-2 border-yellow-300"
-                    onClick={() => handleSkip(skipTime.endTime)}>
+                    className="rounded-md border-2 border-yellow-300 bg-yellow-300 bg-opacity-25 px-2 text-right font-nunito capitalize text-white"
+                    onClick={() => handleSkip(skipTime.endTime)}
+                  >
                     skip outro
                   </div>
                 )}
@@ -65,8 +67,9 @@ function PlayerSkipBtns({
                   <div
                     key={skipTime.type}
                     role="button"
-                    className="capitalize text-right px-2 font-nunito text-white rounded-md bg-lime-600 bg-opacity-25 border-2 border-lime-600"
-                    onClick={() => handleSkip(skipTime.endTime)}>
+                    className="rounded-md border-2 border-lime-600 bg-lime-600 bg-opacity-25 px-2 text-right font-nunito capitalize text-white"
+                    onClick={() => handleSkip(skipTime.endTime)}
+                  >
                     skip mix-intro
                   </div>
                 )}
@@ -76,8 +79,9 @@ function PlayerSkipBtns({
                   <div
                     key={skipTime.type}
                     role="button"
-                    className="capitalize text-right px-2 font-nunito text-white rounded-md bg-orange-400 bg-opacity-25 border-2 border-orange-400"
-                    onClick={() => handleSkip(skipTime.endTime)}>
+                    className="rounded-md border-2 border-orange-400 bg-orange-400 bg-opacity-25 px-2 text-right font-nunito capitalize text-white"
+                    onClick={() => handleSkip(skipTime.endTime)}
+                  >
                     skip mix-outro
                   </div>
                 )}
@@ -87,8 +91,9 @@ function PlayerSkipBtns({
                   <div
                     key={skipTime.type}
                     role="button"
-                    className="capitalize text-right px-2 font-nunito text-white rounded-md bg-blue-500 bg-opacity-25 border b-2order-blue-500"
-                    onClick={() => handleSkip(skipTime.endTime)}>
+                    className="b-2order-blue-500 rounded-md border bg-blue-500 bg-opacity-25 px-2 text-right font-nunito capitalize text-white"
+                    onClick={() => handleSkip(skipTime.endTime)}
+                  >
                     skip recap
                   </div>
                 )}

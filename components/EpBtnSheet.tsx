@@ -1,23 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import axios, { isAxiosError } from "axios";
-import { Play } from "lucide-react";
-import {
-  getInitialEpRangeIdx,
-  mapEpisodes,
-  epSelectableList,
-} from "@/utils/epRangeFunc";
-import Radio from "./ui/Radio";
-import Select from "./ui/Select";
-import EpBtn from "./ui/EpBtn";
-import setDetailInfoAndGetWatchPageLink from "@/utils/setDetailInfoAndGetWatchPageLink";
-import { AnimeEpisodeType, DetailAnimeInfoType } from "@/types/anime";
-import { useSession } from "next-auth/react";
 import { usePreference } from "@/components/providers/PreferenceProvider";
 import { themes } from "@/theme";
+import { AnimeEpisodeType, DetailAnimeInfoType } from "@/types/anime";
 import { ApiSuccessType } from "@/types/apiResponse";
+import {
+  epSelectableList,
+  getInitialEpRangeIdx,
+  mapEpisodes,
+} from "@/utils/epRangeFunc";
+import setDetailInfoAndGetWatchPageLink from "@/utils/setDetailInfoAndGetWatchPageLink";
+import axios, { isAxiosError } from "axios";
+import { Play } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import EpBtn from "./ui/EpBtn";
+import Radio from "./ui/Radio";
+import Select from "./ui/Select";
 
 function EpBtnSheet({
   detailInfo = null,
@@ -98,8 +98,8 @@ function EpBtnSheet({
   return (
     <>
       {/* radio dub / sub btn */}
-      <section className="pb-4 max-w-lg flex items-center justify-between">
-        <div className="flex gap-1 capitalize items-center\">
+      <section className="flex max-w-lg items-center justify-between pb-4">
+        <div className="items-center\\ flex gap-1 capitalize">
           <Radio
             color={detailInfo?.color}
             isWatchPage={isWatchPage}
@@ -123,7 +123,7 @@ function EpBtnSheet({
           isWatchPage ? null : (
             <div
               role="button"
-              className="px-4 py-2 w-36 m-auto my-4 bg-opacity-20 border-2 rounded-[45px] flex justify-center items-center gap-2"
+              className="m-auto my-4 flex w-36 items-center justify-center gap-2 rounded-[45px] border-2 bg-opacity-20 px-4 py-2"
               style={{
                 color: isHovered ? detailInfo?.color || "#fff" : "#fff",
                 borderColor: isHovered ? detailInfo?.color || "#fff" : "#fff",
@@ -135,7 +135,8 @@ function EpBtnSheet({
                 if (detailInfo.episodes) {
                   handleClick(detailInfo.episodes[0]);
                 }
-              }}>
+              }}
+            >
               <p className="text-xl font-medium">Watch</p>
               <Play strokeWidth={3} size={20} />
             </div>
@@ -154,10 +155,11 @@ function EpBtnSheet({
               isWatchPage={isWatchPage}
             />
             <div
-              className="grid gap-4 mt-3 justify-center max-h-64 md:max-h-none overflow-y-auto"
+              className="mt-3 grid max-h-64 justify-center gap-4 overflow-y-auto md:max-h-none"
               style={{
                 gridTemplateColumns: "repeat(auto-fit, minmax(3.5rem, 3.5rem))",
-              }}>
+              }}
+            >
               {episodes.map((episode, id) => (
                 <EpBtn
                   key={id}

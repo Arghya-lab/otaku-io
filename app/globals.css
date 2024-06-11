@@ -13,23 +13,23 @@ body,
 
 @layer components {
   .side-nav-btn {
-    @apply w-16 h-16 mt-2 pt-2 cursor-pointer flex flex-col items-center rounded-[0.75rem] hover:bg-white hover:bg-opacity-20 hover:opacity-85;
+    @apply mt-2 flex h-16 w-16 cursor-pointer flex-col items-center rounded-[0.75rem] pt-2 hover:bg-white hover:bg-opacity-20 hover:opacity-85;
   }
 
   .shortcut-container {
-    @apply flex justify-between items-center pb-4;
+    @apply flex items-center justify-between pb-4;
   }
 
   .shortcut-title {
-    @apply flex-grow flex-shrink basis-1/2;
+    @apply flex-shrink flex-grow basis-1/2;
   }
 
   .shortcut-btn-container {
-    @apply flex-grow flex-shrink basis-1/2 flex justify-center;
+    @apply flex flex-shrink flex-grow basis-1/2 justify-center;
   }
 
   .shortcut-btn {
-    @apply px-2 py-1 min-w-12 text-center rounded shadow-md flex items-center justify-center gap-1 xs:gap-2 flex-row text-xs xs:text-base;
+    @apply flex min-w-12 flex-row items-center justify-center gap-1 rounded px-2 py-1 text-center text-xs shadow-md xs:gap-2 xs:text-base;
   }
 }
 

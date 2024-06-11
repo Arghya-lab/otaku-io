@@ -1,12 +1,12 @@
 "use client";
 
-import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import HorizontalScrollComponent from "@/app/home/HorizontalScrollComponent";
 import PosterItem from "@/components/PosterItem";
-import { AnimeItemType } from "@/types/anime";
 import { usePreference } from "@/components/providers/PreferenceProvider";
 import { themes } from "@/theme";
-import HorizontalScrollComponent from "@/app/home/HorizontalScrollComponent";
+import { AnimeItemType } from "@/types/anime";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 function PosterBoard({
   name,
@@ -22,16 +22,18 @@ function PosterBoard({
     <section className="mt-4 pb-8">
       {/* Header */}
       <div
-        className="mb-1 px-3 xxs:px-4 flex items-center justify-between"
-        style={{ color: theme.textColor }}>
+        className="mb-1 flex items-center justify-between px-3 xxs:px-4"
+        style={{ color: theme.textColor }}
+      >
         <p className="text-2xl capitalize">{name}</p>
         {/* See all btn */}
         <Link
           href={`/discover?sort=${JSON.stringify([
             name === "trending" ? "TRENDING_DESC" : "POPULARITY_DESC",
           ])}`}
-          className="p-2 pl-4 rounded-[45px] flex flex-row gap-2 items-center opacity-65 bg-white bg-opacity-15 hover:bg-opacity-10 hover:opacity-100"
-          style={{ color: theme.textColor }}>
+          className="flex flex-row items-center gap-2 rounded-[45px] bg-white bg-opacity-15 p-2 pl-4 opacity-65 hover:bg-opacity-10 hover:opacity-100"
+          style={{ color: theme.textColor }}
+        >
           <p className="text-[15px]">See All</p>
           <ChevronRight size={24} />
         </Link>

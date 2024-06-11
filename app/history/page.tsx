@@ -1,6 +1,6 @@
-import InfiniteHistoryScroll from "./InfiniteHistoryScroll";
 import { getUserWatching } from "@/services/getUserWatching";
 import { getUserTheme } from "../layout";
+import InfiniteHistoryScroll from "./InfiniteHistoryScroll";
 
 async function HistoryPage() {
   const theme = await getUserTheme();
@@ -17,7 +17,8 @@ async function HistoryPage() {
     <>
       <h2
         className="py-3 pl-8 text-2xl capitalize"
-        style={{ color: theme.textColor }}>
+        style={{ color: theme.textColor }}
+      >
         continue watching
       </h2>
       <InfiniteHistoryScroll

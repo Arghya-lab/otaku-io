@@ -1,5 +1,5 @@
-import InfiniteSearchScroll from "./InfiniteSearchScroll";
 import { getSearchData } from "@/services/getAnime";
+import InfiniteSearchScroll from "./InfiniteSearchScroll";
 
 async function SearchPage({ params }: { params: { query: string } }) {
   const { hasNextPage, results: initialData } = await getSearchData(

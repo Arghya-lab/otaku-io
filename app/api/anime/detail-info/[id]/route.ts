@@ -1,7 +1,7 @@
-import { getDetailInfo } from "@/services/getAnime";
-import { NextRequest } from "next/server";
 import apiError from "@/app/api/_lib/apiError";
 import apiSuccess from "@/app/api/_lib/apiSuccess";
+import { getDetailInfo } from "@/services/getAnime";
+import { NextRequest } from "next/server";
 
 /**
  * Route: GET /api/anime/detail-info/:id

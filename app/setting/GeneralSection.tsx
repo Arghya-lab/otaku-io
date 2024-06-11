@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { Palette } from "lucide-react";
-import Radio from "@/components/ui/Radio";
-import ThemeSelectModal from "./ThemeSelectModal";
-import { themes } from "@/theme";
 import {
   UpdateTypeEnum,
   usePreference,
 } from "@/components/providers/PreferenceProvider";
+import Radio from "@/components/ui/Radio";
+import { themes } from "@/theme";
+import { Palette } from "lucide-react";
+import { useState } from "react";
+import ThemeSelectModal from "./ThemeSelectModal";
 
 function GeneralSection() {
   const { themeId, isDub, updatePreference } = usePreference();
@@ -28,8 +28,8 @@ function GeneralSection() {
   };
 
   return (
-    <section className="flex flex-col gap-2 pb-16 pt-6 border-b border-zinc-500">
-      <h3 className="text-xl pb-6" style={{ color: theme.textColor }}>
+    <section className="flex flex-col gap-2 border-b border-zinc-500 pb-16 pt-6">
+      <h3 className="pb-6 text-xl" style={{ color: theme.textColor }}>
         General
       </h3>
       <div className="flex flex-col gap-2 xs:pl-12">
@@ -42,9 +42,10 @@ function GeneralSection() {
           />
         </div>
         <button
-          className="hover:underline font-nunito w-min text-nowrap flex items-center gap-2"
+          className="flex w-min items-center gap-2 text-nowrap font-nunito hover:underline"
           style={{ color: theme.secondaryColor }}
-          onClick={handleThemeSelectModalOpen}>
+          onClick={handleThemeSelectModalOpen}
+        >
           <Palette size={16} />
           Change theme
         </button>

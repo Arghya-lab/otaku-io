@@ -1,15 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import axios from "axios";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { LineWave } from "react-loader-spinner";
 import PosterItem from "@/components/PosterItem";
-import { themes } from "@/theme";
-import usePosterItemCount from "@/hooks/usePosterItemCount";
 import { usePreference } from "@/components/providers/PreferenceProvider";
+import usePosterItemCount from "@/hooks/usePosterItemCount";
+import { themes } from "@/theme";
 import { AnimeItemType, AnimeSearchResType } from "@/types/anime";
 import { ApiSuccessType } from "@/types/apiResponse";
+import axios from "axios";
+import { useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { LineWave } from "react-loader-spinner";
 
 function InfiniteSearchScroll({
   query,
@@ -55,7 +55,7 @@ function InfiniteSearchScroll({
       next={handleFetchMoreData}
       hasMore={hasMore}
       loader={
-        <div className="w-28 m-auto">
+        <div className="m-auto w-28">
           <LineWave
             visible={true}
             height="200"
@@ -64,12 +64,14 @@ function InfiniteSearchScroll({
           />
         </div>
       }
-      endMessage={<p style={{ textAlign: "center" }}>nothing to show more</p>}>
+      endMessage={<p style={{ textAlign: "center" }}>nothing to show more</p>}
+    >
       <div
-        className="px-4 grid gap-2 xxs:gap-3 xs:gap-4 pb-16 xs:pb-0 grid-cols-2 xxs:grid-cols-3"
+        className="grid grid-cols-2 gap-2 px-4 pb-16 xxs:grid-cols-3 xxs:gap-3 xs:gap-4 xs:pb-0"
         style={{
           gridTemplateColumns: `repeat( ${posterItemCount}, 1fr)`,
-        }}>
+        }}
+      >
         {data.map((item, id) => (
           <PosterItem key={id} item={item} />
         ))}

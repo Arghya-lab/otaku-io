@@ -1,10 +1,10 @@
-import { NextRequest } from "next/server";
-import { getAnimesByIds } from "@/services/getAnimesByIds";
-import { getUserBookmarkAnime } from "@/services/getUserBookmarkAnimeIds";
-import connectDB from "@/db/db";
-import { validateSession } from "@/app/api/_lib/validateSession";
 import apiError from "@/app/api/_lib/apiError";
 import apiSuccess from "@/app/api/_lib/apiSuccess";
+import { validateSession } from "@/app/api/_lib/validateSession";
+import connectDB from "@/db/db";
+import { getAnimesByIds } from "@/services/getAnimesByIds";
+import { getUserBookmarkAnime } from "@/services/getUserBookmarkAnimeIds";
+import { NextRequest } from "next/server";
 
 /**
  * Route: GET /api/anime/library-animes

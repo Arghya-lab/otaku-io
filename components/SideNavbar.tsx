@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import chroma from "chroma-js";
-import { Cog, Compass, Home, LibraryBig } from "lucide-react";
 import useWindowSize from "@/hooks/useWindowSize";
 import { themes } from "@/theme";
+import chroma from "chroma-js";
+import { Cog, Compass, Home, LibraryBig } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 import { usePreference } from "./providers/PreferenceProvider";
 
 function SideNavbar({ pathName }: { pathName: string }) {
@@ -21,16 +21,16 @@ function SideNavbar({ pathName }: { pathName: string }) {
     pathName === "/home"
       ? "Home"
       : pathName === "/discover"
-      ? "Discover"
-      : pathName === "/library"
-      ? "Library"
-      : pathName === "/setting"
-      ? "Setting"
-      : "";
+        ? "Discover"
+        : pathName === "/library"
+          ? "Library"
+          : pathName === "/setting"
+            ? "Setting"
+            : "";
 
   return (
     <div
-      className="xs:w-20 h-16 pb-2 xs:h-auto fixed xs:top-[calc(4rem-0.5px)] left-0 right-0 xs:right-auto bottom-0 z-10 flex xs:flex-col items-center justify-around xs:justify-start"
+      className="fixed bottom-0 left-0 right-0 z-10 flex h-16 items-center justify-around pb-2 xs:right-auto xs:top-[calc(4rem-0.5px)] xs:h-auto xs:w-20 xs:flex-col xs:justify-start"
       style={
         windowWidth < 640
           ? {
@@ -39,7 +39,8 @@ function SideNavbar({ pathName }: { pathName: string }) {
                 .toString(),
             }
           : {}
-      }>
+      }
+    >
       <Link
         href="/home"
         onPointerEnter={() => setHoverBtn("Home")}
@@ -47,16 +48,18 @@ function SideNavbar({ pathName }: { pathName: string }) {
         className={`side-nav-btn ${
           selectedBtn === "Home" ? "opacity-90" : "opacity-50"
         }`}
-        style={{ color: theme.textColor }}>
+        style={{ color: theme.textColor }}
+      >
         <Home
           size={30}
           strokeWidth={1.75}
           style={selectedBtn === "Home" ? { color: theme.secondaryColor } : {}}
         />
         <p
-          className={`text-xs pt-1 opacity-0 font-medium ${
+          className={`pt-1 text-xs font-medium opacity-0 ${
             hoverBtn === "Home" || windowWidth < 640 ? "opacity-100" : ""
-          }`}>
+          }`}
+        >
           Home
         </p>
       </Link>
@@ -67,7 +70,8 @@ function SideNavbar({ pathName }: { pathName: string }) {
         className={`side-nav-btn ${
           selectedBtn === "Discover" ? "opacity-90" : "opacity-50"
         }`}
-        style={{ color: theme.textColor }}>
+        style={{ color: theme.textColor }}
+      >
         <Compass
           size={30}
           strokeWidth={1.75}
@@ -76,9 +80,10 @@ function SideNavbar({ pathName }: { pathName: string }) {
           }
         />
         <p
-          className={`text-xs pt-1 opacity-0 font-medium ${
+          className={`pt-1 text-xs font-medium opacity-0 ${
             hoverBtn === "Discover" || windowWidth < 640 ? "opacity-100" : ""
-          }`}>
+          }`}
+        >
           Discover
         </p>
       </Link>
@@ -89,7 +94,8 @@ function SideNavbar({ pathName }: { pathName: string }) {
         className={`side-nav-btn ${
           selectedBtn === "Library" ? "opacity-90" : "opacity-50"
         }`}
-        style={{ color: theme.textColor }}>
+        style={{ color: theme.textColor }}
+      >
         <LibraryBig
           size={30}
           strokeWidth={1.75}
@@ -98,9 +104,10 @@ function SideNavbar({ pathName }: { pathName: string }) {
           }
         />
         <p
-          className={`text-xs pt-1 opacity-0 font-medium ${
+          className={`pt-1 text-xs font-medium opacity-0 ${
             hoverBtn === "Library" || windowWidth < 640 ? "opacity-100" : ""
-          }`}>
+          }`}
+        >
           Library
         </p>
       </Link>
@@ -111,7 +118,8 @@ function SideNavbar({ pathName }: { pathName: string }) {
         className={`side-nav-btn ${
           selectedBtn === "Setting" ? "opacity-90" : "opacity-50"
         }`}
-        style={{ color: theme.textColor }}>
+        style={{ color: theme.textColor }}
+      >
         <Cog
           size={30}
           strokeWidth={1.75}
@@ -120,9 +128,10 @@ function SideNavbar({ pathName }: { pathName: string }) {
           }
         />
         <p
-          className={`text-xs pt-1 opacity-0 font-medium ${
+          className={`pt-1 text-xs font-medium opacity-0 ${
             hoverBtn === "Setting" || windowWidth < 640 ? "opacity-100" : ""
-          }`}>
+          }`}
+        >
           Setting
         </p>
       </Link>

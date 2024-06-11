@@ -15,10 +15,11 @@ function Chip({
 
   return (
     <div
-      className="w-fit px-3 py-1 rounded-xl text-slate-100"
-      style={{ backgroundColor: shade(color, -1, 0.2).toString() }}>
+      className="w-fit rounded-xl px-3 py-1 text-slate-100"
+      style={{ backgroundColor: shade(color, -1, 0.2).toString() }}
+    >
       {!!name && (
-        <span className="capitalize font-nunito text-lg">{name} : </span>
+        <span className="font-nunito text-lg capitalize">{name} : </span>
       )}
       <span className="font-sans">{value}</span>
     </div>

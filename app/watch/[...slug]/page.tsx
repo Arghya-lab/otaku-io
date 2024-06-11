@@ -1,19 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import htmlParse from "html-react-parser";
-import chroma from "chroma-js";
-import Skeleton from "react-loading-skeleton";
-import axios, { isAxiosError } from "axios";
 import EpBtnSheet from "@/components/EpBtnSheet";
 import TopNavbar from "@/components/TopNavbar";
-import RecommendItem from "./RecommendItem";
-import Player from "./Player";
-import { AnimeEpisodeType, DetailAnimeInfoType } from "@/types/anime";
-import { themes } from "@/theme";
 import { usePreference } from "@/components/providers/PreferenceProvider";
+import { themes } from "@/theme";
+import { AnimeEpisodeType, DetailAnimeInfoType } from "@/types/anime";
 import { ApiSuccessType } from "@/types/apiResponse";
 import getTitle from "@/utils/getTitle";
+import axios, { isAxiosError } from "axios";
+import chroma from "chroma-js";
+import htmlParse from "html-react-parser";
+import { useEffect, useState } from "react";
+import Skeleton from "react-loading-skeleton";
+import Player from "./Player";
+import RecommendItem from "./RecommendItem";
 
 function VideoWatchPage({
   params,
@@ -73,10 +73,10 @@ function VideoWatchPage({
 
   if (!detailInfo || !episode) {
     return (
-      <div className="w-full relative h-full">
+      <div className="relative h-full w-full">
         <TopNavbar />
         <Skeleton
-          className="rounded-md my-4 h-[75vh] w-[90%] m-[5%]"
+          className="m-[5%] my-4 h-[75vh] w-[90%] rounded-md"
           baseColor={chroma(theme.primaryColor).darken(1).toString()}
           highlightColor={chroma(theme.primaryColor).darken(1.5).toString()}
         />
@@ -84,13 +84,13 @@ function VideoWatchPage({
     );
   }
 
-  const title =getTitle(detailInfo.title)
+  const title = getTitle(detailInfo.title);
 
   return (
     <>
       <TopNavbar />
       <div className="flex flex-col md:flex-row">
-        <div className="xxs:px-2 xs:px-6 lg:px-12 pb-8 flex flex-col md:min-w-[700px] md:w-[66%] lg:min-w-[1000px] lg:w-[75%]">
+        <div className="flex flex-col pb-8 xxs:px-2 xs:px-6 md:w-[66%] md:min-w-[700px] lg:w-[75%] lg:min-w-[1000px] lg:px-12">
           <Player
             animeId={animeId}
             title={
@@ -104,13 +104,15 @@ function VideoWatchPage({
             isDub={isDub}
           />
           <h2
-            className="py-4 px-2 xxs:px-0 font-bold font-nunito text-2xl"
-            style={{ color: theme.textColor }}>
+            className="px-2 py-4 font-nunito text-2xl font-bold xxs:px-0"
+            style={{ color: theme.textColor }}
+          >
             {detailInfo?.episodes?.length === 1 ? title ?? "" : episode?.title}
           </h2>
           <p
-            className="pb-4 px-2 xxs:px-0 md:pb-18 lg:pb-12"
-            style={{ color: theme.textColor }}>
+            className="md:pb-18 px-2 pb-4 xxs:px-0 lg:pb-12"
+            style={{ color: theme.textColor }}
+          >
             {htmlParse(episode?.description || "")}
           </p>
           <div className="px-2 xxs:px-0">
@@ -124,22 +126,29 @@ function VideoWatchPage({
         </div>
         <section className="flex flex-col md:pr-6">
           <p
-            className="text-2xl capitalize pt-8 pb-4 px-2 xs:px-6 md:px-0 md:pt-0"
-            style={{ color: theme.textColor }}>
+            className="px-2 pb-4 pt-8 text-2xl capitalize xs:px-6 md:px-0 md:pt-0"
+            style={{ color: theme.textColor }}
+          >
             Recommendations
           </p>
-        {detailInfo?.recommendations ? (
-          <div
-          className="flex-1 grid gap-4 justify-evenly pb-8 px-2 md:p-0 md:pb-8"
-            style={{
-              gridTemplateColumns: "repeat(auto-fit, minmax(16rem, 24rem))",
-            }}>
-            {detailInfo?.recommendations.slice(0, 8).map((recommendation) => (
-              <RecommendItem key={recommendation.id} item={recommendation} />
-              ))}
-          </div>
-        ) : null}
-      </section>
+          {detailInfo?.recommendations ? (
+            <div
+              className="grid flex-1 justify-evenly gap-4 px-2 pb-8 md:p-0 md:pb-8"
+              style={{
+                gridTemplateColumns: "repeat(auto-fit, minmax(16rem, 24rem))",
+              }}
+            >
+              {detailInfo?.recommendations
+                .slice(0, 8)
+                .map((recommendation) => (
+                  <RecommendItem
+                    key={recommendation.id}
+                    item={recommendation}
+                  />
+                ))}
+            </div>
+          ) : null}
+        </section>
       </div>
     </>
   );

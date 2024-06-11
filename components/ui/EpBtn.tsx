@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { shade } from "../../utils/color";
 import { themeEnum, themes } from "@/theme";
-import { usePreference } from "../providers/PreferenceProvider";
 import { AnimeEpisodeType } from "@/types/anime";
 import chroma from "chroma-js";
+import { useState } from "react";
+import { shade } from "../../utils/color";
+import { usePreference } from "../providers/PreferenceProvider";
 
 function EpBtn({
   color = "#000",
@@ -57,8 +57,8 @@ function EpBtn({
             .alpha(0.5)
             .toString()
         : theme.type === themeEnum.DARK
-        ? shade(color, -4, 0.4).toString()
-        : shade(color, 4, 0.4).toString(),
+          ? shade(color, -4, 0.4).toString()
+          : shade(color, 4, 0.4).toString(),
     },
   };
 
@@ -66,28 +66,29 @@ function EpBtn({
     <button
       key={episode?.number}
       disabled={watching && isWatchPage}
-      className="h-7 w-14 flex items-center justify-center rounded-md border-2 opacity-80"
+      className="flex h-7 w-14 items-center justify-center rounded-md border-2 opacity-80"
       style={{
         color: isWatchPage || !watching ? theme.textColor : "#fff",
         backgroundColor: watching
           ? style.bgColor.watching
           : isHovered
-          ? style.bgColor.hovered
-          : watched
-          ? style.bgColor.watched
-          : style.bgColor.default,
+            ? style.bgColor.hovered
+            : watched
+              ? style.bgColor.watched
+              : style.bgColor.default,
         borderColor: watching
           ? style.borderColor.watching
           : isHovered
-          ? style.borderColor.hovered
-          : watched
-          ? style.borderColor.watched
-          : style.borderColor.default,
+            ? style.borderColor.hovered
+            : watched
+              ? style.borderColor.watched
+              : style.borderColor.default,
         transition: "color 0.3s, border-color 0.3s",
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={() => handleClick(episode)}>
+      onClick={() => handleClick(episode)}
+    >
       {episode?.number}
     </button>
   );

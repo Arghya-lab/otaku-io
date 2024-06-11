@@ -1,3 +1,4 @@
+import { PlayerStateType } from "@/types/player";
 import {
   Fragment,
   MouseEvent,
@@ -7,7 +8,6 @@ import {
   useState,
 } from "react";
 import ReactPlayer from "react-player";
-import { PlayerStateType } from "@/types/player";
 
 function VideoLoadedBar({
   state,
@@ -78,22 +78,23 @@ function VideoLoadedBar({
   };
 
   return (
-    <div className="mb-1 xs:mb-2 h-3 flex flex-col justify-center items-center">
+    <div className="mb-1 flex h-3 flex-col items-center justify-center xs:mb-2">
       <div
         ref={sliderRef}
-        className="relative h-1 w-full bg-white bg-opacity-60 rounded-sm cursor-pointer flex items-center"
+        className="relative flex h-1 w-full cursor-pointer items-center rounded-sm bg-white bg-opacity-60"
         onClick={handleSliderClick}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onTouchStart={handleTouchStart}
         onMouseEnter={handleSliderHover}
-        onMouseLeave={handleSliderLeave}>
+        onMouseLeave={handleSliderLeave}
+      >
         <div
-          className="h-full bg-red-500 rounded-sm absolute z-10"
+          className="absolute z-10 h-full rounded-sm bg-red-500"
           style={{ width: `${state?.played * 100}%` }}
         />
         <div
-          className="h-full bg-white bg-opacity-70 rounded-sm absolute top-0 left-0 -z-10"
+          className="absolute left-0 top-0 -z-10 h-full rounded-sm bg-white bg-opacity-70"
           style={{ width: `${state?.loaded * 100}%` }}
         />
         {/* Skip indicator bar */}
@@ -101,7 +102,7 @@ function VideoLoadedBar({
           <Fragment key={skipTime.type}>
             {skipTime.type === "intro" && (
               <div
-                className={`h-1 bg-purple-500 bg-opacity-70 rounded-sm absolute z-20`}
+                className={`absolute z-20 h-1 rounded-sm bg-purple-500 bg-opacity-70`}
                 style={{
                   left: `${(100 * skipTime.startTime) / state.duration}%`,
                   width: `${
@@ -113,7 +114,7 @@ function VideoLoadedBar({
             )}
             {skipTime.type === "outro" && (
               <div
-                className={`h-1 bg-yellow-400 bg-opacity-70 rounded-sm absolute z-20`}
+                className={`absolute z-20 h-1 rounded-sm bg-yellow-400 bg-opacity-70`}
                 style={{
                   left: `${(100 * skipTime.startTime) / state.duration}%`,
                   width: `${
@@ -125,7 +126,7 @@ function VideoLoadedBar({
             )}
             {skipTime.type === "mix-intro" && (
               <div
-                className={`h-1 bg-lime-400 bg-opacity-70 rounded-sm absolute z-20`}
+                className={`absolute z-20 h-1 rounded-sm bg-lime-400 bg-opacity-70`}
                 style={{
                   left: `${(100 * skipTime.startTime) / state.duration}%`,
                   width: `${
@@ -137,7 +138,7 @@ function VideoLoadedBar({
             )}
             {skipTime.type === "mix-outro" && (
               <div
-                className={`h-1 bg-orange-400 bg-opacity-70 rounded-sm absolute z-20`}
+                className={`absolute z-20 h-1 rounded-sm bg-orange-400 bg-opacity-70`}
                 style={{
                   left: `${(100 * skipTime.startTime) / state.duration}%`,
                   width: `${
@@ -149,7 +150,7 @@ function VideoLoadedBar({
             )}
             {skipTime.type === "recap" && (
               <div
-                className={`h-1 bg-blue-500 bg-opacity-70 rounded-sm absolute z-20`}
+                className={`absolute z-20 h-1 rounded-sm bg-blue-500 bg-opacity-70`}
                 style={{
                   left: `${(100 * skipTime.startTime) / state.duration}%`,
                   width: `${

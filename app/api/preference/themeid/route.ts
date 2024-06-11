@@ -1,9 +1,9 @@
-import Preference from "@/models/Preference";
-import { validateSession } from "@/app/api/_lib/validateSession";
-import { preferenceSelector } from "@/app/api/_lib/preferenceSelector";
-import connectDB from "@/db/db";
 import apiError from "@/app/api/_lib/apiError";
 import apiSuccess from "@/app/api/_lib/apiSuccess";
+import { preferenceSelector } from "@/app/api/_lib/preferenceSelector";
+import { validateSession } from "@/app/api/_lib/validateSession";
+import connectDB from "@/db/db";
+import Preference from "@/models/Preference";
 import { themes } from "@/theme";
 
 /**

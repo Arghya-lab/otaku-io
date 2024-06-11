@@ -1,17 +1,17 @@
-import SideNavbar from "@/components/SideNavbar";
-import TopNavbar from "@/components/TopNavbar";
 import Filter from "@/app/discover/Filter";
 import InfiniteDiscoverScroll from "@/app/discover/InfiniteDiscoverScroll";
+import SideNavbar from "@/components/SideNavbar";
+import TopNavbar from "@/components/TopNavbar";
 
 async function DiscoverPage() {
   return (
     <>
       <TopNavbar />
-      <div className="h-full relative">
+      <div className="relative h-full">
         <SideNavbar pathName="/discover" />
-        <main className="xs:pl-20 pt-24 flex flex-row">
+        <main className="flex flex-row pt-24 xs:pl-20">
           <Filter />
-          <section className="min-w-full min-h-svh">
+          <section className="min-h-svh min-w-full">
             <InfiniteDiscoverScroll />
           </section>
         </main>

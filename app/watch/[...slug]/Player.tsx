@@ -1,25 +1,25 @@
-import { useEffect, useReducer, useRef, useState } from "react";
-import ReactPlayer from "react-player";
-import axios, { isAxiosError } from "axios";
-import screenfull from "screenfull";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import classNames from "classnames";
 import { usePreference } from "@/components/providers/PreferenceProvider";
 import useWindowSize from "@/hooks/useWindowSize";
-import { getSkipTimes } from "@/utils/getSkipTimes";
+import { AnimeStreamingSourceType, DetailAnimeInfoType } from "@/types/anime";
+import { ApiSuccessType } from "@/types/apiResponse";
+import { ScreenFullTypeEnum } from "@/types/player";
 import isMobileDevice from "@/utils/getIsMobileDevice";
 import getPreviouslyWatchedTill from "@/utils/getPreviouslyWatchedTill";
+import { getSkipTimes } from "@/utils/getSkipTimes";
 import setWatchedTill from "@/utils/setWatchedTill";
-import PlayerSkipBtns from "./PlayerSkipBtns";
+import axios, { isAxiosError } from "axios";
+import classNames from "classnames";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect, useReducer, useRef, useState } from "react";
+import ReactPlayer from "react-player";
+import screenfull from "screenfull";
 import PlayerControl from "./PlayerControl";
 import PlayerLoader from "./PlayerLoader";
-import reducer from "./reducerFunc";
-import { AnimeStreamingSourceType, DetailAnimeInfoType } from "@/types/anime";
-import { ScreenFullTypeEnum } from "@/types/player";
-import { ApiSuccessType } from "@/types/apiResponse";
-import QualitySelectModal from "./QualitySelectModal";
+import PlayerSkipBtns from "./PlayerSkipBtns";
 import PreferenceSettingModal from "./PreferenceSettingModal";
+import QualitySelectModal from "./QualitySelectModal";
+import reducer from "./reducerFunc";
 
 let count = 0;
 
@@ -75,7 +75,7 @@ function Player({
     isMobileDevice: isMobileDevice(),
     controllerVisibility: true,
     skipTimes: [],
-    isQualitySelectionOpen:false,
+    isQualitySelectionOpen: false,
     isSettingSectionOpen: false,
   });
 
@@ -200,10 +200,11 @@ function Player({
     <div
       id="Player"
       className={classNames({
-        "flex justify-center items-center": state.playerFullScreen,
-        "w-full aspect-video bg-black xxs:rounded-lg overflow-hidden":
+        "flex items-center justify-center": state.playerFullScreen,
+        "aspect-video w-full overflow-hidden bg-black xxs:rounded-lg":
           state.loaded === 0,
-      })}>
+      })}
+    >
       <div
         ref={playerContainerRef}
         className={classNames("relative bg-black", {
@@ -212,12 +213,12 @@ function Player({
             state.playerFullScreen &&
             windowWidth / windowHeight >= 16 / 9 &&
             state.FullScreenType === ScreenFullTypeEnum.DEFAULT,
-          "w-full h-full":
+          "h-full":
             state.playerFullScreen &&
             state.FullScreenType === ScreenFullTypeEnum.MAXWIDTH,
-          "w-full max-h-full":
+          "max-h-full w-full":
             state.playerFullScreen && windowWidth / windowHeight < 16 / 9,
-          "m-auto xxs:rounded-lg overflow-hidden": !state.playerFullScreen,
+          "m-auto overflow-hidden xxs:rounded-lg": !state.playerFullScreen,
           "max-h-[calc(100vh-6rem)]":
             !state.playerFullScreen && windowWidth >= 800,
         })}
@@ -230,7 +231,8 @@ function Player({
         }}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        onTouchStart={handleMouseMove}>
+        onTouchStart={handleMouseMove}
+      >
         <ReactPlayer
           ref={playerRef}
           // controls
@@ -319,13 +321,14 @@ function Player({
           playerContainerRef.current &&
           state.controllerVisibility && (
             <p
-              className="select-none text-white absolute z-50 top-3 left-5 font-medium opacity-80"
+              className="absolute left-5 top-3 z-50 select-none font-medium text-white opacity-80"
               style={{
                 fontSize:
                   playerContainerRef.current.clientWidth /
                   (windowWidth > 1000 ? 45 : 30),
                 textShadow: "0.25vw 0.25vw 6px rgba(0, 0, 0, 0.65)",
-              }}>
+              }}
+            >
               {title}
               {detailInfo?.episodes && detailInfo?.episodes.length !== 1 && (
                 <p style={{ fontSize: "70%" }}>Ep-{epNo}</p>
@@ -341,7 +344,12 @@ function Player({
             await setWatchedTill(animeId, epNo, state.played, session)
           }
         />
-        <PreferenceSettingModal isOpen={state.isSettingSectionOpen} handleOpenChange={value=>dispatch({type:"settingOpenChange", payload:value})} />
+        <PreferenceSettingModal
+          isOpen={state.isSettingSectionOpen}
+          handleOpenChange={(value) =>
+            dispatch({ type: "settingOpenChange", payload: value })
+          }
+        />
       </div>
     </div>
   );

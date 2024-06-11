@@ -1,8 +1,8 @@
 "use client";
 
-import chroma from "chroma-js";
-import { shade } from "@/utils/color";
 import { themes } from "@/theme";
+import { shade } from "@/utils/color";
+import chroma from "chroma-js";
 import { usePreference } from "../providers/PreferenceProvider";
 
 function Select({
@@ -33,7 +33,7 @@ function Select({
         </div>
       )}
       <select
-        className="min-w-44 max-w-52 py-1.5 pl-3 pr-6 text-left cursor-pointer rounded-[45px] text-gray-900 shadow-lg focus:outline-none focus:ring-2"
+        className="min-w-44 max-w-52 cursor-pointer rounded-[45px] py-1.5 pl-3 pr-6 text-left text-gray-900 shadow-lg focus:outline-none focus:ring-2"
         style={{
           backgroundColor: isWatchPage
             ? chroma(theme.secondaryColor).alpha(0.2).hex()
@@ -41,7 +41,8 @@ function Select({
           color: !isWatchPage ? "#fff" : theme.textColor,
         }}
         defaultValue={JSON.stringify(selected)}
-        onChange={(e) => onChange(JSON.parse(e.target.value))}>
+        onChange={(e) => onChange(JSON.parse(e.target.value))}
+      >
         {list.map((item, id) => (
           <option
             key={id}
@@ -55,7 +56,8 @@ function Select({
                   ? theme.secondaryColor
                   : theme.textColor,
             }}
-            value={JSON.stringify(item)}>
+            value={JSON.stringify(item)}
+          >
             {item.name}
           </option>
         ))}

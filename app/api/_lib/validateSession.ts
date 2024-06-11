@@ -1,6 +1,6 @@
-import { getServerSession } from "next-auth";
 import apiError from "@/app/api/_lib/apiError";
 import User from "@/models/User";
+import { getServerSession } from "next-auth";
 
 export async function validateSession() {
   try {

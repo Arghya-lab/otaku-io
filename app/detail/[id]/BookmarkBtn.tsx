@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { useSession } from "next-auth/react";
+import { ApiSuccessType } from "@/types/apiResponse";
 import axios, { isAxiosError } from "axios";
 import { Bookmark } from "lucide-react";
-import { ApiSuccessType } from "@/types/apiResponse";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
 
 function BookmarkBtn({
   userBookmarks,

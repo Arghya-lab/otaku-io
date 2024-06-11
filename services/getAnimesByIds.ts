@@ -1,5 +1,5 @@
-import "server-only";
 import { AnimeItemType } from "@/types/anime";
+import "server-only";
 import { advancedSearch } from "./getAnime";
 
 export const getAnimesByIds = async (animeIds: string[]) => {

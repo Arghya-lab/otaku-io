@@ -1,19 +1,19 @@
 "use client";
 
-import React, {
-  useContext,
-  useState,
-  useEffect,
-  createContext,
-  ReactNode,
-} from "react";
-import { useSession } from "next-auth/react";
-import axios, { isAxiosError } from "axios";
 import { themes } from "@/theme";
-import { useCookies } from "next-client-cookies";
-import { useRouter } from "next/navigation";
 import { PreferenceType } from "@/types/States";
 import { PreferenceApiSuccessResType } from "@/types/apiResponse";
+import axios, { isAxiosError } from "axios";
+import { useSession } from "next-auth/react";
+import { useCookies } from "next-client-cookies";
+import { useRouter } from "next/navigation";
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 export const defaultPreference = {
   themeId: 1,
@@ -64,9 +64,8 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchPreferences = async () => {
     try {
-      const { data }: { data: PreferenceApiSuccessResType } = await axios.get(
-        "/api/preference"
-      );
+      const { data }: { data: PreferenceApiSuccessResType } =
+        await axios.get("/api/preference");
 
       setPreferences(data.data);
       localStorage.setItem("preferences", JSON.stringify(data.data));

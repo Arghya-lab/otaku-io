@@ -1,14 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState } from "react";
-import { shade } from "@/utils/color";
-import { usePreference } from "./providers/PreferenceProvider";
-import { AnimeItemType } from "@/types/anime";
 import { themes } from "@/theme";
-import Link from "next/link";
-import classNames from "classnames";
+import { AnimeItemType } from "@/types/anime";
+import { shade } from "@/utils/color";
 import getTitle from "@/utils/getTitle";
+import classNames from "classnames";
+import Link from "next/link";
+import { useState } from "react";
+import { usePreference } from "./providers/PreferenceProvider";
 
 function PosterItem({
   item,
@@ -28,9 +28,10 @@ function PosterItem({
   return (
     <div
       className={classNames({
-        "w-[152px] sm:w-48 p-2 xxs:p-3": isHorizontalScroll,
+        "w-[152px] p-2 xxs:p-3 sm:w-48": isHorizontalScroll,
         "min-w-24 max-w-48 p-1": !isHorizontalScroll,
-      })}>
+      })}
+    >
       <Link
         href={`/detail/${item.id}?title=${title}&dub=${isDub}`}
         className="w-full"
@@ -39,34 +40,37 @@ function PosterItem({
         }}
         onMouseLeave={() => {
           setIsHover(false);
-        }}>
+        }}
+      >
         <div
-          className={`w-full relative overflow-hidden shadow-xl rounded-xl ring-[3px] ${
+          className={`relative w-full overflow-hidden rounded-xl shadow-xl ring-[3px] ${
             isHover ? "ring-slate-50" : "ring-transparent"
-          }`}>
+          }`}
+        >
           <div
-            className={`flex items-start relative mb-auto select-none w-full aspect-[5/7] overflow-hidden transition-transform duration-200 ease-in transform-gpu ${
+            className={`relative mb-auto flex aspect-[5/7] w-full transform-gpu select-none items-start overflow-hidden transition-transform duration-200 ease-in ${
               isHover ? "scale-110" : null
-            }`}>
+            }`}
+          >
             {item.image && (
               <img
                 alt={title}
-                className="object-cover object-center w-full"
+                className="w-full object-cover object-center"
                 src={item.image}
               />
             )}
           </div>
         </div>
-        <div className="h-16 flex items-center overflow-visible">
+        <div className="flex h-16 items-center overflow-visible">
           <p
-            className="px-2 w-full text-xs font-medium line-clamp-2 text-center text-neutral-950 dark:text-white"
+            className="line-clamp-2 w-full px-2 text-center text-xs font-medium text-neutral-950 dark:text-white"
             style={{
               color:
                 isHover && item?.color
-                  ? 
-                    shade(item?.color, -2).toString()
+                  ? shade(item?.color, -2).toString()
                   : theme.textColor,
-            }}>
+            }}
+          >
             {title}
           </p>
         </div>

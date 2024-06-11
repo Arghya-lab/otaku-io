@@ -1,8 +1,7 @@
-import { validateSession } from "@/app/api/_lib/validateSession";
-import User from "@/models/User";
-import connectDB from "@/db/db";
 import apiError from "@/app/api/_lib/apiError";
 import apiSuccess from "@/app/api/_lib/apiSuccess";
+import { validateSession } from "@/app/api/_lib/validateSession";
+import connectDB from "@/db/db";
 
 /**
  * Route: PATCH /api/bookmark/toggle

@@ -1,12 +1,6 @@
-import {
-  useRef,
-  useState,
-  useEffect,
-  Dispatch,
-  MouseEvent,
-} from "react";
-import { Volume, Volume1, Volume2, VolumeX } from "lucide-react";
 import { PlayerActionType, PlayerStateType } from "@/types/player";
+import { Volume, Volume1, Volume2, VolumeX } from "lucide-react";
+import { Dispatch, MouseEvent, useEffect, useRef, useState } from "react";
 
 function VolumeController({
   state,
@@ -75,7 +69,8 @@ function VolumeController({
     <div
       className="flex items-center px-2"
       onMouseEnter={handleSpeakerHover}
-      onMouseLeave={handleSpeakerLeave}>
+      onMouseLeave={handleSpeakerLeave}
+    >
       <div role="button" onClick={() => dispatch({ type: "toggleMuted" })}>
         {state.muted ? (
           <VolumeX className="h-4 w-4 xs:h-6 xs:w-6" fill="#fff" color="#fff" />
@@ -88,15 +83,16 @@ function VolumeController({
         )}
       </div>
       {isVolumeVisible && (
-        <div className="p-2 bg-white bg-opacity-20 rounded-full">
+        <div className="rounded-full bg-white bg-opacity-20 p-2">
           <div
             ref={sliderRef}
-            className="relative h-1 w-12 bg-white bg-opacity-60 rounded-md cursor-pointer"
+            className="relative h-1 w-12 cursor-pointer rounded-md bg-white bg-opacity-60"
             onMouseDown={handleMouseDown}
             onMouseUp={handleMouseUp}
-            onClick={handleSliderClick}>
+            onClick={handleSliderClick}
+          >
             <div
-              className="h-full bg-white rounded-md"
+              className="h-full rounded-md bg-white"
               style={{
                 width: `${state.muted ? 0 : state.volume * 100}%`,
               }}

@@ -1,6 +1,6 @@
+import { AnimeWatchedType } from "@/types/States";
 import axios from "axios";
 import { Session } from "next-auth";
-import { AnimeWatchedType } from "@/types/States";
 
 export default async function setWatchedTill(
   animeId: string,

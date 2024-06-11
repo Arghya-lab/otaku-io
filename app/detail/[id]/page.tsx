@@ -1,8 +1,8 @@
-import MetaPreviewContainer from "./MetaPreviewContainer";
-import { getImdbInfo } from "@/services/getImdbInfo";
-import { getDetailInfo } from "@/services/getAnime";
-import TopNavbar from "@/components/TopNavbar";
 import EpBtnSheet from "@/components/EpBtnSheet";
+import TopNavbar from "@/components/TopNavbar";
+import { getDetailInfo } from "@/services/getAnime";
+import { getImdbInfo } from "@/services/getImdbInfo";
+import MetaPreviewContainer from "./MetaPreviewContainer";
 
 async function DetailPage({
   params,
@@ -25,27 +25,29 @@ async function DetailPage({
   ]);
 
   return (
-    <div className="w-full relative">
+    <div className="relative w-full">
       <div
-        className="fixed -z-10 w-screen h-screen bg-cover bg-center bg-transparent"
+        className="fixed -z-10 h-screen w-screen bg-transparent bg-cover bg-center"
         style={
           imdbInfo
             ? {
                 backgroundImage: `url(https://images.metahub.space/background/medium/${imdbInfo.imdbID}/img)`,
               }
             : {}
-        }>
-        <div className="w-full h-full bg-black opacity-70" />
+        }
+      >
+        <div className="h-full w-full bg-black opacity-70" />
       </div>
       <TopNavbar bgColor={detailInfo?.color || "#000"} />
       {/* Body */}
-      <div className="w-full mt-20">
-        <div className="pt-4 px-4 xxs:px-8 xs:px-16 sm:pr-48 md:pr-80 lg:pr-[416px]">
+      <div className="mt-20 w-full">
+        <div className="px-4 pt-4 xxs:px-8 xs:px-16 sm:pr-48 md:pr-80 lg:pr-[416px]">
           <MetaPreviewContainer detailInfo={detailInfo} imdbInfo={imdbInfo} />
         </div>
         <div
-          className="mx-4 xxs:mx-8 xs:mx-16 my-8 h-full p-8 px-4 bg-black bg-opacity-20 rounded-xl"
-          style={{ backdropFilter: "blur(15px)" }}>
+          className="mx-4 my-8 h-full rounded-xl bg-black bg-opacity-20 p-8 px-4 xxs:mx-8 xs:mx-16"
+          style={{ backdropFilter: "blur(15px)" }}
+        >
           <EpBtnSheet detailInfo={detailInfo} isDubEnable={isDub} />
         </div>
       </div>

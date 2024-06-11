@@ -1,8 +1,8 @@
+import apiError from "@/app/api/_lib/apiError";
+import apiSuccess from "@/app/api/_lib/apiSuccess";
 import connectDB from "@/db/db";
 import { getStreamingLinks } from "@/services/getAnime";
 import { NextRequest } from "next/server";
-import apiSuccess from "@/app/api/_lib/apiSuccess";
-import apiError from "@/app/api/_lib/apiError";
 
 /**
  * Route: GET /api/anime/streaming-links/:epId

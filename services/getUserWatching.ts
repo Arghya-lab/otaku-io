@@ -1,8 +1,8 @@
-import "server-only";
-import { getServerSession } from "next-auth";
 import AnimeWatched from "@/models/AnimeWatched";
-import { advancedSearch } from "./getAnime";
 import { WatchingAnimeType } from "@/types/anime";
+import { getServerSession } from "next-auth";
+import "server-only";
+import { advancedSearch } from "./getAnime";
 
 export const getUserWatching = async (
   page: number = 1,

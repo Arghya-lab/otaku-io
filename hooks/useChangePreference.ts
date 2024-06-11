@@ -36,7 +36,7 @@ const useChangePreference = () => {
   }: {
     value?: string | number;
     name?: string;
-  }) => {    
+  }) => {
     if (value) {
       updatePreference(UpdateTypeEnum.CHANGE_PLAYBACK_QUALITY, value);
     }

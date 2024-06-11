@@ -1,5 +1,29 @@
 "use client";
 
+import { usePreference } from "@/components/providers/PreferenceProvider";
+import useWindowSize from "@/hooks/useWindowSize";
+import {
+  PlayerActionType,
+  PlayerStateType,
+  ScreenFullTypeEnum,
+} from "@/types/player";
+import { secToMinSec } from "@/utils/time";
+import classNames from "classnames";
+import {
+  BoxSelect,
+  Expand,
+  FastForward,
+  Fullscreen,
+  Loader2,
+  Maximize2,
+  Minimize,
+  Minimize2,
+  Pause,
+  Play,
+  RectangleHorizontal,
+  Rewind,
+  Settings,
+} from "lucide-react";
 import {
   Dispatch,
   ForwardedRef,
@@ -10,32 +34,8 @@ import {
 } from "react";
 import ReactPlayer from "react-player";
 import screenfull from "screenfull";
-import {
-  Expand,
-  Minimize,
-  Minimize2,
-  Pause,
-  Play,
-  FastForward,
-  Rewind,
-  Fullscreen,
-  RectangleHorizontal,
-  BoxSelect,
-  Maximize2,
-  Loader2,
-  Settings,
-} from "lucide-react";
-import classNames from "classnames";
 import VideoLoadedBar from "./VideoLoadedBar";
 import VolumeController from "./VolumeController";
-import useWindowSize from "@/hooks/useWindowSize";
-import { usePreference } from "@/components/providers/PreferenceProvider";
-import { secToMinSec } from "@/utils/time";
-import {
-  PlayerActionType,
-  PlayerStateType,
-  ScreenFullTypeEnum,
-} from "@/types/player";
 
 interface PlayerControlProps {
   playerRef: MutableRefObject<ReactPlayer | null>;
@@ -184,7 +184,7 @@ const PlayerControl = forwardRef(
       <div
         ref={ref}
         className={classNames(
-          "flex items-center justify-center absolute bottom-0 left-0 right-0 top-0 z-20 text-white opacity-100 transition-opacity duration-500",
+          "absolute bottom-0 left-0 right-0 top-0 z-20 flex items-center justify-center text-white opacity-100 transition-opacity duration-500",
           {
             "bg-black bg-opacity-70": state.playerFullScreen,
           }
@@ -195,14 +195,16 @@ const PlayerControl = forwardRef(
           } else {
             handleFullScreen();
           }
-        }}>
+        }}
+      >
         {state?.loaded > 0 && (
-          <div className="w-full h-full flex items-center justify-center gap-[15%]">
+          <div className="flex h-full w-full items-center justify-center gap-[15%]">
             {(windowWidth <= 640 || state.isMobileDevice) && (
               <div
                 role="button"
-                className="px-1 xs:px-3 rotate-[-45]"
-                onClick={handleSkipBack}>
+                className="rotate-[-45] px-1 xs:px-3"
+                onClick={handleSkipBack}
+              >
                 <Rewind className="h-6 w-6 xs:h-8 xs:w-8" color="#fff" />
               </div>
             )}
@@ -211,10 +213,10 @@ const PlayerControl = forwardRef(
                 state.playing ? (
                   <Loader2
                     strokeWidth={2.5}
-                    className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14 text-white animate-spin"
+                    className="h-8 w-8 animate-spin text-white xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
                     color="#fff"
                   />
-                ):null
+                ) : null
               ) : (
                 <div role="button" onClick={handleTogglePlayPause}>
                   {state.playing ? (
@@ -238,21 +240,23 @@ const PlayerControl = forwardRef(
             {(windowWidth <= 640 || state.isMobileDevice) && (
               <div
                 role="button"
-                className="px-1 xs:px-3 rotate-[45]"
-                onClick={handleSkipForward}>
+                className="rotate-[45] px-1 xs:px-3"
+                onClick={handleSkipForward}
+              >
                 <FastForward className="h-6 w-6 xs:h-8 xs:w-8" color="#fff" />
               </div>
             )}
           </div>
         )}
-        <div className="text-lg px-4 pb-1 xxs:pb-2 text-white absolute left-0 right-0 bottom-0">
+        <div className="absolute bottom-0 left-0 right-0 px-4 pb-1 text-lg text-white xxs:pb-2">
           <div className="flex items-center justify-between xs:pb-2">
             <div className="flex items-center">
               {!state.isMobileDevice && (
                 <div
                   role="button"
                   className="px-1 xs:px-2"
-                  onClick={handleTogglePlayPause}>
+                  onClick={handleTogglePlayPause}
+                >
                   {state.playing ? (
                     <Pause
                       className="h-4 w-4 xs:h-6 xs:w-6"
@@ -272,8 +276,9 @@ const PlayerControl = forwardRef(
                 <VolumeController state={state} dispatch={dispatch} />
               )}
               <div
-                className="ml-2 xs:ml-4 text-xs xs:text-sm cursor-pointer font-nunito select-none"
-                onClick={() => setIsRemainingTime(!isRemainingTime)}>
+                className="ml-2 cursor-pointer select-none font-nunito text-xs xs:ml-4 xs:text-sm"
+                onClick={() => setIsRemainingTime(!isRemainingTime)}
+              >
                 <span>
                   {isRemainingTime
                     ? "-" + secToMinSec((1 - state.played) * state.duration)
@@ -287,14 +292,16 @@ const PlayerControl = forwardRef(
                 <>
                   <div
                     role="button"
-                    className="px-1 xs:px-3 rotate-[-30]"
-                    onClick={handleSkipBack}>
+                    className="rotate-[-30] px-1 xs:px-3"
+                    onClick={handleSkipBack}
+                  >
                     <Rewind className="h-5 w-5" color="#fff" />
                   </div>
                   <div
                     role="button"
-                    className="px-1 xs:px-3 rotate-[30]"
-                    onClick={handleSkipForward}>
+                    className="rotate-[30] px-1 xs:px-3"
+                    onClick={handleSkipForward}
+                  >
                     <FastForward className="h-5 w-5" color="#fff" />
                   </div>
                 </>
@@ -302,17 +309,26 @@ const PlayerControl = forwardRef(
               {/* <div role="button" className="px-3 xs:px-6">
                 <Subtitles className="h-4 w-4 xs:h-6 xs:w-6" color="#fff" />
               </div> */}
-              <div role="button" className="px-3 xs:px-6" onClick={()=>dispatch({type: "settingOpenChange"})}>
-                <Settings  className="h-4 w-4 xs:h-6 xs:w-6" color="#fff" />
+              <div
+                role="button"
+                className="px-3 xs:px-6"
+                onClick={() => dispatch({ type: "settingOpenChange" })}
+              >
+                <Settings className="h-4 w-4 xs:h-6 xs:w-6" color="#fff" />
               </div>
-                <div role="button" className="font-nunito text-sm xs:text-base select-none outline-none" onClick={()=>dispatch({type: "qualityOpenChange"})}>
-                  {state.currentSource?.quality || "unknown"}
-                </div>
+              <div
+                role="button"
+                className="select-none font-nunito text-sm outline-none xs:text-base"
+                onClick={() => dispatch({ type: "qualityOpenChange" })}
+              >
+                {state.currentSource?.quality || "unknown"}
+              </div>
               {!state.isMobileDevice && (
                 <div
                   role="button"
                   className="pl-3 xs:pl-6"
-                  onClick={handleTogglePIP}>
+                  onClick={handleTogglePIP}
+                >
                   {state.pip ? (
                     <Maximize2 className="h-4 w-4 xs:h-6 xs:w-6" color="#fff" />
                   ) : (
@@ -367,7 +383,6 @@ const PlayerControl = forwardRef(
           <VideoLoadedBar state={state} playerRef={playerRef} />
         </div>
       </div>
-      
     );
   }
 );

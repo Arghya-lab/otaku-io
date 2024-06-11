@@ -1,22 +1,22 @@
 "use client";
 
-import { useState, Fragment } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Dialog, Transition } from "@headlessui/react";
-import { FilterIcon } from "lucide-react";
-import chroma from "chroma-js";
-import Select from "@/components/ui/Select";
 import { usePreference } from "@/components/providers/PreferenceProvider";
+import Select from "@/components/ui/Select";
+import useScroll from "@/hooks/useScroll";
+import useWindowSize from "@/hooks/useWindowSize";
 import {
   formatList,
   genreList,
   sortList,
   statusList,
 } from "@/lib/searchFilter";
-import useWindowSize from "@/hooks/useWindowSize";
-import useScroll from "@/hooks/useScroll";
 import { themes } from "@/theme";
 import { shade } from "@/utils/color";
+import { Dialog, Transition } from "@headlessui/react";
+import chroma from "chroma-js";
+import { FilterIcon } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Fragment, useState } from "react";
 
 function Filter() {
   const { themeId } = usePreference();
@@ -79,12 +79,13 @@ function Filter() {
 
   return (
     <div
-      className="p-4 h-24 fixed top-[calc(3.5rem-0.5px)] xxs:top-[calc(4rem-0.5px)] w-full z-40 flex items-center gap-4 backdrop-blur-md bg-opacity-50"
+      className="fixed top-[calc(3.5rem-0.5px)] z-40 flex h-24 w-full items-center gap-4 bg-opacity-50 p-4 backdrop-blur-md xxs:top-[calc(4rem-0.5px)]"
       style={{
         backgroundColor: scrolled
           ? `${chroma(theme.primaryColor).darken().alpha(0.6)}`
           : "transparent",
-      }}>
+      }}
+    >
       <Select
         name={"format"}
         list={formatList}
@@ -109,12 +110,13 @@ function Filter() {
             </div>
             <div
               role="button"
-              className="h-9 px-4 rounded-[45px] shadow-lg flex items-center justify-center"
+              className="flex h-9 items-center justify-center rounded-[45px] px-4 shadow-lg"
               style={{
                 backgroundColor: shade(theme.primaryColor, 0, 0.2).hex(),
                 color: "#fff",
               }}
-              onClick={() => setIsModalOpen(!isModalOpen)}>
+              onClick={() => setIsModalOpen(!isModalOpen)}
+            >
               <FilterIcon size={18} color="#fff" fill="#fff" />
             </div>
           </div>
@@ -122,7 +124,8 @@ function Filter() {
             <Dialog
               as="div"
               className="relative z-30"
-              onClose={() => setIsModalOpen(false)}>
+              onClose={() => setIsModalOpen(false)}
+            >
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -130,7 +133,8 @@ function Filter() {
                 enterTo="opacity-100"
                 leave="ease-in duration-200"
                 leaveFrom="opacity-100"
-                leaveTo="opacity-0">
+                leaveTo="opacity-0"
+              >
                 <div className="fixed inset-0 bg-black/25" />
               </Transition.Child>
 
@@ -143,10 +147,12 @@ function Filter() {
                     enterTo="opacity-100 scale-100"
                     leave="ease-in duration-200"
                     leaveFrom="opacity-100 scale-100"
-                    leaveTo="opacity-0 scale-95">
+                    leaveTo="opacity-0 scale-95"
+                  >
                     <Dialog.Panel
-                      className="w-5/6 max-w-64 transform overflow-hidden rounded-2xl p-6 text-left align-middle shadow-xl transition-all flex flex-col gap-4"
-                      style={{ backgroundColor: theme.primaryColor }}>
+                      className="flex w-5/6 max-w-64 transform flex-col gap-4 overflow-hidden rounded-2xl p-6 text-left align-middle shadow-xl transition-all"
+                      style={{ backgroundColor: theme.primaryColor }}
+                    >
                       <Select
                         name={"format"}
                         list={formatList}

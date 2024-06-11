@@ -1,10 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import AliceCarousel from "react-alice-carousel";
-import htmlParse from "html-react-parser";
 import useWindowSize from "@/hooks/useWindowSize";
 import { AnimeItemType } from "@/types/anime";
+import htmlParse from "html-react-parser";
+import AliceCarousel from "react-alice-carousel";
 
 function Carousel({ trending }: { trending: AnimeItemType[] }) {
   const { windowWidth } = useWindowSize();
@@ -14,7 +14,7 @@ function Carousel({ trending }: { trending: AnimeItemType[] }) {
       <div key={id} className="flex items-center">
         <img
           key={id}
-          className="w-full aspect-[3/1] xxs:aspect-[4/1] object-cover"
+          className="aspect-[3/1] w-full object-cover xxs:aspect-[4/1]"
           src={data.cover}
           alt="Cover"
         />
@@ -31,7 +31,7 @@ function Carousel({ trending }: { trending: AnimeItemType[] }) {
   }));
 
   return (
-    <div className="opacity-80 shadow-2xl mb-36 xs:mb-44 mt-4 mx-4 xs:mx-8 2xl:mb-52 bg-transparent">
+    <div className="mx-4 mb-36 mt-4 bg-transparent opacity-80 shadow-2xl xs:mx-8 xs:mb-44 2xl:mb-52">
       <AliceCarousel
         mouseTracking
         items={items}
@@ -47,13 +47,13 @@ function Carousel({ trending }: { trending: AnimeItemType[] }) {
         renderSlideInfo={({ item }) =>
           info[item - 1].isCoverPresent ? (
             <div className="relative">
-              <div className="absolute -bottom-[5.5rem] xs:-bottom-36 2xl:-bottom-52 left-0 right-0 p-4 h-20 xs:h-32 2xl:h-48 prose text-white font-nunito text-xs 2xl:text-lg bg-black rounded-xl">
+              <div className="prose absolute -bottom-[5.5rem] left-0 right-0 h-20 rounded-xl bg-black p-4 font-nunito text-xs text-white xs:-bottom-36 xs:h-32 2xl:-bottom-52 2xl:h-48 2xl:text-lg">
                 {htmlParse(`<p style="overflow: hidden;
               display: -webkit-box;
               -webkit-box-orient: vertical;
               -webkit-line-clamp: ${lineClampValue};">${
-                  info[item - 1].description || ""
-                }</p>`)}
+                info[item - 1].description || ""
+              }</p>`)}
               </div>
             </div>
           ) : null

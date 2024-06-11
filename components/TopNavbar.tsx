@@ -1,18 +1,18 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
-import chroma from "chroma-js";
-import { Search, X } from "lucide-react";
 import MinMaximizeBtn from "@/components/ui/MinMaximizeBtn";
 import useScroll from "@/hooks/useScroll";
 import useWindowSize from "@/hooks/useWindowSize";
-import { usePreference } from "./providers/PreferenceProvider";
 import { themes } from "@/theme";
 import { shade } from "@/utils/color";
+import chroma from "chroma-js";
 import classNames from "classnames";
+import { Search, X } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { FormEvent, useState } from "react";
+import { usePreference } from "./providers/PreferenceProvider";
 
 function TopNavbar({ bgColor }: { bgColor?: string }) {
   const { themeId } = usePreference();
@@ -33,9 +33,12 @@ function TopNavbar({ bgColor }: { bgColor?: string }) {
 
   return (
     <div
-      className={classNames("px-5 h-14 xxs:h-16 sticky -top-[0.5px] z-40 w-full flex items-center justify-between gap-2 backdrop-blur-lg bg-opacity-50", {
-        "border-b-[1px]": scrolled
-      })}
+      className={classNames(
+        "sticky -top-[0.5px] z-40 flex h-14 w-full items-center justify-between gap-2 bg-opacity-50 px-5 backdrop-blur-lg xxs:h-16",
+        {
+          "border-b-[1px]": scrolled,
+        }
+      )}
       style={{
         backgroundColor: scrolled
           ? `${
@@ -46,13 +49,12 @@ function TopNavbar({ bgColor }: { bgColor?: string }) {
           : "transparent",
         borderColor: scrolled
           ? `${
-            bgColor
-              ? shade(bgColor, 1)
-              : chroma(theme.primaryColor).darken(1)
-          }`
-        : "transparent",
-      }}>
-      <Link href="/home" className="w-9 h-9">
+              bgColor ? shade(bgColor, 1) : chroma(theme.primaryColor).darken(1)
+            }`
+          : "transparent",
+      }}
+    >
+      <Link href="/home" className="h-9 w-9">
         <Image
           alt="logo"
           width={50}
@@ -62,8 +64,9 @@ function TopNavbar({ bgColor }: { bgColor?: string }) {
         />
       </Link>
       <form
-        className="h-10 xxs:h-12 w-full xxs:w-2/3 max-w-2xl rounded-[45px] bg-white bg-opacity-10 hover:bg-opacity-15 shadow-sm flex items-center"
-        onSubmit={handleSearch}>
+        className="flex h-10 w-full max-w-2xl items-center rounded-[45px] bg-white bg-opacity-10 shadow-sm hover:bg-opacity-15 xxs:h-12 xxs:w-2/3"
+        onSubmit={handleSearch}
+      >
         <input
           size={1}
           autoCorrect="off"
@@ -75,10 +78,10 @@ function TopNavbar({ bgColor }: { bgColor?: string }) {
           placeholder="Search anything..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-7 h-full focus:outline-none bg-transparent w-[calc(100%-24px-24px-2.5rem)] font-medium"
+          className="h-full w-[calc(100%-24px-24px-2.5rem)] bg-transparent pl-7 font-medium focus:outline-none"
           style={{ color: theme.textColor }}
         />
-        <div className="w-[24px] h-[24px] pl-1 pr-2 flex-1">
+        <div className="h-[24px] w-[24px] flex-1 pl-1 pr-2">
           {searchQuery.length > 0 && (
             <X
               role="button"
@@ -91,7 +94,7 @@ function TopNavbar({ bgColor }: { bgColor?: string }) {
             />
           )}
         </div>
-        <button type="submit" className="pr-4 pl-2 w-[24px] h-[24px] flex-1">
+        <button type="submit" className="h-[24px] w-[24px] flex-1 pl-2 pr-4">
           <Search
             size={24}
             className="opacity-55 hover:opacity-75"

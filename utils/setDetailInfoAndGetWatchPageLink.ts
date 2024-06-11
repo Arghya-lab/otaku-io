@@ -1,6 +1,6 @@
-import axios from "axios";
 import { AnimeEpisodeType, DetailAnimeInfoType } from "@/types/anime";
 import { ApiSuccessType } from "@/types/apiResponse";
+import axios from "axios";
 
 const setDetailInfoAndGetWatchPageLink = async (
   id: string,

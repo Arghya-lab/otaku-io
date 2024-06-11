@@ -1,15 +1,15 @@
-import type { Metadata, Viewport } from "next";
-import { cookies } from "next/headers";
-import { getServerSession } from "next-auth";
-import { CookiesProvider } from "next-client-cookies/server";
-import connectDB from "@/db/db";
 import AuthProvider from "@/components/providers/AuthProvider";
 import PreferencesProvider from "@/components/providers/PreferenceProvider";
-import { themes } from "@/theme";
-import Preference from "@/models/Preference";
-import { nunito_Sans, poppins } from "@/utils/fonts";
-import "./globals.css";
 import ReactQueryProvider from "@/components/providers/ReactQueryProvider";
+import connectDB from "@/db/db";
+import Preference from "@/models/Preference";
+import { themes } from "@/theme";
+import { nunito_Sans, poppins } from "@/utils/fonts";
+import type { Metadata, Viewport } from "next";
+import { getServerSession } from "next-auth";
+import { CookiesProvider } from "next-client-cookies/server";
+import { cookies } from "next/headers";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Otaku-io",
@@ -89,9 +89,10 @@ export default async function RootLayout({
           <CookiesProvider>
             <PreferencesProvider>
               <body
-                className={`${poppins} ${nunito_Sans} font-poppins w-full relative`}>
+                className={`${poppins} ${nunito_Sans} relative w-full font-poppins`}
+              >
                 <div
-                  className="fixed -z-20 w-screen h-screen bg-cover"
+                  className="fixed -z-20 h-screen w-screen bg-cover"
                   style={{
                     backgroundColor: theme.primaryColor,
                     background: theme.bgImg,

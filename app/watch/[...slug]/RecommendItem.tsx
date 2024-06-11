@@ -1,13 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { AnimeItemType } from "@/types/anime";
 import { usePreference } from "@/components/providers/PreferenceProvider";
 import { themes } from "@/theme";
-import chroma from "chroma-js";
+import { AnimeItemType } from "@/types/anime";
 import getTitle from "@/utils/getTitle";
+import chroma from "chroma-js";
+import Link from "next/link";
+import { useState } from "react";
 
 function RecommendItem({ item }: { item: AnimeItemType }) {
   const { themeId, isDub } = usePreference();
@@ -28,26 +28,28 @@ function RecommendItem({ item }: { item: AnimeItemType }) {
           ? chroma(theme.primaryColor).darken(1).toString()
           : chroma(theme.primaryColor).darken(0.5).toString(),
       }}
-      className={`p-3 max-w-md min-w-40 h-40 flex flex-row rounded-xl border-2`}
+      className={`flex h-40 min-w-40 max-w-md flex-row rounded-xl border-2 p-3`}
       onPointerEnter={() => setIsHover(true)}
-      onPointerLeave={() => setIsHover(false)}>
-      <div className={`pl-24 relative overflow-hidden rounded-lg`}>
+      onPointerLeave={() => setIsHover(false)}
+    >
+      <div className={`relative overflow-hidden rounded-lg pl-24`}>
         <div
-          className={`absolute left-0 rounded-md transition-transform duration-200 ease-in transform-gpu ${
+          className={`absolute left-0 transform-gpu rounded-md transition-transform duration-200 ease-in ${
             isHover ? "scale-110" : null
-          }`}>
+          }`}
+        >
           {item?.image && (
             <img
               alt={title}
               title={title}
-              className="object-cover w-24 h-[136px]"
+              className="h-[136px] w-24 object-cover"
               src={item.image}
             />
           )}
         </div>
       </div>
-      <div className="flex-1 py-2 px-4" style={{ color: theme.textColor }}>
-        <p className="px-6 font-nunito font-semibold w-full text-center pb-2 line-clamp-2 overflow-x-ellipsis">
+      <div className="flex-1 px-4 py-2" style={{ color: theme.textColor }}>
+        <p className="overflow-x-ellipsis line-clamp-2 w-full px-6 pb-2 text-center font-nunito font-semibold">
           {title}
         </p>
         <div className="text-sm opacity-85" style={{ color: theme.textColor }}>

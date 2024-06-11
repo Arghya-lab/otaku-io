@@ -1,5 +1,5 @@
-import TopNavbar from "@/components/TopNavbar";
 import SideNavbar from "@/components/SideNavbar";
+import TopNavbar from "@/components/TopNavbar";
 
 function Layout({
   children,
@@ -10,7 +10,7 @@ function Layout({
     <>
       <TopNavbar />
       <SideNavbar pathName="/search" />
-      <main className="xs:pl-20 flex flex-row">{children}</main>
+      <main className="flex flex-row xs:pl-20">{children}</main>
     </>
   );
 }

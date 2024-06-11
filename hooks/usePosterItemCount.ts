@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const usePosterItemCount = () => {
   const [posterItemCount, setPosterItemCount] = useState(1);

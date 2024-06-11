@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
 import { shade } from "@/utils/color";
+import Link from "next/link";
+import { useState } from "react";
 
 function ChipBtn({ name, color = "#fff" }: { name: string; color: string }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -10,7 +10,7 @@ function ChipBtn({ name, color = "#fff" }: { name: string; color: string }) {
   return (
     <Link
       href={`/discover?genres=${encodeURIComponent(JSON.stringify([name]))}`}
-      className="w-fit h-fit px-2.5 py-1 rounded-full text-slate-100 border-2"
+      className="h-fit w-fit rounded-full border-2 px-2.5 py-1 text-slate-100"
       style={{
         backgroundColor: isHovered ? shade(color, -2, 0.1).toString() : "unset",
         // color: isHovered ? shade(color, -2)  : "white",
@@ -19,8 +19,9 @@ function ChipBtn({ name, color = "#fff" }: { name: string; color: string }) {
           : shade(color, 0, 0.4).toString(),
         transition: "color 0.3s, border-color 0.3s",
       }}
-      role="button">
-      <span className="capitalize text-sm">{name}</span>
+      role="button"
+    >
+      <span className="text-sm capitalize">{name}</span>
     </Link>
   );
 }

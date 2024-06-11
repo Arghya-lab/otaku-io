@@ -10,9 +10,7 @@ import {
 } from "react";
 import ReactPlayer from "react-player";
 import screenfull from "screenfull";
-import { Popover } from "@headlessui/react";
 import {
-  Check,
   Expand,
   Minimize,
   Minimize2,
@@ -20,11 +18,12 @@ import {
   Play,
   FastForward,
   Rewind,
-  Subtitles,
   Fullscreen,
   RectangleHorizontal,
   BoxSelect,
   Maximize2,
+  Loader2,
+  Settings,
 } from "lucide-react";
 import classNames from "classnames";
 import VideoLoadedBar from "./VideoLoadedBar";
@@ -42,12 +41,11 @@ interface PlayerControlProps {
   playerRef: MutableRefObject<ReactPlayer | null>;
   state: PlayerStateType;
   dispatch: Dispatch<PlayerActionType>;
-  setWatched: () => Promise<void>;
 }
 
 const PlayerControl = forwardRef(
   (
-    { playerRef, state, dispatch, setWatched }: PlayerControlProps,
+    { playerRef, state, dispatch }: PlayerControlProps,
     ref: ForwardedRef<HTMLDivElement>
   ) => {
     const { autoPlay: isAutoPlayEnabled, seekSeconds: videoSeekSeconds } =
@@ -55,11 +53,10 @@ const PlayerControl = forwardRef(
     const playerElement = document.getElementById("Player");
 
     const [isRemainingTime, setIsRemainingTime] = useState(false);
+
     const { windowWidth } = useWindowSize();
 
     const handleSkipTo = (sec: number) => {
-      console.log(sec);
-
       if (playerRef.current) {
         playerRef.current.seekTo(sec);
       }
@@ -143,7 +140,6 @@ const PlayerControl = forwardRef(
             break;
           case "0":
             handleSkipTo((state.duration * 0) / 10);
-
             break;
           case "1":
             handleSkipTo((state.duration * 1) / 10);
@@ -210,26 +206,34 @@ const PlayerControl = forwardRef(
                 <Rewind className="h-6 w-6 xs:h-8 xs:w-8" color="#fff" />
               </div>
             )}
-            <div
-              role="button"
-              className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
-              onClick={handleTogglePlayPause}>
-              {!state.buffering &&
-                (state.playing ? (
-                  <Pause
-                    strokeWidth={1}
-                    fill="#fff"
+            <div className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14">
+              {state.buffering ? (
+                state.playing ? (
+                  <Loader2
+                    strokeWidth={2.5}
+                    className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14 text-white animate-spin"
                     color="#fff"
-                    className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
                   />
-                ) : (
-                  <Play
-                    strokeWidth={3}
-                    fill="#fff"
-                    color="#fff"
-                    className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
-                  />
-                ))}
+                ):null
+              ) : (
+                <div role="button" onClick={handleTogglePlayPause}>
+                  {state.playing ? (
+                    <Pause
+                      strokeWidth={1}
+                      fill="#fff"
+                      color="#fff"
+                      className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
+                    />
+                  ) : (
+                    <Play
+                      strokeWidth={3}
+                      fill="#fff"
+                      color="#fff"
+                      className="h-8 w-8 xxs:h-10 xxs:w-10 xs:h-14 xs:w-14"
+                    />
+                  )}
+                </div>
+              )}
             </div>
             {(windowWidth <= 640 || state.isMobileDevice) && (
               <div
@@ -295,65 +299,15 @@ const PlayerControl = forwardRef(
                   </div>
                 </>
               )}
-              <div role="button" className="px-3 xs:px-6">
+              {/* <div role="button" className="px-3 xs:px-6">
                 <Subtitles className="h-4 w-4 xs:h-6 xs:w-6" color="#fff" />
+              </div> */}
+              <div role="button" className="px-3 xs:px-6" onClick={()=>dispatch({type: "settingOpenChange"})}>
+                <Settings  className="h-4 w-4 xs:h-6 xs:w-6" color="#fff" />
               </div>
-              {/* <div role="button" className="px-3 "> */}
-              {/* <Settings /> */}
-              {/* <Settings2  />
-            </div> */}
-              <Popover className="relative">
-                <Popover.Button className="font-nunito text-sm xs:text-base select-none">
+                <div role="button" className="font-nunito text-sm xs:text-base select-none outline-none" onClick={()=>dispatch({type: "qualityOpenChange"})}>
                   {state.currentSource?.quality || "unknown"}
-                </Popover.Button>
-                <Popover.Panel className="absolute bottom-12 -left-14 z-10 bg-black bg-opacity-80 rounded-lg">
-                  <div className="p-2">
-                    <p className="p-2 pb-4 border-opacity-90 border-orange-500 border-b-2">
-                      Quality
-                    </p>
-                    <div className="my-2">
-                      {state.sources.map((source: any) => (
-                        <div
-                          role="button"
-                          className="mx-2 px-4 py-2 w-40 text-sm font-nunito hover:bg-black bg-opacity-60 rounded flex justify-between select-none"
-                          key={source?.quality}
-                          onClick={() => {
-                            setWatched();
-                            dispatch({
-                              type: "updateStreamingLinks",
-                              payload: {
-                                sources: state.sources,
-                                currentSource: source,
-                                playing: isAutoPlayEnabled,
-                              },
-                            });
-                          }}>
-                          {source?.quality}
-                          <Check
-                            size={24}
-                            className={
-                              source?.quality == state.currentSource?.quality
-                                ? "text-white"
-                                : "text-transparent"
-                            }
-                          />
-                        </div>
-                      ))}
-                      {/* <div
-                      role="button"
-                      className="mx-2 pl-4 pr-20 py-2 text-sm font-nunito hover:bg-black bg-opacity-60 rounded">
-                      Auto{" "}
-                      <span
-                        className={`${true ? "text-white" : "text-transparent"},
-                                "px-4"
-                              `}>
-                        <Check className="h-5 w-5" />
-                      </span>
-                    </div> */}
-                    </div>
-                  </div>
-                </Popover.Panel>
-              </Popover>
+                </div>
               {!state.isMobileDevice && (
                 <div
                   role="button"
@@ -413,6 +367,7 @@ const PlayerControl = forwardRef(
           <VideoLoadedBar state={state} playerRef={playerRef} />
         </div>
       </div>
+      
     );
   }
 );

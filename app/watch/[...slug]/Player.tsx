@@ -18,6 +18,8 @@ import reducer from "./reducerFunc";
 import { AnimeStreamingSourceType, DetailAnimeInfoType } from "@/types/anime";
 import { ScreenFullTypeEnum } from "@/types/player";
 import { ApiSuccessType } from "@/types/apiResponse";
+import QualitySelectModal from "./QualitySelectModal";
+import PreferenceSettingModal from "./PreferenceSettingModal";
 
 let count = 0;
 
@@ -30,7 +32,7 @@ function Player({
   detailInfo,
 }: {
   animeId: string;
-  title: string | undefined;
+  title?: string;
   epNo: string;
   epId: string;
   isDub: boolean;
@@ -73,6 +75,8 @@ function Player({
     isMobileDevice: isMobileDevice(),
     controllerVisibility: true,
     skipTimes: [],
+    isQualitySelectionOpen:false,
+    isSettingSectionOpen: false,
   });
 
   const handleSeekToUnwatched = async () => {
@@ -309,9 +313,6 @@ function Player({
           playerRef={playerRef}
           state={state}
           dispatch={dispatch}
-          setWatched={async () =>
-            await setWatchedTill(animeId, epNo, state.played, session)
-          }
         />
         {state.playerFullScreen &&
           title &&
@@ -332,9 +333,15 @@ function Player({
             </p>
           )}
         <PlayerSkipBtns state={state} playerRef={playerRef} />
-        <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center">
-          <PlayerLoader state={state} />
-        </div>
+        <PlayerLoader state={state} />
+        <QualitySelectModal
+          state={state}
+          dispatch={dispatch}
+          setWatched={async () =>
+            await setWatchedTill(animeId, epNo, state.played, session)
+          }
+        />
+        <PreferenceSettingModal isOpen={state.isSettingSectionOpen} handleOpenChange={value=>dispatch({type:"settingOpenChange", payload:value})} />
       </div>
     </div>
   );

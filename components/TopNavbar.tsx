@@ -12,6 +12,7 @@ import useWindowSize from "@/hooks/useWindowSize";
 import { usePreference } from "./providers/PreferenceProvider";
 import { themes } from "@/theme";
 import { shade } from "@/utils/color";
+import classNames from "classnames";
 
 function TopNavbar({ bgColor }: { bgColor?: string }) {
   const { themeId } = usePreference();
@@ -32,7 +33,9 @@ function TopNavbar({ bgColor }: { bgColor?: string }) {
 
   return (
     <div
-      className="px-5 h-14 xxs:h-16 sticky -top-[0.5px] z-40 w-full flex items-center justify-between gap-2 backdrop-blur-lg bg-opacity-50"
+      className={classNames("px-5 h-14 xxs:h-16 sticky -top-[0.5px] z-40 w-full flex items-center justify-between gap-2 backdrop-blur-lg bg-opacity-50", {
+        "border-b-[1px]": scrolled
+      })}
       style={{
         backgroundColor: scrolled
           ? `${
@@ -41,12 +44,14 @@ function TopNavbar({ bgColor }: { bgColor?: string }) {
                 : chroma(theme.primaryColor).darken().alpha(0.6)
             }`
           : "transparent",
+        borderColor: scrolled
+          ? `${
+            bgColor
+              ? shade(bgColor, 1)
+              : chroma(theme.primaryColor).darken(1)
+          }`
+        : "transparent",
       }}>
-      {/* for detail view page & video viewing add back btn */}
-      {/* <Box
-        size={36}
-        className="opacity-40 text-neutral-700 dark:text-slate-300"
-      /> */}
       <Link href="/home" className="w-9 h-9">
         <Image
           alt="logo"
@@ -69,11 +74,7 @@ function TopNavbar({ bgColor }: { bgColor?: string }) {
           type="text"
           placeholder="Search anything..."
           value={searchQuery}
-          onChange={(e) => {
-            console.log("k");
-
-            setSearchQuery(e.target.value);
-          }}
+          onChange={(e) => setSearchQuery(e.target.value)}
           className="pl-7 h-full focus:outline-none bg-transparent w-[calc(100%-24px-24px-2.5rem)] font-medium"
           style={{ color: theme.textColor }}
         />

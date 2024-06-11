@@ -8,6 +8,7 @@ import { AnimeItemType } from "@/types/anime";
 import { themes } from "@/theme";
 import Link from "next/link";
 import classNames from "classnames";
+import getTitle from "@/utils/getTitle";
 
 function PosterItem({
   item,
@@ -22,13 +23,7 @@ function PosterItem({
   const { isDub } = usePreference();
   const [isHover, setIsHover] = useState(false);
 
-  const title =
-    typeof item.title === "string"
-      ? item.title
-      : item.title?.english ||
-        item.title?.romaji ||
-        item.title?.native ||
-        item.title?.userPreferred;
+  const title = getTitle(item.title);
 
   return (
     <div
@@ -39,10 +34,10 @@ function PosterItem({
       <Link
         href={`/detail/${item.id}?title=${title}&dub=${isDub}`}
         className="w-full"
-        onPointerEnter={() => {
+        onMouseEnter={() => {
           setIsHover(true);
         }}
-        onPointerLeave={() => {
+        onMouseLeave={() => {
           setIsHover(false);
         }}>
         <div
@@ -55,7 +50,7 @@ function PosterItem({
             }`}>
             {item.image && (
               <img
-                alt={title || ""}
+                alt={title}
                 className="object-cover object-center w-full"
                 src={item.image}
               />
@@ -68,11 +63,11 @@ function PosterItem({
             style={{
               color:
                 isHover && item?.color
-                  ? // ? adjustTextColor(item.color, theme.primaryColor)
+                  ? 
                     shade(item?.color, -2).toString()
                   : theme.textColor,
             }}>
-            {title ?? ""}
+            {title}
           </p>
         </div>
       </Link>

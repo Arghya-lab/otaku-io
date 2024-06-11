@@ -154,7 +154,7 @@ function EpBtnSheet({
               isWatchPage={isWatchPage}
             />
             <div
-              className="grid gap-4 mt-3 justify-center"
+              className="grid gap-4 mt-3 justify-center max-h-64 md:max-h-none overflow-y-auto"
               style={{
                 gridTemplateColumns: "repeat(auto-fit, minmax(3.5rem, 3.5rem))",
               }}>

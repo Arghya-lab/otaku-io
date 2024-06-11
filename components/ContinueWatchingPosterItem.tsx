@@ -11,6 +11,7 @@ import setDetailInfoAndGetWatchPageLink from "@/utils/setDetailInfoAndGetWatchPa
 import { WatchingAnimeType } from "@/types/anime";
 import { themes } from "@/theme";
 import classNames from "classnames";
+import getTitle from "@/utils/getTitle";
 
 function ContinueWatchingPosterItem({
   WatchingAnime,
@@ -29,13 +30,7 @@ function ContinueWatchingPosterItem({
 
   if (!animeInfo) return null;
 
-  const title =
-    typeof animeInfo.title === "string"
-      ? animeInfo.title
-      : animeInfo.title?.english ||
-        animeInfo.title?.romaji ||
-        animeInfo.title?.native ||
-        animeInfo.title?.userPreferred;
+  const title = getTitle(animeInfo.title);
 
   const handleClick = async () => {
     setIsDetailDataFetching(true);
@@ -53,15 +48,15 @@ function ContinueWatchingPosterItem({
   return (
     <div
       className={classNames("p-1", {
-        "w-[152px] sm:w-48": isHorizontalScroll,
+        "w-[152px] sm:w-48 p-2 xxs:p-3": isHorizontalScroll,
         "min-w-24 max-w-48": !isHorizontalScroll,
       })}>
       <div
         className="w-full cursor-pointer"
-        onPointerEnter={() => {
+        onMouseEnter={() => {
           setIsHover(true);
         }}
-        onPointerLeave={() => {
+        onMouseLeave={() => {
           setIsHover(false);
         }}
         onClick={handleClick}>

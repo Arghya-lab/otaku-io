@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import htmlParse from "html-react-parser";
 import chroma from "chroma-js";
 import Skeleton from "react-loading-skeleton";
 import axios, { isAxiosError } from "axios";
@@ -12,6 +13,7 @@ import { AnimeEpisodeType, DetailAnimeInfoType } from "@/types/anime";
 import { themes } from "@/theme";
 import { usePreference } from "@/components/providers/PreferenceProvider";
 import { ApiSuccessType } from "@/types/apiResponse";
+import getTitle from "@/utils/getTitle";
 
 function VideoWatchPage({
   params,
@@ -82,19 +84,13 @@ function VideoWatchPage({
     );
   }
 
-  const title =
-    typeof detailInfo.title === "string"
-      ? detailInfo.title
-      : detailInfo.title?.english ||
-        detailInfo.title?.romaji ||
-        detailInfo.title?.native ||
-        detailInfo.title?.userPreferred;
+  const title =getTitle(detailInfo.title)
 
   return (
     <>
       <TopNavbar />
       <div className="flex flex-col md:flex-row">
-        <div className="xxs:px-2 xs:px-6 lg:px-12 pb-8 pt-4 flex flex-col md:min-w-[700px] md:w-[66%] lg:min-w-[1000px] lg:w-[75%]">
+        <div className="xxs:px-2 xs:px-6 lg:px-12 pb-8 flex flex-col md:min-w-[700px] md:w-[66%] lg:min-w-[1000px] lg:w-[75%]">
           <Player
             animeId={animeId}
             title={
@@ -107,15 +103,15 @@ function VideoWatchPage({
             epNo={epNo}
             isDub={isDub}
           />
-          <p
-            className="py-4 px-2 font-bold font-nunito text-xl"
+          <h2
+            className="py-4 px-2 xxs:px-0 font-bold font-nunito text-2xl"
             style={{ color: theme.textColor }}>
             {detailInfo?.episodes?.length === 1 ? title ?? "" : episode?.title}
-          </p>
+          </h2>
           <p
-            className="pb-4 md:pb-18 lg:pb-12"
+            className="pb-4 px-2 xxs:px-0 md:pb-18 lg:pb-12"
             style={{ color: theme.textColor }}>
-            {episode?.description}
+            {htmlParse(episode?.description || "")}
           </p>
           <div className="px-2 xxs:px-0">
             <EpBtnSheet
@@ -126,17 +122,24 @@ function VideoWatchPage({
             />
           </div>
         </div>
+        <section className="flex flex-col md:pr-6">
+          <p
+            className="text-2xl capitalize pt-8 pb-4 px-2 xs:px-6 md:px-0 md:pt-0"
+            style={{ color: theme.textColor }}>
+            Recommendations
+          </p>
         {detailInfo?.recommendations ? (
           <div
-            className="flex-1 grid gap-4 justify-evenly pb-8 px-2 md:p-0 md:pb-8"
+          className="flex-1 grid gap-4 justify-evenly pb-8 px-2 md:p-0 md:pb-8"
             style={{
               gridTemplateColumns: "repeat(auto-fit, minmax(16rem, 24rem))",
             }}>
             {detailInfo?.recommendations.slice(0, 8).map((recommendation) => (
               <RecommendItem key={recommendation.id} item={recommendation} />
-            ))}
+              ))}
           </div>
         ) : null}
+      </section>
       </div>
     </>
   );

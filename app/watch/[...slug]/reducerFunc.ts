@@ -91,6 +91,12 @@ const reducer = (state: PlayerStateType, action: PlayerActionType) => {
     case "setVideoAspectRatioFullScreen":
       return { ...state, FullScreenType: ScreenFullTypeEnum["16:9"] };
       break;
+    case "qualityOpenChange":
+      return { ...state, isQualitySelectionOpen: action.payload ? action.payload : !state.isQualitySelectionOpen };
+      break;
+    case "settingOpenChange":
+      return { ...state, isSettingSectionOpen: action.payload ? action.payload : !state.isSettingSectionOpen };
+      break;
 
     default:
       return state;

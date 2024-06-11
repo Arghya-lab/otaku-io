@@ -7,6 +7,7 @@ import { AnimeItemType } from "@/types/anime";
 import { usePreference } from "@/components/providers/PreferenceProvider";
 import { themes } from "@/theme";
 import chroma from "chroma-js";
+import getTitle from "@/utils/getTitle";
 
 function RecommendItem({ item }: { item: AnimeItemType }) {
   const { themeId, isDub } = usePreference();
@@ -14,14 +15,7 @@ function RecommendItem({ item }: { item: AnimeItemType }) {
 
   const [isHover, setIsHover] = useState(false);
 
-  const title =
-    typeof item.title === "string"
-      ? item.title
-      : item.title?.english ||
-        item.title?.romaji ||
-        item.title?.native ||
-        item.title?.userPreferred ||
-        "";
+  const title = getTitle(item.title);
 
   return (
     <Link
@@ -34,7 +28,7 @@ function RecommendItem({ item }: { item: AnimeItemType }) {
           ? chroma(theme.primaryColor).darken(1).toString()
           : chroma(theme.primaryColor).darken(0.5).toString(),
       }}
-      className={`p-3 mr-4 max-w-md min-w-40 h-40 flex flex-row rounded-xl border-2`}
+      className={`p-3 max-w-md min-w-40 h-40 flex flex-row rounded-xl border-2`}
       onPointerEnter={() => setIsHover(true)}
       onPointerLeave={() => setIsHover(false)}>
       <div className={`pl-24 relative overflow-hidden rounded-lg`}>

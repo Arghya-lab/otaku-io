@@ -23,6 +23,8 @@ export interface PlayerStateType {
   isMobileDevice: boolean;
   controllerVisibility: boolean;
   skipTimes: SkipTimeType[];
+  isQualitySelectionOpen: boolean;
+  isSettingSectionOpen: boolean;
 }
 
 export enum ScreenFullTypeEnum {
@@ -107,6 +109,14 @@ interface setMaxWidthFullScreenActionType {
 interface setVideoAspectRatioFullScreenActionType {
   type: "setVideoAspectRatioFullScreen";
 }
+interface QualityOpenChangeActionType {
+  type: "qualityOpenChange";
+  payload?: boolean;
+}
+interface SettingOpenChangeActionType {
+  type: "settingOpenChange";
+  payload?: boolean;
+}
 
 export type PlayerActionType =
   | MinimizeMaximizeActionType
@@ -128,4 +138,6 @@ export type PlayerActionType =
   | setVideoAspectRatioActionType
   | setDefaultFullScreenActionType
   | setMaxWidthFullScreenActionType
-  | setVideoAspectRatioFullScreenActionType;
+  | setVideoAspectRatioFullScreenActionType
+  | QualityOpenChangeActionType
+  | SettingOpenChangeActionType

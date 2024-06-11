@@ -7,6 +7,7 @@ import BookmarkBtn from "./BookmarkBtn";
 import User from "@/models/User";
 import { AnimeImdbInfoType, DetailAnimeInfoType } from "@/types/anime";
 import classNames from "classnames";
+import getTitle from "@/utils/getTitle";
 
 async function MetaPreviewContainer({
   detailInfo,
@@ -19,14 +20,7 @@ async function MetaPreviewContainer({
   const user = await User.findOne({ email: session?.user?.email });
   let bookmarks = user?.bookmarks || null;
 
-  const title =
-    typeof detailInfo.title === "string"
-      ? detailInfo.title
-      : detailInfo.title?.english ||
-        detailInfo.title?.romaji ||
-        detailInfo.title?.native ||
-        detailInfo.title?.userPreferred ||
-        "";
+  const title = getTitle(detailInfo.title);
 
   const color = detailInfo?.color || "#000";
 

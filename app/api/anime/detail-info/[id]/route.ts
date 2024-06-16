@@ -18,8 +18,6 @@ export async function GET(
   const isDub = req.nextUrl.searchParams.get("dub") === "true" ? true : false;
 
   try {
-    console.log(id, isDub);
-
     const data = await getDetailInfo(id, isDub);
 
     return apiSuccess({

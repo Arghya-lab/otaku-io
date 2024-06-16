@@ -30,7 +30,6 @@ export interface PlayerStateType {
 export enum ScreenFullTypeEnum {
   "DEFAULT",
   "MAXWIDTH",
-  "16:9",
 }
 
 interface MinimizeMaximizeActionType {
@@ -106,9 +105,6 @@ interface setDefaultFullScreenActionType {
 interface setMaxWidthFullScreenActionType {
   type: "setMaxWidthFullScreen";
 }
-interface setVideoAspectRatioFullScreenActionType {
-  type: "setVideoAspectRatioFullScreen";
-}
 interface QualityOpenChangeActionType {
   type: "qualityOpenChange";
   payload?: boolean;
@@ -138,6 +134,5 @@ export type PlayerActionType =
   | setVideoAspectRatioActionType
   | setDefaultFullScreenActionType
   | setMaxWidthFullScreenActionType
-  | setVideoAspectRatioFullScreenActionType
   | QualityOpenChangeActionType
   | SettingOpenChangeActionType;

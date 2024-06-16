@@ -63,18 +63,20 @@ function ContinueWatchingPosterItem({
         onClick={handleClick}
       >
         <div
-          className={`relative w-full overflow-hidden rounded-xl ring-[3px] ${
-            isHover ? "ring-slate-50" : "ring-transparent"
-          }`}
+          className={classNames(
+            "relative w-full overflow-hidden rounded-xl ring-[3px]",
+            {
+              "ring-slate-50": isHover,
+              "ring-transparent": !isHover,
+            }
+          )}
         >
-          <div
-            className={`absolute bottom-0 left-0 right-0 top-0 z-0 flex items-center justify-center`}
-          >
+          <div className="absolute bottom-0 left-0 right-0 top-0 z-10 flex items-center justify-center">
             {!isDetailDataFetching ? (
               <PlayCircle
                 size={48}
-                strokeWidth={isHover ? 1.5 : 1}
-                className={`text-white ${isHover ? "scale-125" : null}`}
+                strokeWidth={isHover ? 1.5 : 1.25}
+                className={classNames("text-white", { "scale-125": isHover })}
                 style={
                   isHover
                     ? animeInfo?.color
@@ -96,9 +98,12 @@ function ContinueWatchingPosterItem({
             )}
           </div>
           <div
-            className={`relative mb-auto flex aspect-[5/7] h-full w-full transform-gpu select-none items-start overflow-hidden transition-transform duration-200 ease-in ${
-              isHover ? "scale-110" : null
-            }`}
+            className={classNames(
+              "relative mb-auto flex aspect-[5/7] h-full w-full transform-gpu select-none items-start overflow-hidden transition-transform duration-200 ease-in",
+              {
+                "scale-110": isHover,
+              }
+            )}
           >
             <img
               alt={title || ""}

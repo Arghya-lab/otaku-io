@@ -9,6 +9,7 @@ import { getSkipTimes } from "@/utils/getSkipTimes";
 import setWatchedTill from "@/utils/setWatchedTill";
 import axios, { isAxiosError } from "axios";
 import classNames from "classnames";
+import { AnimatePresence, motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useReducer, useRef, useState } from "react";
@@ -199,7 +200,7 @@ function Player({
   return (
     <div
       id="Player"
-      className={classNames({
+      className={classNames("relative", {
         "flex items-center justify-center": state.playerFullScreen,
         "aspect-video w-full overflow-hidden bg-black xxs:rounded-lg":
           state.loaded === 0,
@@ -207,28 +208,16 @@ function Player({
     >
       <div
         ref={playerContainerRef}
-        className={classNames("relative bg-black", {
-          "h-full w-full": state.loaded === 0,
+        className={classNames("w-full bg-black", {
+          "h-full": state.loaded === 0,
           "h-full max-w-full":
             state.playerFullScreen &&
             windowWidth / windowHeight >= 16 / 9 &&
             state.FullScreenType === ScreenFullTypeEnum.DEFAULT,
-          "h-full":
-            state.playerFullScreen &&
-            state.FullScreenType === ScreenFullTypeEnum.MAXWIDTH,
-          "max-h-full w-full":
+          "max-h-full":
             state.playerFullScreen && windowWidth / windowHeight < 16 / 9,
           "m-auto overflow-hidden xxs:rounded-lg": !state.playerFullScreen,
-          "max-h-[calc(100vh-6rem)]":
-            !state.playerFullScreen && windowWidth >= 800,
         })}
-        style={{
-          aspectRatio:
-            windowWidth >= 800 ||
-            state.FullScreenType === ScreenFullTypeEnum["16:9"]
-              ? state.videoAspectRatio
-              : "auto",
-        }}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onTouchStart={handleMouseMove}
@@ -238,7 +227,6 @@ function Player({
           // controls
           // playsinline
           url={state.currentSource?.url}
-          className="flex-1"
           width="100%"
           height="100%"
           pip={state.pip}
@@ -310,47 +298,60 @@ function Player({
             },
           }}
         />
-        <PlayerControl
-          ref={controllerRef}
-          playerRef={playerRef}
-          state={state}
-          dispatch={dispatch}
-        />
-        {state.playerFullScreen &&
-          title &&
-          playerContainerRef.current &&
-          state.controllerVisibility && (
-            <p
-              className="absolute left-5 top-3 z-50 select-none font-medium text-white opacity-80"
-              style={{
-                fontSize:
-                  playerContainerRef.current.clientWidth /
-                  (windowWidth > 1000 ? 45 : 30),
-                textShadow: "0.25vw 0.25vw 6px rgba(0, 0, 0, 0.65)",
-              }}
-            >
-              {title}
-              {detailInfo?.episodes && detailInfo?.episodes.length !== 1 && (
-                <p style={{ fontSize: "70%" }}>Ep-{epNo}</p>
-              )}
-            </p>
-          )}
-        <PlayerSkipBtns state={state} playerRef={playerRef} />
-        <PlayerLoader state={state} />
-        <QualitySelectModal
-          state={state}
-          dispatch={dispatch}
-          setWatched={async () =>
-            await setWatchedTill(animeId, epNo, state.played, session)
-          }
-        />
-        <PreferenceSettingModal
-          isOpen={state.isSettingSectionOpen}
-          handleOpenChange={(value) =>
-            dispatch({ type: "settingOpenChange", payload: value })
-          }
-        />
       </div>
+      <AnimatePresence>
+        {!state.pip && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <PlayerControl
+              ref={controllerRef}
+              playerRef={playerRef}
+              state={state}
+              dispatch={dispatch}
+            />
+            <AnimatePresence>
+              {state.playerFullScreen &&
+                title &&
+                playerContainerRef.current &&
+                state.controllerVisibility && (
+                  <motion.article
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1.5 }}
+                    className="absolute left-5 top-3 z-50 select-none text-2xl font-medium text-white opacity-80"
+                    style={{
+                      textShadow: "0.25vw 0.25vw 6px rgba(0, 0, 0, 0.65)",
+                    }}
+                  >
+                    {title}
+                    {detailInfo?.episodes &&
+                      detailInfo?.episodes.length !== 1 && (
+                        <p style={{ fontSize: "70%" }}>Ep-{epNo}</p>
+                      )}
+                  </motion.article>
+                )}
+            </AnimatePresence>
+            <PlayerSkipBtns state={state} playerRef={playerRef} />
+            <QualitySelectModal
+              state={state}
+              dispatch={dispatch}
+              setWatched={async () =>
+                await setWatchedTill(animeId, epNo, state.played, session)
+              }
+            />
+            <PreferenceSettingModal
+              isOpen={state.isSettingSectionOpen}
+              handleOpenChange={(value) =>
+                dispatch({ type: "settingOpenChange", payload: value })
+              }
+            />
+            <PlayerLoader state={state} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

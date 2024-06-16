@@ -10,7 +10,6 @@ import {
 import { secToMinSec } from "@/utils/time";
 import classNames from "classnames";
 import {
-  BoxSelect,
   Expand,
   FastForward,
   Fullscreen,
@@ -107,69 +106,71 @@ const PlayerControl = forwardRef(
     };
 
     useEffect(() => {
-      const handlePlayerKeyPress = (e: KeyboardEvent) => {
-        e.preventDefault();
+      const handlePlayerKeyPress = (e: any) => {
+        if (e.target === document.getElementsByTagName("body")[0]) {
+          e.preventDefault();
 
-        switch (e.key) {
-          case " ":
-            handleTogglePlayPause();
-            break;
-          case "ArrowRight":
-            handleSkipForward();
-            break;
-          case "ArrowLeft":
-            handleSkipBack();
-            break;
-          case "f":
-            handleFullScreen();
-            break;
-          case "p":
-            handleTogglePIP();
-            break;
-          case "m":
-            dispatch({ type: "toggleMuted" });
-            break;
-          case "Escape":
-            handleExitFullScreen();
-            break;
-          case "ArrowUp":
-            dispatch({ type: "updateVolume", payload: 0.1 });
-            break;
-          case "ArrowDown":
-            dispatch({ type: "updateVolume", payload: -0.1 });
-            break;
-          case "0":
-            handleSkipTo((state.duration * 0) / 10);
-            break;
-          case "1":
-            handleSkipTo((state.duration * 1) / 10);
-            break;
-          case "2":
-            handleSkipTo((state.duration * 2) / 10);
-            break;
-          case "3":
-            handleSkipTo((state.duration * 3) / 10);
-            break;
-          case "4":
-            handleSkipTo((state.duration * 4) / 10);
-            break;
-          case "5":
-            handleSkipTo((state.duration * 5) / 10);
-            break;
-          case "6":
-            handleSkipTo((state.duration * 6) / 10);
-            break;
-          case "7":
-            handleSkipTo((state.duration * 7) / 10);
-            break;
-          case "8":
-            handleSkipTo((state.duration * 8) / 10);
-            break;
-          case "9":
-            handleSkipTo((state.duration * 9) / 10);
-            break;
-          default:
-            break;
+          switch (e.key) {
+            case " ":
+              handleTogglePlayPause();
+              break;
+            case "ArrowRight":
+              handleSkipForward();
+              break;
+            case "ArrowLeft":
+              handleSkipBack();
+              break;
+            case "f":
+              handleFullScreen();
+              break;
+            case "p":
+              handleTogglePIP();
+              break;
+            case "m":
+              dispatch({ type: "toggleMuted" });
+              break;
+            case "Escape":
+              handleExitFullScreen();
+              break;
+            case "ArrowUp":
+              dispatch({ type: "updateVolume", payload: 0.1 });
+              break;
+            case "ArrowDown":
+              dispatch({ type: "updateVolume", payload: -0.1 });
+              break;
+            case "0":
+              handleSkipTo((state.duration * 0) / 10);
+              break;
+            case "1":
+              handleSkipTo((state.duration * 1) / 10);
+              break;
+            case "2":
+              handleSkipTo((state.duration * 2) / 10);
+              break;
+            case "3":
+              handleSkipTo((state.duration * 3) / 10);
+              break;
+            case "4":
+              handleSkipTo((state.duration * 4) / 10);
+              break;
+            case "5":
+              handleSkipTo((state.duration * 5) / 10);
+              break;
+            case "6":
+              handleSkipTo((state.duration * 6) / 10);
+              break;
+            case "7":
+              handleSkipTo((state.duration * 7) / 10);
+              break;
+            case "8":
+              handleSkipTo((state.duration * 8) / 10);
+              break;
+            case "9":
+              handleSkipTo((state.duration * 9) / 10);
+              break;
+            default:
+              break;
+          }
         }
       };
       document.addEventListener("keydown", handlePlayerKeyPress);
@@ -184,7 +185,7 @@ const PlayerControl = forwardRef(
       <div
         ref={ref}
         className={classNames(
-          "absolute bottom-0 left-0 right-0 top-0 z-20 flex items-center justify-center text-white opacity-100 transition-opacity duration-500",
+          "absolute bottom-0 left-0 right-0 top-0 z-30 flex items-center justify-center text-white opacity-100 transition-opacity duration-500",
           {
             "bg-black bg-opacity-70": state.playerFullScreen,
           }
@@ -338,7 +339,7 @@ const PlayerControl = forwardRef(
               )}
               {state.playerFullScreen && screenfull.isFullscreen && (
                 <div role="button" className="pl-3 xs:pl-6">
-                  {state.FullScreenType === ScreenFullTypeEnum.DEFAULT ? (
+                  {state.FullScreenType === ScreenFullTypeEnum.DEFAULT && (
                     <Fullscreen
                       className="h-4 w-4 xs:h-6 xs:w-6"
                       color="#fff"
@@ -346,21 +347,14 @@ const PlayerControl = forwardRef(
                         dispatch({ type: "setMaxWidthFullScreen" })
                       }
                     />
-                  ) : state.FullScreenType === ScreenFullTypeEnum.MAXWIDTH ? (
-                    <BoxSelect
-                      className="h-4 w-4 xs:h-6 xs:w-6"
-                      color="#fff"
-                      onClick={() =>
-                        dispatch({ type: "setVideoAspectRatioFullScreen" })
-                      }
-                    />
-                  ) : state.FullScreenType === ScreenFullTypeEnum["16:9"] ? (
+                  )}
+                  {state.FullScreenType === ScreenFullTypeEnum.MAXWIDTH && (
                     <RectangleHorizontal
                       className="h-4 w-4 xs:h-6 xs:w-6"
                       color="#fff"
                       onClick={() => dispatch({ type: "setDefaultFullScreen" })}
                     />
-                  ) : null}
+                  )}
                 </div>
               )}
               <div role="button" className="px-3 xs:px-6">

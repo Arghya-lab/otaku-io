@@ -1,6 +1,6 @@
 import AuthProvider from "@/components/providers/AuthProvider";
 import PreferencesProvider from "@/components/providers/PreferenceProvider";
-import ReactQueryProvider from "@/components/providers/ReactQueryProvider";
+// import ReactQueryProvider from "@/components/providers/ReactQueryProvider";
 import connectDB from "@/db/db";
 import Preference from "@/models/Preference";
 import { themes } from "@/theme";
@@ -84,26 +84,26 @@ export default async function RootLayout({
 
   return (
     <html lang="en" id="App">
-      <ReactQueryProvider>
-        <AuthProvider>
-          <CookiesProvider>
-            <PreferencesProvider>
-              <body
-                className={`${poppins} ${nunito_Sans} relative w-full font-poppins`}
-              >
-                <div
-                  className="fixed -z-20 h-screen w-screen bg-cover"
-                  style={{
-                    backgroundColor: theme.primaryColor,
-                    background: theme.bgImg,
-                  }}
-                />
-                {children}
-              </body>
-            </PreferencesProvider>
-          </CookiesProvider>
-        </AuthProvider>
-      </ReactQueryProvider>
+      {/* <ReactQueryProvider> */}
+      <AuthProvider>
+        <CookiesProvider>
+          <PreferencesProvider>
+            <body
+              className={`${poppins} ${nunito_Sans} relative w-full font-poppins`}
+            >
+              <div
+                className="fixed -z-20 h-screen w-screen bg-cover"
+                style={{
+                  backgroundColor: theme.primaryColor,
+                  background: theme.bgImg,
+                }}
+              />
+              {children}
+            </body>
+          </PreferencesProvider>
+        </CookiesProvider>
+      </AuthProvider>
+      {/* </ReactQueryProvider> */}
     </html>
   );
 }

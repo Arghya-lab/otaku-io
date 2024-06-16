@@ -99,7 +99,7 @@ function EpBtnSheet({
     <>
       {/* radio dub / sub btn */}
       <section className="flex max-w-lg items-center justify-between pb-4">
-        <div className="items-center\\ flex gap-1 capitalize">
+        <div className="flex items-center gap-1 capitalize">
           <Radio
             color={detailInfo?.color}
             isWatchPage={isWatchPage}

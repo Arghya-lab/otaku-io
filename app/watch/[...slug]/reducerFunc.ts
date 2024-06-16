@@ -88,9 +88,6 @@ const reducer = (state: PlayerStateType, action: PlayerActionType) => {
     case "setMaxWidthFullScreen":
       return { ...state, FullScreenType: ScreenFullTypeEnum.MAXWIDTH };
       break;
-    case "setVideoAspectRatioFullScreen":
-      return { ...state, FullScreenType: ScreenFullTypeEnum["16:9"] };
-      break;
     case "qualityOpenChange":
       return {
         ...state,

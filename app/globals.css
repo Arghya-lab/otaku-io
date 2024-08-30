@@ -1,5 +1,6 @@
 @import "react-alice-carousel/lib/alice-carousel.css";
 @import "react-loading-skeleton/dist/skeleton.css";
+@import "@arghya-lab/react-video/dist/styles.css";
 
 body,
 #root {

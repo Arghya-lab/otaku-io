@@ -26,7 +26,7 @@ export const options: NextAuthOptions = {
             provider: account?.provider,
           }
         );
-        user.id = existingUser._id;
+        user.id = existingUser._id as string;
       } else {
         const newUser = await User.create({
           name: user.name,
@@ -36,7 +36,7 @@ export const options: NextAuthOptions = {
           provider: account?.provider,
         });
         await Preference.create({ email: user.email });
-        user.id = newUser._id;
+        user.id = newUser._id as string;
       }
       return true;
     },

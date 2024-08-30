@@ -19,6 +19,7 @@ export async function GET(
 
   try {
     const data = await getDetailInfo(id, isDub);
+    console.log(data);
 
     return apiSuccess({
       data,

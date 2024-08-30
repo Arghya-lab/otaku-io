@@ -52,11 +52,14 @@ export default async function setWatchedTill(
   localStorage.setItem("animesWatched", JSON.stringify(animesWatched));
 
   // If session present
+
   if (session) {
-    await axios.patch("/api/anime/watched-till", {
+    const payload = {
       animeId,
       episodeNo,
-      watchedTill: +watchedTill.toFixed(4),
-    });
+      watchedTill: watchedTill.toFixed(4),
+    };
+
+    await axios.patch("/api/anime/watched-till", payload);
   }
 }

@@ -11,7 +11,6 @@ import {
 import { ANIME, META, PROVIDERS_LIST } from "@consumet/extensions";
 import NineAnime from "@consumet/extensions/dist/providers/anime/9anime";
 import Anilist from "@consumet/extensions/dist/providers/meta/anilist";
-import axios from "axios";
 
 const generateAnilistMeta = (
   provider: string | undefined = "gogoanime"
@@ -57,6 +56,7 @@ export const getTrending = async (page = 1, perPage = 10) => {
       page,
       perPage
     )) as TrendingAnimeResType;
+
     return res;
   } catch {
     throw new Error("Error occur while getting trending anime.");
@@ -75,6 +75,7 @@ export const getPopular = async (page = 1, perPage = 10) => {
       page,
       perPage
     )) as PopularAnimeResType;
+
     return res;
   } catch {
     throw new Error("Error occur while getting popular anime.");
@@ -145,6 +146,7 @@ export const advancedSearch = async ({
       status,
       season
     )) as AdvancedAnimeSearchResType;
+
     return res;
   } catch {
     throw new Error("Error occur while searching anime.");
@@ -165,6 +167,7 @@ export const getDetailInfo = async (id: string, isDub?: boolean) => {
       id,
       isDub
     )) as DetailAnimeInfoType;
+
     return res;
   } catch {
     throw new Error("Error occur while getting anime info.");
@@ -189,6 +192,7 @@ export const getSearchData = async (
       page,
       perPage || 30
     )) as AnimeSearchResType;
+
     return res;
   } catch {
     throw new Error("Error occur while getting searching anime.");
@@ -205,16 +209,13 @@ export const getStreamingLinks = async (
   provider?: string
 ) => {
   try {
-    const anilistPromise = generateAnilistMeta(provider).fetchEpisodeSources(
+    const anilist = generateAnilistMeta(provider);
+    const res = (await anilist.fetchEpisodeSources(
       episodeId
-    ) as Promise<AnimeStreamingSourceType>;
+    )) as AnimeStreamingSourceType;
 
-    const axiosPromise = axios
-      .get(`https://march-api1.vercel.app/meta/anilist/watch/${episodeId}`)
-      .then((response) => response.data as AnimeStreamingSourceType);
+    return res;
 
-    // Use Promise.race() to return the first resolved promise
-    return Promise.race([anilistPromise, axiosPromise]);
     // return {
     //   headers: {
     //     Referer:

@@ -3,9 +3,18 @@
     "Anilist",
     "animes",
     "consumet",
+    "headlessui",
+    "imdb",
+    "lucide",
+    "NEXTAUTH",
     "Otaku",
     "outro",
     "romaji",
-    "screenfull"
+    "screenfull",
+    "signin",
+    "signout",
+    "Skipable",
+    "themeid",
+    "tippyjs"
   ]
 }

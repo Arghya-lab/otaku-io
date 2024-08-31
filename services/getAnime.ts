@@ -1,14 +1,13 @@
 import "server-only";
 
 import {
-  AdvancedAnimeSearchResType,
-  AnimeSearchResType,
-  AnimeStreamingSourceType,
-  DetailAnimeInfoType,
-  PopularAnimeResType,
-  TrendingAnimeResType,
-} from "@/types/anime";
-import { ANIME, META, PROVIDERS_LIST } from "@consumet/extensions";
+  ANIME,
+  IAnimeInfo,
+  IAnimeResult,
+  ISearch,
+  META,
+  PROVIDERS_LIST,
+} from "@consumet/extensions";
 import NineAnime from "@consumet/extensions/dist/providers/anime/9anime";
 import Anilist from "@consumet/extensions/dist/providers/meta/anilist";
 
@@ -48,39 +47,35 @@ const generateAnilistMeta = (
  * @param page page number to search for (optional)
  * @param perPage number of results per page (optional)
  */
-export const getTrending = async (page = 1, perPage = 10) => {
+export async function getTrending(
+  page = 1,
+  perPage = 10
+): Promise<ISearch<IAnimeResult>> {
   try {
     const anilist = generateAnilistMeta();
 
-    const res = (await anilist.fetchTrendingAnime(
-      page,
-      perPage
-    )) as TrendingAnimeResType;
-
-    return res;
+    return await anilist.fetchTrendingAnime(page, perPage);
   } catch {
     throw new Error("Error occur while getting trending anime.");
   }
-};
+}
 
 /**
  * @param page page number to search for (optional)
  * @param perPage number of results per page (optional)
  */
-export const getPopular = async (page = 1, perPage = 10) => {
+export async function getPopular(
+  page = 1,
+  perPage = 10
+): Promise<ISearch<IAnimeResult>> {
   try {
     const anilist = generateAnilistMeta();
 
-    const res = (await anilist.fetchPopularAnime(
-      page,
-      perPage
-    )) as PopularAnimeResType;
-
-    return res;
+    return await anilist.fetchPopularAnime(page, perPage);
   } catch {
     throw new Error("Error occur while getting popular anime.");
   }
-};
+}
 
 /**
  *
@@ -96,7 +91,7 @@ export const getPopular = async (page = 1, perPage = 10) => {
  * @param status Status (optional) (options: `RELEASING`, `FINISHED`, `NOT_YET_RELEASED`, `CANCELLED`, `HIATUS`)
  * @param season Season (optional) (options: `WINTER`, `SPRING`, `SUMMER`, `FALL`)
  */
-export const advancedSearch = async ({
+export async function advancedSearch({
   query,
   page,
   perPage,
@@ -121,7 +116,7 @@ export const advancedSearch = async ({
   status: string;
   year: number;
   season: string;
-}> = {}) => {
+}> = {}): Promise<ISearch<IAnimeResult>> {
   try {
     if (!page) page = 1;
 
@@ -133,7 +128,7 @@ export const advancedSearch = async ({
 
     const anilist = generateAnilistMeta();
 
-    const res = (await anilist.advancedSearch(
+    return await anilist.advancedSearch(
       query,
       type,
       page,
@@ -145,34 +140,30 @@ export const advancedSearch = async ({
       year,
       status,
       season
-    )) as AdvancedAnimeSearchResType;
-
-    return res;
+    );
   } catch {
     throw new Error("Error occur while searching anime.");
   }
-};
+}
 
 /**
  *
  * @param id Anime id
  * @param dub to get dubbed episodes (optional) set to `true` to get dubbed episodes. **ONLY WORKS FOR GOGOANIME**
  */
-export const getDetailInfo = async (id: string, isDub?: boolean) => {
+export async function getAnimeInfo(
+  id: string,
+  isDub?: boolean
+): Promise<IAnimeInfo> {
   try {
     // const provider = (request.query as { provider?: string }).provider;
     let anilist = generateAnilistMeta();
 
-    const res = (await anilist.fetchAnimeInfo(
-      id,
-      isDub
-    )) as DetailAnimeInfoType;
-
-    return res;
+    return await anilist.fetchAnimeInfo(id, isDub);
   } catch {
     throw new Error("Error occur while getting anime info.");
   }
-};
+}
 
 /**
  * @param query Search query
@@ -187,13 +178,7 @@ export const getSearchData = async (
   try {
     const anilist = generateAnilistMeta();
 
-    const res = (await anilist.search(
-      query,
-      page,
-      perPage || 30
-    )) as AnimeSearchResType;
-
-    return res;
+    return await anilist.search(query, page, perPage || 30);
   } catch {
     throw new Error("Error occur while getting searching anime.");
   }
@@ -210,11 +195,8 @@ export const getStreamingLinks = async (
 ) => {
   try {
     const anilist = generateAnilistMeta(provider);
-    const res = (await anilist.fetchEpisodeSources(
-      episodeId
-    )) as AnimeStreamingSourceType;
 
-    return res;
+    return await anilist.fetchEpisodeSources(episodeId);
 
     // return {
     //   headers: {

@@ -1,7 +1,7 @@
 "use client";
 
 import { themeEnum, themes } from "@/theme";
-import { AnimeEpisodeType } from "@/types/anime";
+import { IAnimeEpisode } from "@consumet/extensions";
 import chroma from "chroma-js";
 import { useState } from "react";
 import { shade } from "../../utils/color";
@@ -16,9 +16,9 @@ function EpBtn({
   isWatchPage = false,
 }: {
   color?: string;
-  episode: AnimeEpisodeType;
+  episode: IAnimeEpisode;
   watched?: boolean;
-  handleClick: (ep: AnimeEpisodeType) => void;
+  handleClick: (ep: IAnimeEpisode) => void;
   watching?: boolean;
   isWatchPage?: boolean;
 }) {

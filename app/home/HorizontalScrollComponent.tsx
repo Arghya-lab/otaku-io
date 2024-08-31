@@ -2,11 +2,11 @@
 
 import { themes } from "@/theme";
 import { DragManager } from "@/utils/dragManager";
-import isMobileDevice from "@/utils/getIsMobileDevice";
 import chroma from "chroma-js";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import React from "react";
+import { isMobile } from "react-device-detect";
 import {
   ScrollMenu,
   VisibilityContext,
@@ -66,7 +66,7 @@ const LeftArrow = React.memo(() => {
   const visibility = React.useContext<publicApiType>(VisibilityContext);
   const isFirstItemVisible = visibility.useIsVisible("first", true);
 
-  if (isMobileDevice()) return null;
+  if (isMobile) return null;
 
   return (
     <Arrow
@@ -87,7 +87,7 @@ const RightArrow = React.memo(() => {
   const visibility = React.useContext<publicApiType>(VisibilityContext);
   const isLastItemVisible = visibility.useIsVisible("last", false);
 
-  if (isMobileDevice()) return null;
+  if (isMobile) return null;
 
   return (
     <Arrow

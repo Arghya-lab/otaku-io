@@ -4,8 +4,8 @@ import PosterItem from "@/components/PosterItem";
 import { usePreference } from "@/components/providers/PreferenceProvider";
 import usePosterItemCount from "@/hooks/usePosterItemCount";
 import { themes } from "@/theme";
-import { AnimeItemType, AnimeSearchResType } from "@/types/anime";
 import { ApiSuccessType } from "@/types/apiResponse";
+import { IAnimeResult, ISearch } from "@consumet/extensions";
 import axios from "axios";
 import { useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -17,7 +17,7 @@ function InfiniteSearchScroll({
   hasNextPage,
 }: {
   query: string;
-  initialData: AnimeItemType[];
+  initialData: IAnimeResult[];
   hasNextPage: boolean;
 }) {
   const { themeId } = usePreference();
@@ -31,7 +31,7 @@ function InfiniteSearchScroll({
 
   const handleFetchMoreData = async () => {
     try {
-      const { data }: { data: ApiSuccessType<AnimeSearchResType> } =
+      const { data }: { data: ApiSuccessType<ISearch<IAnimeResult>> } =
         await axios.get(`/api/anime/search`, {
           timeout: 15000,
           params: {

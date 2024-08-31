@@ -1,30 +1,68 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<p align="center">
+    <img width="120px" src="./public/android-chrome-384x384.png"/>
+    <h1 align="center">Otaku-io</h1>
+</p>
+
+<br/>
+    <img title="home page" alt="home page" src="./public/promo-img/home_page.jpg"/>
+    <img title="info page" alt="info page" src="./public/promo-img/cowboy_bebop-info.png"/>
+    <img title="discover page" alt="discover page" src="./public/promo-img/discover_page.jpg"/>
+
+<br/>
+
+Otaku-io is an anime streaming platform built with Next.js, offering a seamless anime-watching experience directly in your browser.
+
+## Features
+
+- **Anime Streaming**: Watch your favorite anime with smooth playback.
+- **Responsive Design**: Optimized for both desktop and mobile devices.
+- **Dynamic Scraping**: Utilizes the `Consumet.ts` library for fetching the latest anime content.
+- **Progressive Web App (PWA)**: Install Otaku-io as a PWA for a native-like experience on your device.
+- **User Authentication**: Secure login and authentication using NextAuth.
+- **Custom Video Player**: Integrated with `@arghya-lab/react-video` for a customizable video experience.
+- **Infinite Scroll**: Easily browse through anime lists with infinite scrolling.
 
 ## Getting Started
 
-First, run the development server:
+To get started with Otaku-io, follow these steps:
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/Arghya-lab/otaku-io.git
+   cd otaku-io
+   ```
+2. **Install dependencies**:
+
+```bash
+npm install
+```
+
+3. **Run the development server**:
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. **Open the app**: Open your browser and navigate to http://localhost:3000 to see Otaku-io in action.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Otaku-io is deployed on Vercel. You can visit the live app at https://otaku-io.vercel.app.
 
-## Learn More
+## Fork the repository.
 
-To learn more about Next.js, take a look at the following resources:
+1. Create a new branch: `git checkout -b feature/YourFeature`.\
+2. Commit your changes: `git commit -m 'Add some feature'`.\
+3. Push to the branch: `git push origin feature/YourFeature`.\
+4. Open a pull request.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Deploy on Vercel
+## Acknowledgements
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Thanks to the team behind _Consumet.ts_ for their amazing work on scraping anime data.
+A special thanks to all the contributors who have helped build `Consumet.ts`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Feel free to visit the live app at https://otaku-io.vercel.app and enjoy your favorite anime!

@@ -30,6 +30,7 @@
     "next-client-cookies": "^1.1.1",
     "react": "^18",
     "react-alice-carousel": "^2.9.1",
+    "react-device-detect": "^2.2.3",
     "react-dom": "^18",
     "react-horizontal-scrolling-menu": "^7.1.7",
     "react-infinite-scroll-component": "^6.1.0",

@@ -1,10 +1,10 @@
-import { AnimeEpisodeType } from "@/types/anime";
 import { perSelectEpisodesAmount } from "@/types/constants";
+import { IAnimeEpisode } from "@consumet/extensions";
 
 const limit = perSelectEpisodesAmount;
 
 export const mapEpisodes = (
-  episodes: AnimeEpisodeType[] = [],
+  episodes: IAnimeEpisode[] = [],
   selectedIdx: number
 ) => {
   const startEp = selectedIdx * limit + 1;
@@ -16,7 +16,7 @@ export const mapEpisodes = (
   return episodes.slice(startEpId, endEpId !== -1 ? endEpId + 1 : undefined);
 };
 
-export const epSelectableList = (episodes: AnimeEpisodeType[] = []) => {
+export const epSelectableList = (episodes: IAnimeEpisode[] = []) => {
   const lastEpNo = episodes[episodes.length - 1]?.number || episodes.length;
 
   const totalSelectable = Math.ceil(lastEpNo / limit);

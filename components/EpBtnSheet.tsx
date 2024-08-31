@@ -2,7 +2,6 @@
 
 import { usePreference } from "@/components/providers/PreferenceProvider";
 import { themes } from "@/theme";
-import { AnimeEpisodeType, DetailAnimeInfoType } from "@/types/anime";
 import { ApiSuccessType } from "@/types/apiResponse";
 import {
   epSelectableList,
@@ -10,6 +9,7 @@ import {
   mapEpisodes,
 } from "@/utils/epRangeFunc";
 import setDetailInfoAndGetWatchPageLink from "@/utils/setDetailInfoAndGetWatchPageLink";
+import { IAnimeEpisode, IAnimeInfo } from "@consumet/extensions";
 import axios, { isAxiosError } from "axios";
 import { Play } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -20,12 +20,12 @@ import Radio from "./ui/Radio";
 import Select from "./ui/Select";
 
 function EpBtnSheet({
-  detailInfo = null,
+  animeInfo = null,
   isDubEnable = false,
   episodeNo = 1,
   isWatchPage = false,
 }: {
-  detailInfo: DetailAnimeInfoType | null;
+  animeInfo: IAnimeInfo | null;
   isDubEnable: boolean;
   episodeNo?: number;
   isWatchPage?: boolean;
@@ -37,23 +37,23 @@ function EpBtnSheet({
   const { data: session } = useSession();
 
   const [isHovered, setIsHovered] = useState(false);
-  const [episodes, setEpisodes] = useState<AnimeEpisodeType[]>([]);
+  const [episodes, setEpisodes] = useState<IAnimeEpisode[]>([]);
   const [watchedEp, setWatchedEp] = useState<number[]>([]);
 
   const [selectedEpRangeIdx, setSelectedEpRangeIdx] = useState(0);
 
   useEffect(() => {
-    if (detailInfo?.id && episodeNo) {
+    if (animeInfo?.id && episodeNo) {
       setSelectedEpRangeIdx(getInitialEpRangeIdx(episodeNo));
     }
-  }, [detailInfo?.id, episodeNo]);
+  }, [animeInfo?.id, episodeNo]);
 
   useEffect(() => {
-    if (detailInfo?.id && session) {
+    if (animeInfo?.id && session) {
       (async () => {
         try {
           const { data }: { data: ApiSuccessType<number[]> } = await axios.get(
-            `/api/anime/watched-episodes?animeId=${detailInfo.id}`
+            `/api/anime/watched-episodes?animeId=${animeInfo.id}`
           );
           setWatchedEp(data.data);
         } catch (error) {
@@ -63,17 +63,17 @@ function EpBtnSheet({
         }
       })();
     }
-  }, [detailInfo?.id, session]);
+  }, [animeInfo?.id, session]);
 
   useEffect(() => {
-    if (detailInfo?.episodes) {
-      setEpisodes(mapEpisodes(detailInfo.episodes, selectedEpRangeIdx));
+    if (animeInfo?.episodes) {
+      setEpisodes(mapEpisodes(animeInfo.episodes, selectedEpRangeIdx));
     }
-  }, [selectedEpRangeIdx, detailInfo]);
+  }, [selectedEpRangeIdx, animeInfo]);
 
   const handleChangeLang = async () => {
-    if (isWatchPage && detailInfo) {
-      setDetailInfoAndGetWatchPageLink(detailInfo.id, isDubEnable, episodeNo);
+    if (isWatchPage && animeInfo) {
+      setDetailInfoAndGetWatchPageLink(animeInfo.id, isDubEnable, episodeNo);
     } else {
       const currentPath = window.location.pathname;
       const title = new URLSearchParams(window.location.search).get("title");
@@ -81,17 +81,17 @@ function EpBtnSheet({
     }
   };
 
-  const handleClick = (ep: AnimeEpisodeType) => {
-    if (detailInfo?.id && ep?.id) {
-      localStorage.setItem("detailInfo", JSON.stringify(detailInfo));
+  const handleClick = (ep: IAnimeEpisode) => {
+    if (animeInfo?.id && ep?.id) {
+      localStorage.setItem("animeInfo", JSON.stringify(animeInfo));
 
       router.push(
-        `/watch/${detailInfo.id}/${ep.number}/${ep.id}?dub=${isDubEnable}`
+        `/watch/${animeInfo.id}/${ep.number}/${ep.id}?dub=${isDubEnable}`
       );
     }
   };
 
-  if (!detailInfo || !detailInfo?.episodes) {
+  if (!animeInfo || !animeInfo?.episodes) {
     return null;
   }
 
@@ -101,7 +101,7 @@ function EpBtnSheet({
       <section className="flex max-w-lg items-center justify-between pb-4">
         <div className="flex items-center gap-1 capitalize">
           <Radio
-            color={detailInfo?.color}
+            color={animeInfo?.color}
             isWatchPage={isWatchPage}
             enabled={isDubEnable}
             setEnabled={handleChangeLang}
@@ -110,7 +110,7 @@ function EpBtnSheet({
         </div>
         {/* <Select
             // name={"providers"}
-            color={detailInfo?.color}
+            color={animeInfo?.color}
             list={providerList}
             selected={providerList[0]}
             onChange={(data) => {
@@ -118,22 +118,22 @@ function EpBtnSheet({
             }}
           /> */}
       </section>
-      {detailInfo?.episodes.length > 0 &&
-        (detailInfo?.episodes.length === 1 ? (
+      {animeInfo?.episodes.length > 0 &&
+        (animeInfo?.episodes.length === 1 ? (
           isWatchPage ? null : (
             <div
               role="button"
               className="m-auto my-4 flex w-36 items-center justify-center gap-2 rounded-[45px] border-2 bg-opacity-20 px-4 py-2"
               style={{
-                color: isHovered ? detailInfo?.color || "#fff" : "#fff",
-                borderColor: isHovered ? detailInfo?.color || "#fff" : "#fff",
+                color: isHovered ? animeInfo?.color || "#fff" : "#fff",
+                borderColor: isHovered ? animeInfo?.color || "#fff" : "#fff",
                 transition: "color 0.3s, border-color 0.3s",
               }}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
               onClick={() => {
-                if (detailInfo.episodes) {
-                  handleClick(detailInfo.episodes[0]);
+                if (animeInfo.episodes) {
+                  handleClick(animeInfo.episodes[0]);
                 }
               }}
             >
@@ -144,10 +144,10 @@ function EpBtnSheet({
         ) : (
           <>
             <Select
-              color={detailInfo?.color}
-              list={epSelectableList(detailInfo?.episodes)}
+              color={animeInfo?.color}
+              list={epSelectableList(animeInfo?.episodes)}
               selected={
-                epSelectableList(detailInfo?.episodes)[selectedEpRangeIdx]
+                epSelectableList(animeInfo?.episodes)[selectedEpRangeIdx]
               }
               onChange={(data) => {
                 setSelectedEpRangeIdx(Number(data.value));
@@ -164,7 +164,7 @@ function EpBtnSheet({
                 <EpBtn
                   key={id}
                   episode={episode}
-                  color={detailInfo?.color}
+                  color={animeInfo?.color}
                   isWatchPage={isWatchPage}
                   watching={episodeNo === episode.number}
                   watched={watchedEp.includes(episode.number)}

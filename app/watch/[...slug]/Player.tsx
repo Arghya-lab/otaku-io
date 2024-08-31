@@ -1,38 +1,37 @@
 import { usePreference } from "@/components/providers/PreferenceProvider";
 import useChangePreference from "@/hooks/useChangePreference";
-import { AnimeStreamingSourceType, DetailAnimeInfoType } from "@/types/anime";
 import { ApiSuccessType } from "@/types/apiResponse";
 import getPreviouslyWatchedTill from "@/utils/getPreviouslyWatchedTill";
 import { getSkipTimes } from "@/utils/getSkipTimes";
 import setWatchedTill from "@/utils/setWatchedTill";
 import ReactVideo from "@arghya-lab/react-video";
+import { IAnimeInfo, ISource } from "@consumet/extensions";
 import axios, { isAxiosError } from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import screenfull from "screenfull";
-// Dynamically import the ReactVideo component with SSR disabled
-// const ReactVideo = dynamic(() => import("@arghya-lab/react-video"), {
-//   ssr: false,
-// });
 
-let count = 0;
-
-function Player({
-  animeId,
-  title,
-  epNo,
-  epId,
-  isDub,
-  detailInfo,
-}: {
+export interface PlayerPropType {
   animeId: string;
-  title?: string;
+  infoText?: {
+    title: string;
+    summery?: string;
+  };
   epNo: string;
   epId: string;
   isDub: boolean;
-  detailInfo: DetailAnimeInfoType;
-}) {
+  animeInfo: IAnimeInfo;
+}
+
+function Player({
+  animeId,
+  infoText,
+  epNo,
+  epId,
+  isDub,
+  animeInfo,
+}: PlayerPropType) {
   const router = useRouter();
   const { data: session } = useSession();
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -78,8 +77,9 @@ function Player({
   useEffect(() => {
     (async () => {
       try {
-        const { data }: { data: ApiSuccessType<AnimeStreamingSourceType> } =
-          await axios.get(`/api/anime/streaming-links/${epId}`);
+        const { data }: { data: ApiSuccessType<ISource> } = await axios.get(
+          `/api/anime/streaming-links/${epId}`
+        );
         if (data.success) {
           setVideoState({
             sources: data.data.sources
@@ -87,7 +87,8 @@ function Player({
               .map((source) => ({
                 src: source.url,
                 quality: source.quality || "unknown",
-              })),
+              }))
+              .reverse(),
             chapters: [],
           });
         }
@@ -114,8 +115,8 @@ function Player({
 
   // On initial page load or episode change and on load of video playing duration fetch skip times
   const handleDurationUpdate = async (duration: number) => {
-    if (detailInfo?.malId && duration !== 0 && detailInfo.malId) {
-      const skipTimes = await getSkipTimes(detailInfo.malId, epNo, duration);
+    if (animeInfo?.malId && duration !== 0 && animeInfo.malId) {
+      const skipTimes = await getSkipTimes(animeInfo.malId, epNo, duration);
 
       if (skipTimes) {
         setVideoState((prev) => ({
@@ -144,27 +145,25 @@ function Player({
   const handleEnded = () => {
     // console.log("handled ended");
 
-    if (isAutoNextEnabled && detailInfo?.episodes) {
-      const currentEpIdx = detailInfo.episodes.findIndex(
-        (ep) => ep.id === epId
-      );
+    if (isAutoNextEnabled && animeInfo?.episodes) {
+      const currentEpIdx = animeInfo.episodes.findIndex((ep) => ep.id === epId);
 
       screenfull.exit();
       if (screen.orientation.unlock) screen.orientation.unlock();
 
       // if the current episode is last episode
       if (
-        detailInfo.episodes[detailInfo.episodes.length - 1].id ===
-        detailInfo.episodes[currentEpIdx].id
+        animeInfo.episodes[animeInfo.episodes.length - 1].id ===
+        animeInfo.episodes[currentEpIdx].id
       ) {
         videoRef.current?.pause();
         // console.log("run end of episodes");
       } else {
         // console.log("run router push");
 
-        const nextEp = detailInfo.episodes[currentEpIdx + 1];
+        const nextEp = animeInfo.episodes[currentEpIdx + 1];
         router.push(
-          `/watch/${detailInfo.id}/${nextEp.number}/${nextEp.id}?dub=${isDub}`
+          `/watch/${animeInfo.id}/${nextEp.number}/${nextEp.id}?dub=${isDub}`
         );
       }
     } else {
@@ -190,20 +189,15 @@ function Player({
     <ReactVideo
       ref={videoRef}
       source={videoState.sources}
+      width="100%"
+      className="max-h-[calc(100svh-4rem-8rem)] min-h-[512px]"
       autoPlay={autoPlay}
       defaultQuality={playbackQuality}
       chapters={videoState.chapters}
       showSkipableChapter
       videoSkipSec={seekSeconds}
-      loadingPoster={detailInfo.cover}
-      width="100%"
-      infoText={{
-        title: title || "",
-        summery:
-          detailInfo?.episodes && detailInfo?.episodes.length !== 1
-            ? `Ep-${epNo}`
-            : "",
-      }}
+      loadingPoster={animeInfo.cover}
+      infoText={infoText}
       fullscreenOnlyInfoText
       onStart={handleSeekToUnwatched}
       onDuration={handleDurationUpdate}

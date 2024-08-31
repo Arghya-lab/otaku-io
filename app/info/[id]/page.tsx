@@ -1,10 +1,10 @@
 import EpBtnSheet from "@/components/EpBtnSheet";
 import TopNavbar from "@/components/TopNavbar";
-import { getDetailInfo } from "@/services/getAnime";
+import { getAnimeInfo } from "@/services/getAnime";
 import { getImdbInfo } from "@/services/getImdbInfo";
 import MetaPreviewContainer from "./MetaPreviewContainer";
 
-async function DetailPage({
+async function infoPage({
   params,
   searchParams,
 }: {
@@ -19,8 +19,8 @@ async function DetailPage({
     ? getImdbInfo(title)
     : Promise.resolve(undefined);
 
-  const [detailInfo, imdbInfo] = await Promise.all([
-    getDetailInfo(id, isDub),
+  const [animeInfo, imdbInfo] = await Promise.all([
+    getAnimeInfo(id, isDub),
     imdbInfoPromise,
   ]);
 
@@ -38,21 +38,21 @@ async function DetailPage({
       >
         <div className="h-full w-full bg-black opacity-70" />
       </div>
-      <TopNavbar bgColor={detailInfo?.color || "#000"} />
+      <TopNavbar bgColor={animeInfo?.color || "#000"} />
       {/* Body */}
       <div className="mt-20 w-full">
         <div className="px-4 pt-4 xxs:px-8 xs:px-16 sm:pr-48 md:pr-80 lg:pr-[416px]">
-          <MetaPreviewContainer detailInfo={detailInfo} imdbInfo={imdbInfo} />
+          <MetaPreviewContainer animeInfo={animeInfo} imdbInfo={imdbInfo} />
         </div>
         <div
           className="mx-4 my-8 h-full rounded-xl bg-black bg-opacity-20 p-8 px-4 xxs:mx-8 xs:mx-16"
           style={{ backdropFilter: "blur(15px)" }}
         >
-          <EpBtnSheet detailInfo={detailInfo} isDubEnable={isDub} />
+          <EpBtnSheet animeInfo={animeInfo} isDubEnable={isDub} />
         </div>
       </div>
     </div>
   );
 }
 
-export default DetailPage;
+export default infoPage;

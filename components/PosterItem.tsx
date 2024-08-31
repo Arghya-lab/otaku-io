@@ -2,9 +2,9 @@
 "use client";
 
 import { themes } from "@/theme";
-import { AnimeItemType } from "@/types/anime";
 import { shade } from "@/utils/color";
 import getTitle from "@/utils/getTitle";
+import { IAnimeResult } from "@consumet/extensions";
 import classNames from "classnames";
 import Link from "next/link";
 import { useState } from "react";
@@ -14,7 +14,7 @@ function PosterItem({
   item,
   isHorizontalScroll = false,
 }: {
-  item: AnimeItemType;
+  item: IAnimeResult;
   isHorizontalScroll?: boolean;
 }) {
   const { themeId } = usePreference();
@@ -33,7 +33,7 @@ function PosterItem({
       })}
     >
       <Link
-        href={`/detail/${item.id}?title=${title}&dub=${isDub}`}
+        href={`/info/${item.id}?title=${title}&dub=${isDub}`}
         className="w-full"
         onMouseEnter={() => {
           setIsHover(true);

@@ -1,6 +1,7 @@
+import "server-only";
+
 import User from "@/models/User";
 import { getServerSession } from "next-auth";
-import "server-only";
 
 export const getUserBookmarkAnime = async () => {
   try {

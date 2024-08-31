@@ -4,7 +4,7 @@ import HorizontalScrollComponent from "@/app/home/HorizontalScrollComponent";
 import PosterItem from "@/components/PosterItem";
 import { usePreference } from "@/components/providers/PreferenceProvider";
 import { themes } from "@/theme";
-import { AnimeItemType } from "@/types/anime";
+import { IAnimeResult } from "@consumet/extensions";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 
@@ -13,7 +13,7 @@ function PosterBoard({
   content,
 }: {
   name: string;
-  content: AnimeItemType[];
+  content: IAnimeResult[];
 }) {
   const { themeId } = usePreference();
   const theme = themes.find((theme) => theme.id === themeId) || themes[0];

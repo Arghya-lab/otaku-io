@@ -3,13 +3,13 @@
 
 import { usePreference } from "@/components/providers/PreferenceProvider";
 import { themes } from "@/theme";
-import { AnimeItemType } from "@/types/anime";
 import getTitle from "@/utils/getTitle";
+import { IAnimeResult } from "@consumet/extensions";
 import chroma from "chroma-js";
 import Link from "next/link";
 import { useState } from "react";
 
-function RecommendItem({ item }: { item: AnimeItemType }) {
+function RecommendItem({ item }: { item: IAnimeResult }) {
   const { themeId, isDub } = usePreference();
   const theme = themes.find((theme) => theme.id === themeId) || themes[0];
 
@@ -19,7 +19,7 @@ function RecommendItem({ item }: { item: AnimeItemType }) {
 
   return (
     <Link
-      href={`/detail/${item.id}?title=${title}&dub=${isDub}`}
+      href={`/info/${item.id}?title=${title}&dub=${isDub}`}
       style={{
         backgroundColor: chroma(theme.primaryColor)
           .darken(isHover ? 0.3 : 0.1)

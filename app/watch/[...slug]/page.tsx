@@ -4,9 +4,9 @@ import EpBtnSheet from "@/components/EpBtnSheet";
 import TopNavbar from "@/components/TopNavbar";
 import { usePreference } from "@/components/providers/PreferenceProvider";
 import { themes } from "@/theme";
-import { AnimeEpisodeType, DetailAnimeInfoType } from "@/types/anime";
 import { ApiSuccessType } from "@/types/apiResponse";
 import getTitle from "@/utils/getTitle";
+import { IAnimeEpisode, IAnimeInfo } from "@consumet/extensions";
 import axios, { isAxiosError } from "axios";
 import chroma from "chroma-js";
 import htmlParse from "html-react-parser";
@@ -30,30 +30,28 @@ function VideoWatchPage({
   const epId = decodeURIComponent(params.slug[2]);
   const isDub = searchParams.dub === "true" ? true : false;
 
-  const [detailInfo, setDetailInfo] = useState<DetailAnimeInfoType | null>(
-    null
-  );
-  const [episode, setEpisode] = useState<AnimeEpisodeType | null>(null);
+  const [animeInfo, setAnimeInfo] = useState<IAnimeInfo | null>(null);
+  const [episode, setEpisode] = useState<IAnimeEpisode | null>(null);
 
   useEffect(() => {
     (async () => {
-      const savedDetailInfo: DetailAnimeInfoType | null = await JSON.parse(
-        localStorage.getItem("detailInfo") || "null"
+      const savedAnimeInfo: IAnimeInfo | null = await JSON.parse(
+        localStorage.getItem("animeInfo") || "null"
       );
-      if (savedDetailInfo && savedDetailInfo?.episodes) {
-        const savedEpisode = savedDetailInfo.episodes.find(
+      if (savedAnimeInfo && savedAnimeInfo?.episodes) {
+        const savedEpisode = savedAnimeInfo.episodes.find(
           (ep) => ep.id === epId
         );
         if (savedEpisode) {
-          setDetailInfo(savedDetailInfo);
+          setAnimeInfo(savedAnimeInfo);
           setEpisode(savedEpisode);
         }
       } else {
         try {
-          const { data }: { data: ApiSuccessType<DetailAnimeInfoType> } =
-            await axios.get(`/api/anime/detail-info/${animeId}?dub=${isDub}`);
+          const { data }: { data: ApiSuccessType<IAnimeInfo> } =
+            await axios.get(`/api/anime/info/${animeId}?dub=${isDub}`);
 
-          setDetailInfo(data.data);
+          setAnimeInfo(data.data);
           if (data.data?.episodes) {
             setEpisode(data.data.episodes.find((ep) => ep.id === epId) ?? null);
           }
@@ -71,7 +69,7 @@ function VideoWatchPage({
     return <p>Invalid url</p>;
   }
 
-  if (!detailInfo || !episode) {
+  if (!animeInfo || !episode) {
     return (
       <div className="relative h-full w-full">
         <TopNavbar />
@@ -84,7 +82,7 @@ function VideoWatchPage({
     );
   }
 
-  const title = getTitle(detailInfo.title);
+  const title = getTitle(animeInfo.title);
 
   return (
     <>
@@ -93,12 +91,14 @@ function VideoWatchPage({
         <div className="flex flex-col pb-8 xxs:px-2 xs:px-6 md:w-[66%] md:min-w-[700px] lg:w-[75%] lg:min-w-[1000px] lg:px-12">
           <Player
             animeId={animeId}
-            title={
-              detailInfo?.episodes?.length === 1
-                ? title ?? ""
-                : episode?.title ?? ""
-            }
-            detailInfo={detailInfo}
+            infoText={{
+              title:
+                animeInfo?.episodes?.length !== 1
+                  ? episode?.title || ""
+                  : title,
+              summery: animeInfo?.episodes?.length !== 1 ? title : undefined,
+            }}
+            animeInfo={animeInfo}
             epId={epId}
             epNo={epNo}
             isDub={isDub}
@@ -107,7 +107,7 @@ function VideoWatchPage({
             className="px-2 py-4 font-nunito text-2xl font-bold xxs:px-0"
             style={{ color: theme.textColor }}
           >
-            {detailInfo?.episodes?.length === 1 ? title ?? "" : episode?.title}
+            {animeInfo?.episodes?.length === 1 ? (title ?? "") : episode?.title}
           </h2>
           <p
             className="md:pb-18 px-2 pb-4 xxs:px-0 lg:pb-12"
@@ -117,7 +117,7 @@ function VideoWatchPage({
           </p>
           <div className="px-2 xxs:px-0">
             <EpBtnSheet
-              detailInfo={detailInfo}
+              animeInfo={animeInfo}
               isDubEnable={isDub}
               episodeNo={Number(epNo)}
               isWatchPage={true}
@@ -131,14 +131,14 @@ function VideoWatchPage({
           >
             Recommendations
           </p>
-          {detailInfo?.recommendations ? (
+          {animeInfo?.recommendations ? (
             <div
               className="grid flex-1 justify-evenly gap-4 px-2 pb-8 md:p-0 md:pb-8"
               style={{
                 gridTemplateColumns: "repeat(auto-fit, minmax(16rem, 24rem))",
               }}
             >
-              {detailInfo?.recommendations
+              {animeInfo?.recommendations
                 .slice(0, 8)
                 .map((recommendation) => (
                   <RecommendItem

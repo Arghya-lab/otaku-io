@@ -4,8 +4,8 @@ import PosterItem from "@/components/PosterItem";
 import { usePreference } from "@/components/providers/PreferenceProvider";
 import usePosterItemCount from "@/hooks/usePosterItemCount";
 import { themes } from "@/theme";
-import { AdvancedAnimeSearchResType, AnimeItemType } from "@/types/anime";
 import { ApiSuccessType } from "@/types/apiResponse";
+import { IAnimeResult, ISearch } from "@consumet/extensions";
 import axios, { isAxiosError } from "axios";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -17,7 +17,7 @@ function InfiniteDiscoverScroll() {
   const posterItemCount = usePosterItemCount();
   const searchParams = useSearchParams();
 
-  const [data, setData] = useState<AnimeItemType[]>([]);
+  const [data, setData] = useState<IAnimeResult[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [pageNo, setPageNo] = useState(0);
 
@@ -29,7 +29,7 @@ function InfiniteDiscoverScroll() {
 
   const fetchData = async () => {
     try {
-      const { data }: { data: ApiSuccessType<AdvancedAnimeSearchResType> } =
+      const { data }: { data: ApiSuccessType<ISearch<IAnimeResult>> } =
         await axios.get(`/api/anime/discover`, {
           params: {
             page: pageNo + 1,
@@ -53,7 +53,7 @@ function InfiniteDiscoverScroll() {
   useEffect(() => {
     (async () => {
       try {
-        const { data }: { data: ApiSuccessType<AdvancedAnimeSearchResType> } =
+        const { data }: { data: ApiSuccessType<ISearch<IAnimeResult>> } =
           await axios.get(`/api/anime/discover`, {
             params: {
               format,

@@ -2,11 +2,11 @@
 "use client";
 
 import useWindowSize from "@/hooks/useWindowSize";
-import { AnimeItemType } from "@/types/anime";
+import { IAnimeResult } from "@consumet/extensions";
 import htmlParse from "html-react-parser";
 import AliceCarousel from "react-alice-carousel";
 
-function Carousel({ trending }: { trending: AnimeItemType[] }) {
+function Carousel({ trending }: { trending: IAnimeResult[] }) {
   const { windowWidth } = useWindowSize();
 
   const items = trending.map((data, id) =>

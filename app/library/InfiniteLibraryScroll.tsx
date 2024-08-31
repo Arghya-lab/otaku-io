@@ -4,8 +4,8 @@ import PosterItem from "@/components/PosterItem";
 import { usePreference } from "@/components/providers/PreferenceProvider";
 import usePosterItemCount from "@/hooks/usePosterItemCount";
 import { themes } from "@/theme";
-import { AnimeItemType } from "@/types/anime";
 import { ApiSuccessType } from "@/types/apiResponse";
+import { IAnimeResult } from "@consumet/extensions";
 import axios from "axios";
 import { useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -16,7 +16,7 @@ function InfiniteLibraryScroll({
   hasNextPage,
   perPage,
 }: {
-  initialData: AnimeItemType[];
+  initialData: IAnimeResult[];
   hasNextPage: boolean;
   perPage: number;
 }) {
@@ -33,7 +33,7 @@ function InfiniteLibraryScroll({
       data,
     }: {
       data: ApiSuccessType<{
-        results: AnimeItemType[];
+        results: IAnimeResult[];
         hasNextPage: boolean;
         currentPage: number;
       }>;

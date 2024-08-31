@@ -26,14 +26,14 @@ function ContinueWatchingPosterItem({
 
   const router = useRouter();
   const [isHover, setIsHover] = useState(false);
-  const [isDetailDataFetching, setIsDetailDataFetching] = useState(false);
+  const [isAnimeInfoFetching, setIsAnimeInfoFetching] = useState(false);
 
   if (!animeInfo) return null;
 
   const title = getTitle(animeInfo.title);
 
   const handleClick = async () => {
-    setIsDetailDataFetching(true);
+    setIsAnimeInfoFetching(true);
 
     const watchPageLink = await setDetailInfoAndGetWatchPageLink(
       animeInfo.id,
@@ -72,7 +72,7 @@ function ContinueWatchingPosterItem({
           )}
         >
           <div className="absolute bottom-0 left-0 right-0 top-0 z-10 flex items-center justify-center">
-            {!isDetailDataFetching ? (
+            {!isAnimeInfoFetching ? (
               <PlayCircle
                 size={48}
                 strokeWidth={isHover ? 1.5 : 1.25}

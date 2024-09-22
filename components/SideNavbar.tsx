@@ -30,7 +30,7 @@ function SideNavbar({ pathName }: { pathName: string }) {
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-10 flex h-16 items-center justify-around pb-2 xs:right-auto xs:top-[calc(4rem-0.5px)] xs:h-auto xs:w-20 xs:flex-col xs:justify-start"
+      className="fixed -bottom-[0.5px] left-0 right-0 z-10 flex h-16 items-center justify-around pb-2 xs:bottom-0 xs:right-auto xs:top-[calc(4rem-0.5px)] xs:h-auto xs:w-20 xs:flex-col xs:justify-start"
       style={
         windowWidth < 640
           ? {

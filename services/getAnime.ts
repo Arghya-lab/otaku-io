@@ -50,11 +50,11 @@ const generateAnilistMeta = (
 export async function getTrending(
   page = 1,
   perPage = 10
-): Promise<ISearch<IAnimeResult>> {
+): Promise<IAnimeResult[]> {
   try {
     const anilist = generateAnilistMeta();
 
-    return await anilist.fetchTrendingAnime(page, perPage);
+    return (await anilist.fetchTrendingAnime(page, perPage)).results;
   } catch {
     throw new Error("Error occur while getting trending anime.");
   }
@@ -67,11 +67,11 @@ export async function getTrending(
 export async function getPopular(
   page = 1,
   perPage = 10
-): Promise<ISearch<IAnimeResult>> {
+): Promise<IAnimeResult[]> {
   try {
     const anilist = generateAnilistMeta();
 
-    return await anilist.fetchPopularAnime(page, perPage);
+    return (await anilist.fetchPopularAnime(page, perPage)).results;
   } catch {
     throw new Error("Error occur while getting popular anime.");
   }

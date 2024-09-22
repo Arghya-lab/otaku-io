@@ -33,7 +33,7 @@ const setAnimeInfoAndGetWatchPageLink = async (
       currentEpisode = resEpisodes[currentEpisodeIdx];
       return `/watch/${animeInfo.id}/${currentEpisode.number}/${
         currentEpisode.id
-      }?dub=${animeInfo?.subOrDub === "dub"}`;
+      }?dub=${animeInfo.hasDub === true || animeInfo.subOrDub === "dub"}`;
     } else {
       const { data }: { data: ApiSuccessType<IAnimeInfo> } = await axios.get(
         `/api/anime/info/${id}?dub=${!isDub}`
@@ -49,7 +49,7 @@ const setAnimeInfoAndGetWatchPageLink = async (
         currentEpisode = resEpisodes[currentEpisodeIdx];
         return `/watch/${animeInfo.id}/${currentEpisode.number}/${
           currentEpisode.id
-        }?dub=${animeInfo?.subOrDub === "dub"}`;
+        }?dub=${animeInfo.hasDub === true || animeInfo.subOrDub === "dub"}`;
       }
     }
   } catch (error) {

@@ -1,6 +1,8 @@
 import AuthProvider from "@/components/providers/AuthProvider";
 import PreferencesProvider from "@/components/providers/PreferenceProvider";
 // import ReactQueryProvider from "@/components/providers/ReactQueryProvider";
+import PageContentWrapper from "@/components/PageContentWrapper";
+import TopNavbar from "@/components/TopNavbar";
 import connectDB from "@/db/db";
 import Preference from "@/models/Preference";
 import { themes } from "@/theme";
@@ -98,7 +100,8 @@ export default async function RootLayout({
                   background: theme.bgImg,
                 }}
               />
-              {children}
+              <TopNavbar />
+              <PageContentWrapper>{children}</PageContentWrapper>
             </body>
           </PreferencesProvider>
         </CookiesProvider>

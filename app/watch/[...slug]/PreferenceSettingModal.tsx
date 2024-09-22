@@ -56,7 +56,7 @@ function PreferenceSettingModal({
               <Radio
                 color={theme.secondaryColor}
                 enabled={autoPlay}
-                setEnabled={handleChangeAutoPlay}
+                handleChange={handleChangeAutoPlay}
               />
             </div>
             <div className="flex items-center justify-between gap-4">
@@ -64,7 +64,7 @@ function PreferenceSettingModal({
               <Radio
                 color={theme.secondaryColor}
                 enabled={autoSkip}
-                setEnabled={handleChangeAutoSkip}
+                handleChange={handleChangeAutoSkip}
               />
             </div>
             <div className="flex items-center justify-between gap-4">
@@ -72,7 +72,7 @@ function PreferenceSettingModal({
               <Radio
                 color={theme.secondaryColor}
                 enabled={autoNext}
-                setEnabled={handleChangeAutoNext}
+                handleChange={handleChangeAutoNext}
               />
             </div>
             <div className="flex items-center justify-between gap-4">

@@ -8,11 +8,12 @@ import classNames from "classnames";
 import { Search, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { usePreference } from "./providers/PreferenceProvider";
 
 function TopNavbar({ bgColor }: { bgColor?: string }) {
+  const pathname = usePathname();
   const { themeId } = usePreference();
   const theme = themes.find((theme) => theme.id === themeId) || themes[0];
 
@@ -31,9 +32,9 @@ function TopNavbar({ bgColor }: { bgColor?: string }) {
   return (
     <div
       className={classNames(
-        "sticky -top-[0.5px] z-40 flex h-14 w-full items-center justify-center bg-opacity-50 px-5 pl-16 backdrop-blur-lg xxs:h-16",
+        "sticky -top-[0.5px] z-[100] flex h-14 w-full items-center justify-center bg-opacity-50 px-5 pl-16 backdrop-blur-lg xxs:h-16",
         {
-          "border-b-[1px]": scrolled,
+          "border-b-[1px]": scrolled && pathname !== "/discover",
         }
       )}
       style={{

@@ -4,10 +4,7 @@ import { getPopular, getTrending } from "@/services/getAnime";
 import ContinueWatchingPosterBoard from "./ContinueWatchingPosterBoard";
 
 export default async function Home() {
-  const [{ results: trending }, { results: popular }] = await Promise.all([
-    getTrending(),
-    getPopular(),
-  ]);
+  const [trending, popular] = await Promise.all([getTrending(), getPopular()]);
 
   return trending.length > 0 && popular.length > 0 ? (
     <>

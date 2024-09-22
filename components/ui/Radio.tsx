@@ -9,12 +9,12 @@ import chroma from "chroma-js";
 function Radio({
   color = "#fff",
   enabled,
-  setEnabled,
+  handleChange,
   isWatchPage = false,
 }: {
   color?: string;
   enabled: boolean;
-  setEnabled: () => void;
+  handleChange: () => void;
   isWatchPage?: boolean;
 }) {
   const { themeId } = usePreference();
@@ -23,7 +23,7 @@ function Radio({
   return (
     <Switch
       checked={enabled}
-      onChange={setEnabled}
+      onChange={handleChange}
       className="relative inline-flex h-[22px] w-[42px] shrink-0 cursor-pointer rounded-3xl border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75"
       style={{
         backgroundColor: enabled

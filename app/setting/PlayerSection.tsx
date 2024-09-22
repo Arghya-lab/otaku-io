@@ -38,7 +38,7 @@ function PlayerSection() {
           <Radio
             color={theme.secondaryColor}
             enabled={isAutoPlayEnabled}
-            setEnabled={handleChangeAutoPlay}
+            handleChange={handleChangeAutoPlay}
           />
         </div>
         <div className="flex items-center gap-4">
@@ -46,7 +46,7 @@ function PlayerSection() {
           <Radio
             color={theme.secondaryColor}
             enabled={isAutoSkipEnabled}
-            setEnabled={handleChangeAutoSkip}
+            handleChange={handleChangeAutoSkip}
           />
         </div>
         <div className="flex items-center gap-4">
@@ -54,7 +54,7 @@ function PlayerSection() {
           <Radio
             color={theme.secondaryColor}
             enabled={isAutoNextEnabled}
-            setEnabled={handleChangeAutoNext}
+            handleChange={handleChangeAutoNext}
           />
         </div>
         <div className="flex items-center gap-4">

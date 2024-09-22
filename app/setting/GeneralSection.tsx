@@ -38,7 +38,7 @@ function GeneralSection() {
           <Radio
             color={theme.secondaryColor}
             enabled={isDub}
-            setEnabled={handleChangeLanguage}
+            handleChange={handleChangeLanguage}
           />
         </div>
         <button

@@ -54,14 +54,13 @@ function Player({
       color?: string;
       skipAble?: boolean;
     }[];
+    captions?: { src: string; srclang: string }[];
   }>({
     sources: [],
     chapters: [],
   });
 
   const handleSeekToUnwatched = async () => {
-    // console.log("seeking to prev watched");
-
     const previouslyWatchedTill = await getPreviouslyWatchedTill(
       animeId,
       epNo,
@@ -90,6 +89,10 @@ function Player({
               }))
               .reverse(),
             chapters: [],
+            captions: data.data.subtitles?.map((subtitle) => ({
+              src: subtitle.url,
+              srclang: subtitle.lang,
+            })),
           });
         }
       } catch (error) {
@@ -190,16 +193,17 @@ function Player({
       ref={videoRef}
       source={videoState.sources}
       width="100%"
-      className="max-h-[calc(100svh-4rem-8rem)] min-h-[512px]"
+      className="max-h-[calc(100svh-4rem-4rem)]"
       autoPlay={autoPlay}
       defaultQuality={playbackQuality}
       chapters={videoState.chapters}
       showSkipableChapter
+      captions={videoState.captions}
       videoSkipSec={seekSeconds}
       loadingPoster={animeInfo.cover}
       infoText={infoText}
       fullscreenOnlyInfoText
-      onStart={handleSeekToUnwatched}
+      onReady={handleSeekToUnwatched}
       onDuration={handleDurationUpdate}
       onProgress={handleProgress}
       onEnded={handleEnded}

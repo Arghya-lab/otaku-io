@@ -1,5 +1,4 @@
 import EpBtnSheet from "@/components/EpBtnSheet";
-import TopNavbar from "@/components/TopNavbar";
 import { getAnimeInfo } from "@/services/getAnime";
 import { getImdbInfo } from "@/services/getImdbInfo";
 import MetaPreviewContainer from "./MetaPreviewContainer";
@@ -25,9 +24,9 @@ async function infoPage({
   ]);
 
   return (
-    <div className="relative w-full">
+    <>
       <div
-        className="fixed -z-10 h-screen w-screen bg-transparent bg-cover bg-center"
+        className="-xxs:top-16 fixed -top-14 -z-10 h-[calc(100vh+8rem)] w-screen bg-transparent bg-cover bg-center"
         style={
           imdbInfo
             ? {
@@ -38,7 +37,6 @@ async function infoPage({
       >
         <div className="h-full w-full bg-black opacity-70" />
       </div>
-      <TopNavbar bgColor={animeInfo?.color || "#000"} />
       {/* Body */}
       <div className="mt-20 w-full">
         <div className="px-4 pt-4 xxs:px-8 xs:px-16 sm:pr-48 md:pr-80 lg:pr-[416px]">
@@ -51,7 +49,7 @@ async function infoPage({
           <EpBtnSheet animeInfo={animeInfo} isDubEnable={isDub} />
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

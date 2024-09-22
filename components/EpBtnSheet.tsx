@@ -15,6 +15,7 @@ import { Play } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { DNA } from "react-loader-spinner";
 import EpBtn from "./ui/EpBtn";
 import Radio from "./ui/Radio";
 import Select from "./ui/Select";
@@ -37,6 +38,7 @@ function EpBtnSheet({
   const { data: session } = useSession();
 
   const [isHovered, setIsHovered] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [episodes, setEpisodes] = useState<IAnimeEpisode[]>([]);
   const [watchedEp, setWatchedEp] = useState<number[]>([]);
 
@@ -67,18 +69,27 @@ function EpBtnSheet({
 
   useEffect(() => {
     if (animeInfo?.episodes) {
+      setIsLoading(false);
       setEpisodes(mapEpisodes(animeInfo.episodes, selectedEpRangeIdx));
     }
   }, [selectedEpRangeIdx, animeInfo]);
 
-  const handleChangeLang = async () => {
-    if (isWatchPage && animeInfo) {
-      setDetailInfoAndGetWatchPageLink(animeInfo.id, isDubEnable, episodeNo);
-    } else {
-      const currentPath = window.location.pathname;
-      const title = new URLSearchParams(window.location.search).get("title");
-      router.push(`${currentPath}?title=${title}&dub=${!isDubEnable}`);
-    }
+  const handleChangeLang = () => {
+    setIsLoading(true);
+
+    setTimeout(async () => {
+      if (isWatchPage && animeInfo) {
+        await setDetailInfoAndGetWatchPageLink(
+          animeInfo.id,
+          isDubEnable,
+          episodeNo
+        );
+      } else {
+        const currentPath = window.location.pathname;
+        const title = new URLSearchParams(window.location.search).get("title");
+        router.push(`${currentPath}?title=${title}&dub=${!isDubEnable}`);
+      }
+    }, 0);
   };
 
   const handleClick = (ep: IAnimeEpisode) => {
@@ -100,13 +111,26 @@ function EpBtnSheet({
       {/* radio dub / sub btn */}
       <section className="flex max-w-lg items-center justify-between pb-4">
         <div className="flex items-center gap-1 capitalize">
-          <Radio
-            color={animeInfo?.color}
-            isWatchPage={isWatchPage}
-            enabled={isDubEnable}
-            setEnabled={handleChangeLang}
-          />
-          <p style={{ color: isWatchPage ? theme.textColor : "#fff" }}>dub</p>
+          {!isLoading ? (
+            <Radio
+              color={animeInfo?.color}
+              isWatchPage={isWatchPage}
+              enabled={isDubEnable}
+              handleChange={handleChangeLang}
+            />
+          ) : (
+            <DNA
+              visible={true}
+              height="22"
+              width="42"
+              ariaLabel="dna-loading"
+              wrapperStyle={{}}
+              wrapperClass="dna-wrapper"
+            />
+          )}
+          <p style={{ color: isWatchPage ? theme.textColor : "#fff" }}>
+            {!isLoading ? "dub" : "Loading"}
+          </p>
         </div>
         {/* <Select
             // name={"providers"}

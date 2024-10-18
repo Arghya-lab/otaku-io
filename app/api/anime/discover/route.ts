@@ -51,7 +51,7 @@ export async function GET(req: NextRequest) {
     });
 
     return apiSuccess({ data, message: "Successfully fetched animes." });
-  } catch (error) {
+  } catch {
     return apiError();
   }
 }

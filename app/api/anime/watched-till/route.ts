@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
         status: 400,
       });
     }
-  } catch (error) {
+  } catch {
     return apiError();
   }
 }
@@ -86,7 +86,7 @@ export async function PATCH(req: Request) {
     if (animeWatched) {
       // Document exists, update watchedTill for the specific episode
       const episodeIdx = animeWatched.episodes.findIndex(
-        (ep: any) => ep.episodeNo == episodeNo
+        (ep) => ep.episodeNo == episodeNo
       );
 
       if (episodeIdx === -1) {
@@ -115,7 +115,7 @@ export async function PATCH(req: Request) {
       data: animeWatched,
       message: `Successfully updated user watched till for animeId: ${animeId} & episode: ${episodeNo}`,
     });
-  } catch (error) {
+  } catch {
     return apiError();
   }
 }

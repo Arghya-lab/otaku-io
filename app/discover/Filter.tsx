@@ -1,6 +1,5 @@
 "use client";
 
-import { usePreference } from "@/components/providers/PreferenceProvider";
 import Select from "@/components/ui/Select";
 import useScroll from "@/hooks/useScroll";
 import useWindowSize from "@/hooks/useWindowSize";
@@ -10,18 +9,13 @@ import {
   sortList,
   statusList,
 } from "@/lib/searchFilter";
-import { themes } from "@/theme";
-import { shade } from "@/utils/color";
 import { Dialog, Transition } from "@headlessui/react";
-import chroma from "chroma-js";
+import classNames from "classnames";
 import { FilterIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useState } from "react";
 
 function Filter() {
-  const { themeId } = usePreference();
-  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
-
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -60,7 +54,7 @@ function Filter() {
       statusQueryValue = searchParams.get("status");
     }
 
-    let queriesArray = [];
+    const queriesArray = [];
     if (formatQueryValue)
       queriesArray.push({ name: "format", value: formatQueryValue });
     if (genresQueryValue)
@@ -79,12 +73,12 @@ function Filter() {
 
   return (
     <div
-      className="fixed top-[calc(3.5rem-0.5px)] z-40 flex h-24 w-full items-center gap-4 bg-opacity-50 p-4 backdrop-blur-md xxs:top-[calc(4rem-0.5px)]"
-      style={{
-        backgroundColor: scrolled
-          ? `${chroma(theme.primaryColor).darken().alpha(0.6)}`
-          : "transparent",
-      }}
+      className={classNames(
+        "fixed top-[calc(3.5rem-0.5px)] z-40 flex h-24 w-full items-center gap-4 bg-transparent bg-opacity-50 p-4 backdrop-blur-md xxs:top-[calc(4rem-0.5px)]",
+        {
+          "bg-background bg-opacity-60": scrolled,
+        }
+      )}
     >
       <Select
         name={"format"}
@@ -104,17 +98,11 @@ function Filter() {
         <>
           <div>
             <div className="pl-2">
-              <p className="capitalize" style={{ color: theme.textColor }}>
-                filter
-              </p>
+              <p className="capitalize">filter</p>
             </div>
             <div
               role="button"
-              className="flex h-9 items-center justify-center rounded-[45px] px-4 shadow-lg"
-              style={{
-                backgroundColor: shade(theme.primaryColor, 0, 0.2).hex(),
-                color: "#fff",
-              }}
+              className="flex h-9 items-center justify-center rounded-[45px] bg-muted bg-opacity-20 px-4 shadow-lg"
               onClick={() => setIsModalOpen(!isModalOpen)}
             >
               <FilterIcon size={18} color="#fff" fill="#fff" />
@@ -149,10 +137,7 @@ function Filter() {
                     leaveFrom="opacity-100 scale-100"
                     leaveTo="opacity-0 scale-95"
                   >
-                    <Dialog.Panel
-                      className="flex w-5/6 max-w-64 transform flex-col gap-4 overflow-hidden rounded-2xl p-6 text-left align-middle shadow-xl transition-all"
-                      style={{ backgroundColor: theme.primaryColor }}
-                    >
+                    <Dialog.Panel className="flex w-5/6 max-w-64 transform flex-col gap-4 overflow-hidden rounded-2xl bg-background p-6 text-left align-middle shadow-xl transition-all">
                       <Select
                         name={"format"}
                         list={formatList}

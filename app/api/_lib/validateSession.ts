@@ -23,7 +23,7 @@ export async function validateSession() {
     } else {
       return user;
     }
-  } catch (error) {
+  } catch {
     throw apiError();
   }
 }

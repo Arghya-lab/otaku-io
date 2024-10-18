@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
       data,
       message: "Successfully fetched anime for search query.",
     });
-  } catch (error) {
+  } catch {
     return apiError();
   }
 }

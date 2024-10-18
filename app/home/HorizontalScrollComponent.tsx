@@ -1,8 +1,7 @@
 "use client";
 
-import { themes } from "@/theme";
 import { DragManager } from "@/utils/dragManager";
-import chroma from "chroma-js";
+import classNames from "classnames";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import React from "react";
@@ -13,7 +12,6 @@ import {
   publicApiType,
 } from "react-horizontal-scrolling-menu";
 import "react-horizontal-scrolling-menu/dist/styles.css";
-import { usePreference } from "../../components/providers/PreferenceProvider";
 
 type scrollVisibilityApiType = React.ContextType<typeof VisibilityContext>;
 
@@ -60,9 +58,6 @@ const HorizontalScrollComponent = ({
 };
 
 const LeftArrow = React.memo(() => {
-  const { themeId } = usePreference();
-  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
-
   const visibility = React.useContext<publicApiType>(VisibilityContext);
   const isFirstItemVisible = visibility.useIsVisible("first", true);
 
@@ -74,16 +69,13 @@ const LeftArrow = React.memo(() => {
       onClick={visibility.scrollPrev}
       className="left absolute left-4 top-[76px] z-50 flex h-10 w-10 items-center justify-center rounded-full xs:top-[112px]"
     >
-      <ChevronLeft strokeWidth={2.75} color={theme.secondaryColor} />
+      <ChevronLeft strokeWidth={2.75} className="text-accent" />
     </Arrow>
   );
 });
 LeftArrow.displayName = "LeftArrow";
 
 const RightArrow = React.memo(() => {
-  const { themeId } = usePreference();
-  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
-
   const visibility = React.useContext<publicApiType>(VisibilityContext);
   const isLastItemVisible = visibility.useIsVisible("last", false);
 
@@ -95,7 +87,7 @@ const RightArrow = React.memo(() => {
       onClick={visibility.scrollNext}
       className="right absolute right-4 top-[112px] z-50 flex h-10 w-10 items-center justify-center rounded-full"
     >
-      <ChevronRight strokeWidth={2.75} color={theme.secondaryColor} />
+      <ChevronRight strokeWidth={2.75} className="text-accent" />
     </Arrow>
   );
 });
@@ -111,22 +103,18 @@ const Arrow = ({
   onClick: VoidFunction;
   className?: string;
 }) => {
-  const { themeId } = usePreference();
-  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_isPending, startTransition] = React.useTransition();
 
   return (
     <motion.button
       disabled={disabled}
       onClick={() => startTransition(onClick)}
-      className={"arrow" + `-${className}`}
-      style={{
-        cursor: "pointer",
-        opacity: disabled ? "0" : "1",
-        userSelect: "none",
-        backgroundColor: chroma(theme.primaryColor).alpha(0.8).hex(),
-      }}
+      className={classNames(
+        `arrow-${className}`,
+        "cursor-pointer select-none bg-background",
+        { "opacity-0": disabled }
+      )}
       whileHover={{
         scale: 1.1,
       }}

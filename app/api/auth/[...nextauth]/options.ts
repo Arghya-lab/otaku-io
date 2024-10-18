@@ -12,7 +12,7 @@ export const options: NextAuthOptions = {
   ],
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
+    async signIn({ user, account }) {
       const existingUser = await User.findOne({ email: user.email });
 
       if (existingUser) {

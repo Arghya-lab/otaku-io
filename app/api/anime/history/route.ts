@@ -20,8 +20,8 @@ export async function GET(req: NextRequest) {
     const perPage =
       parseInt(req.nextUrl.searchParams.get("perPage") ?? "", 10) ?? 20;
 
-    await validateSession();
-    const data = await getUserWatching(page, perPage);
+    const user = await validateSession();
+    const data = await getUserWatching(page, perPage, user.email);
 
     if (data) {
       return apiSuccess({
@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
     } else {
       return apiError({ status: 400 });
     }
-  } catch (error) {
+  } catch {
     return apiError();
   }
 }

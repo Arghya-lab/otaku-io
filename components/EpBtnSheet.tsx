@@ -1,7 +1,5 @@
 "use client";
 
-import { usePreference } from "@/components/providers/PreferenceProvider";
-import { themes } from "@/theme";
 import { ApiSuccessType } from "@/types/apiResponse";
 import {
   epSelectableList,
@@ -11,6 +9,7 @@ import {
 import setDetailInfoAndGetWatchPageLink from "@/utils/setDetailInfoAndGetWatchPageLink";
 import { IAnimeEpisode, IAnimeInfo } from "@consumet/extensions";
 import axios, { isAxiosError } from "axios";
+import classNames from "classnames";
 import { Play } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -31,9 +30,6 @@ function EpBtnSheet({
   episodeNo?: number;
   isWatchPage?: boolean;
 }) {
-  const { themeId } = usePreference();
-  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
-
   const router = useRouter();
   const { data: session } = useSession();
 
@@ -128,7 +124,7 @@ function EpBtnSheet({
               wrapperClass="dna-wrapper"
             />
           )}
-          <p style={{ color: isWatchPage ? theme.textColor : "#fff" }}>
+          <p className={classNames({ "text-white": !isWatchPage })}>
             {!isLoading ? "dub" : "Loading"}
           </p>
         </div>

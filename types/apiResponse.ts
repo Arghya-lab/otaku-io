@@ -5,7 +5,6 @@ export interface ApiSuccessType<T> {
 }
 
 export type PreferenceApiSuccessResType = ApiSuccessType<{
-  themeId: number;
   autoNext: boolean;
   autoPlay: boolean;
   autoSkip: boolean;

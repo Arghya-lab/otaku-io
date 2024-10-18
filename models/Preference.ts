@@ -7,7 +7,6 @@ interface IPreference extends Document {
   isDub: boolean;
   autoPlay: boolean;
   autoNext: boolean;
-  themeId: number;
   seekSeconds: number;
   bookmarks: string[];
   autoSkip: boolean;
@@ -48,12 +47,6 @@ const preferenceSchema = new mongoose.Schema<IPreference>(
       type: String,
       enum: ["360p", "480p", "720p", "1080p"],
       default: "360p",
-    },
-    themeId: {
-      type: Number,
-      min: 1,
-      max: 30,
-      default: 1,
     },
   },
   { timestamps: true }

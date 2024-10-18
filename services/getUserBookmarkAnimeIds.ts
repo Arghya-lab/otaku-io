@@ -1,15 +1,9 @@
 import "server-only";
 
 import User from "@/models/User";
-import { getServerSession } from "next-auth";
 
-export const getUserBookmarkAnime = async () => {
+export const getUserBookmarkAnime = async (userEmail: string) => {
   try {
-    const session = await getServerSession();
-    const userEmail = session?.user?.email;
-
-    if (!userEmail) return null;
-
     const user = await User.findOne({ email: userEmail });
     if (!user) throw new Error("Unauthorize access denied.");
 

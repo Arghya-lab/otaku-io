@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
     }).exec();
 
     if (watchedAnime) {
-      const data = watchedAnime.episodes.map((item: any) => item.episodeNo);
+      const data = watchedAnime.episodes.map((item) => item.episodeNo);
 
       return apiSuccess({
         data,
@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
         status: 400,
       });
     }
-  } catch (error) {
+  } catch {
     return apiError();
   }
 }

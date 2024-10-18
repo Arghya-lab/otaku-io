@@ -24,7 +24,7 @@ export async function GET(
       data,
       message: "Successfully fetched anime info info.",
     });
-  } catch (error) {
+  } catch {
     return apiError();
   }
 }

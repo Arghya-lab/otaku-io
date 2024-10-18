@@ -2,21 +2,14 @@ import "server-only";
 
 import AnimeWatched from "@/models/AnimeWatched";
 import { WatchingAnimeType } from "@/types/anime";
-import { getServerSession } from "next-auth";
 import { advancedSearch } from "./getAnime";
 
 export const getUserWatching = async (
   page: number = 1,
-  perPage: number = 20
+  perPage: number = 20,
+  userEmail: string
 ) => {
   try {
-    const session = await getServerSession();
-    const userEmail = session?.user?.email;
-
-    if (!userEmail) {
-      return null;
-    }
-
     const userHistory: { animeId: string; lastWatched: number }[] =
       await AnimeWatched.find({
         email: userEmail,

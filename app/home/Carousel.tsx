@@ -47,7 +47,7 @@ function Carousel({ trending }: { trending: IAnimeResult[] }) {
         renderSlideInfo={({ item }) =>
           info[item - 1].isCoverPresent ? (
             <div className="relative">
-              <div className="prose absolute -bottom-[5.5rem] left-0 right-0 h-20 rounded-xl bg-black p-4 font-nunito text-xs text-white xs:-bottom-36 xs:h-32 2xl:-bottom-52 2xl:h-48 2xl:text-lg">
+              <div className="prose absolute -bottom-[5.5rem] left-0 right-0 h-20 rounded-xl bg-black p-4 font-barlow text-xs text-white xs:-bottom-36 xs:h-32 2xl:-bottom-52 2xl:h-48 2xl:text-lg">
                 {htmlParse(`<p style="overflow: hidden;
               display: -webkit-box;
               -webkit-box-orient: vertical;

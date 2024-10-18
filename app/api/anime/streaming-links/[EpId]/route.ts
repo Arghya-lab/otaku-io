@@ -21,7 +21,7 @@ export async function GET(
       data,
       message: "Successfully fetched streaming urls.",
     });
-  } catch (error) {
+  } catch {
     return apiError();
   }
 }

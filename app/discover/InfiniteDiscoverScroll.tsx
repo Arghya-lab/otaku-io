@@ -1,9 +1,7 @@
 "use client";
 
 import PosterItem from "@/components/PosterItem";
-import { usePreference } from "@/components/providers/PreferenceProvider";
 import usePosterItemCount from "@/hooks/usePosterItemCount";
-import { themes } from "@/theme";
 import { ApiSuccessType } from "@/types/apiResponse";
 import { IAnimeResult, ISearch } from "@consumet/extensions";
 import axios, { isAxiosError } from "axios";
@@ -13,7 +11,6 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { LineWave } from "react-loader-spinner";
 
 function InfiniteDiscoverScroll() {
-  const { themeId } = usePreference();
   const posterItemCount = usePosterItemCount();
   const searchParams = useSearchParams();
 
@@ -21,7 +18,6 @@ function InfiniteDiscoverScroll() {
   const [hasMore, setHasMore] = useState(true);
   const [pageNo, setPageNo] = useState(0);
 
-  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
   const format = searchParams.get("format");
   const genres = searchParams.get("genres");
   const sort = searchParams.get("sort");
@@ -83,15 +79,14 @@ function InfiniteDiscoverScroll() {
       hasMore={hasMore}
       loader={
         <div className="m-auto w-28">
-          <LineWave
-            visible={true}
-            height="200"
-            width="200"
-            color={theme.secondaryColor}
-          />
+          <LineWave visible={true} height="200" width="200" />
         </div>
       }
-      endMessage={<p style={{ textAlign: "center" }}>nothing to show more</p>}
+      endMessage={
+        <p className="text-center text-muted-foreground">
+          Nothing to show more
+        </p>
+      }
     >
       <div
         className="grid grid-cols-2 gap-2 px-4 pb-16 xxs:grid-cols-3 xxs:gap-3 xs:gap-4 xs:pb-0"

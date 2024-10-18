@@ -19,7 +19,7 @@ async function MetaPreviewContainer({
 }) {
   const session = await getServerSession();
   const user = await User.findOne({ email: session?.user?.email });
-  let bookmarks = user?.bookmarks || null;
+  const bookmarks = user?.bookmarks || null;
 
   const title = getTitle(animeInfo.title);
 
@@ -45,7 +45,7 @@ async function MetaPreviewContainer({
           />
         ) : (
           <div
-            className={classNames("min-h-32 break-all font-nunito text-white", {
+            className={classNames("min-h-32 break-all font-barlow text-white", {
               "text-3xl font-bold xxs:text-4xl xxs:font-extrabold":
                 title.length > 50,
               "text-4xl font-extrabold xxs:text-5xl":
@@ -139,7 +139,7 @@ async function MetaPreviewContainer({
               description
             </p>
             <div
-              className="prose pl-4 font-nunito text-white"
+              className="prose pl-4 font-barlow text-white"
               // style={{ color: textColor(item - 1) }}
             >
               {htmlParse(`<p >${animeInfo?.description}</p>`)}

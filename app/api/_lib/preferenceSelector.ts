@@ -1,6 +1,5 @@
 export const preferenceSelector = [
   "-_id",
-  "themeId",
   "autoNext",
   "autoPlay",
   "autoSkip",

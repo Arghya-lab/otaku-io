@@ -1,12 +1,9 @@
 "use client";
 
-import { themes } from "@/theme";
 import { PreferenceType } from "@/types/States";
 import { PreferenceApiSuccessResType } from "@/types/apiResponse";
 import axios, { isAxiosError } from "axios";
 import { useSession } from "next-auth/react";
-import { useCookies } from "next-client-cookies";
-import { useRouter } from "next/navigation";
 import {
   ReactNode,
   createContext,
@@ -16,7 +13,6 @@ import {
 } from "react";
 
 export const defaultPreference = {
-  themeId: 1,
   autoNext: false,
   autoPlay: true,
   autoSkip: false,
@@ -32,7 +28,6 @@ export enum UpdateTypeEnum {
   TOGGLE_IS_DUB = "TOGGLE_IS_DUB",
   CHANGE_PLAYBACK_QUALITY = "CHANGE_PLAYBACK_QUALITY",
   CHANGE_SEEK_SECONDS = "CHANGE_SEEK_SECONDS",
-  CHANGE_THEME_ID = "CHANGE_THEME_ID",
 }
 
 export interface PreferenceContextInterface {
@@ -42,7 +37,6 @@ export interface PreferenceContextInterface {
   isDub: boolean;
   playbackQuality: string;
   seekSeconds: number;
-  themeId: number;
   updatePreference: (
     updateType: UpdateTypeEnum,
     value: string | number | undefined | void
@@ -59,8 +53,6 @@ export const usePreference = () => useContext(PreferencesContext);
 const PreferencesProvider = ({ children }: { children: ReactNode }) => {
   const { data: session } = useSession();
   const [preferences, setPreferences] = useState(defaultPreference);
-  const cookies = useCookies();
-  const router = useRouter();
 
   const fetchPreferences = async () => {
     try {
@@ -81,9 +73,6 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
       localStorage.getItem("preferences") || JSON.stringify(defaultPreference)
     ) as PreferenceType;
 
-    savePreferences.themeId =
-      Number(cookies.get("themeId")) || savePreferences.themeId;
-
     localStorage.setItem("preferences", JSON.stringify(savePreferences));
 
     setPreferences(savePreferences);
@@ -91,7 +80,6 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
     if (session) {
       fetchPreferences();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
   const updatePreferences = async (
@@ -142,23 +130,6 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
             preferencesData = data.data;
             preferencesData = data.data;
           }
-        } else if (updateType === UpdateTypeEnum.CHANGE_THEME_ID) {
-          payload = Number(payload);
-
-          if (!payload || payload < 1 || payload > themes.length) {
-            console.error("Error: invalid preference update payload.");
-          } else {
-            cookies.set("themeId", payload.toString(), {
-              expires: 1000 * 60 * 60 * 24 * 365,
-              path: "/",
-            }); // Maximum value: 2147483647
-            const { data }: { data: PreferenceApiSuccessResType } =
-              await axios.patch("/api/preference/themeid", {
-                themeId: payload,
-              });
-            preferencesData = data.data;
-            router.refresh();
-          }
         } else {
           console.error("Error: invalid preference update type.");
         }
@@ -195,20 +166,6 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
           console.error("Error: invalid preference update payload.");
         } else {
           data = { ...data, seekSeconds: Number(payload) };
-        }
-      } else if (updateType === UpdateTypeEnum.CHANGE_THEME_ID) {
-        payload = Number(payload);
-
-        if (!payload || payload < 1 || payload > themes.length) {
-          console.error("Error: invalid preference update payload.");
-        } else {
-          cookies.set("themeId", payload.toString(), {
-            expires: 1000 * 60 * 60 * 24 * 365,
-            path: "/",
-          }); // Maximum value: 2147483647
-          router.refresh();
-
-          data = { ...data, themeId: Number(payload) };
         }
       } else {
         console.error("Error: invalid preference update type.");

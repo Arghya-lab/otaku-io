@@ -28,7 +28,7 @@ export async function GET() {
       data: userPreference,
       message: "Successfully updated user preference.",
     });
-  } catch (error) {
+  } catch {
     return apiError();
   }
 }

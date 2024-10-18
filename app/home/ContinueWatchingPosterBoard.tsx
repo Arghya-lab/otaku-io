@@ -1,34 +1,27 @@
 import HorizontalScrollComponent from "@/app/home/HorizontalScrollComponent";
 import ContinueWatchingPosterItem from "@/components/ContinueWatchingPosterItem";
 import { getUserWatching } from "@/services/getUserWatching";
-import chroma from "chroma-js";
 import { ChevronRight } from "lucide-react";
+import { getServerSession } from "next-auth";
 import Link from "next/link";
-import { getUserTheme } from "../layout";
 
 async function ContinueWatchingPosterBoard() {
-  const theme = await getUserTheme();
+  const session = await getServerSession();
+  const userEmail = session?.user?.email;
 
-  const userWatchingRes = await getUserWatching(1, 5);
+  if (!userEmail) return null;
+
+  const userWatchingRes = await getUserWatching(1, 5, userEmail);
 
   if (userWatchingRes && !!userWatchingRes.results.length) {
     return (
       <section className="mt-4 pb-8">
-        <div
-          className="mb-1 flex items-center justify-between px-3 xxs:px-4"
-          style={{ color: theme.textColor }}
-        >
-          <p className="font-nunito text-2xl capitalize">continue watching</p>
+        <div className="mb-1 flex items-center justify-between px-3 xxs:px-4">
+          <p className="font-barlow text-2xl capitalize">continue watching</p>
           <Link
             href="/history"
             role="button"
-            className="flex flex-row items-center gap-2 rounded-[45px] p-2 pl-4 opacity-65 hover:bg-opacity-10 hover:opacity-100"
-            style={{
-              color: theme.textColor,
-              backgroundColor: chroma(theme.primaryColor)
-                .alpha(0.15)
-                .toString(),
-            }}
+            className="bg-muted flex flex-row items-center gap-2 rounded-[45px] p-2 pl-4 opacity-65 hover:bg-opacity-80 hover:opacity-100"
           >
             <p className="text-[15px]">See All</p>
             <ChevronRight size={24} />

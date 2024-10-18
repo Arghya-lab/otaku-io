@@ -22,8 +22,8 @@ export async function GET(req: NextRequest) {
     let perPage = Number(url.searchParams.get("perPage")) || 20;
     if (perPage > 20) perPage = 20;
 
-    await validateSession();
-    const bookmarkAnimeIds = await getUserBookmarkAnime();
+    const user = await validateSession();
+    const bookmarkAnimeIds = await getUserBookmarkAnime(user.email);
     if (!bookmarkAnimeIds) {
       return apiError({ errorMessage: "Unauthorize access.", status: 400 });
     }
@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
       data: { results, hasNextPage, currentPage: page },
       message: "Successfully fetched user bookmarked animes.",
     });
-  } catch (error) {
+  } catch {
     return apiError();
   }
 }

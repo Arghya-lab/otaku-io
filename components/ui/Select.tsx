@@ -1,10 +1,8 @@
 "use client";
 
-import { themes } from "@/theme";
 import { shade } from "@/utils/color";
-import chroma from "chroma-js";
+import classNames from "classnames";
 import { ChevronDown } from "lucide-react";
-import { usePreference } from "../providers/PreferenceProvider";
 
 function Select({
   name,
@@ -21,36 +19,32 @@ function Select({
   onChange: (value: { value?: string | number; name: string }) => void;
   isWatchPage?: boolean;
 }) {
-  const { themeId } = usePreference();
-  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
-
   return (
     <div>
       {name && (
         <div className="pl-4">
-          <p style={{ color: theme.textColor, textTransform: "capitalize" }}>
-            {name}
-          </p>
+          <p className="capitalize">{name}</p>
         </div>
       )}
       <span
-        className="relative min-w-min"
-        style={{
-          color: !isWatchPage ? "#fff" : theme.textColor,
-        }}
+        className={classNames("relative min-w-min text-foreground", {
+          "text-white": !isWatchPage,
+        })}
       >
         <ChevronDown className="pointer-events-none absolute right-0 top-1/2 h-8 w-8 -translate-y-1/2 py-1.5" />
         <select
-          className="min-w-44 max-w-52 cursor-pointer rounded-[45px] py-1.5 pl-3 pr-7 text-left text-gray-900 text-inherit shadow-lg focus:outline-none focus:ring-2"
+          className={classNames(
+            "min-w-44 max-w-52 cursor-pointer rounded-[45px] py-1.5 pl-3 pr-7 text-left text-inherit shadow-lg focus:outline-none focus:ring-2",
+            {
+              "border-primary bg-primary": isWatchPage,
+              "border-[1px] bg-muted focus:border-accent": !isWatchPage,
+            }
+          )}
           style={{
             WebkitAppearance: "none",
             MozAppearance: "none",
-            backgroundColor: isWatchPage
-              ? chroma(theme.secondaryColor).alpha(0.2).hex()
-              : shade(color || theme.primaryColor, 0, 0.2).hex(),
-            borderColor: isWatchPage
-              ? chroma(theme.secondaryColor).alpha(0.2).hex()
-              : shade(color || theme.primaryColor, 0, 0.2).hex(),
+            backgroundColor: color ? shade(color, 0, 0.2).hex() : undefined,
+            borderColor: color ? shade(color, 0, 0.2).hex() : undefined,
           }}
           defaultValue={JSON.stringify(selected)}
           onChange={(e) => onChange(JSON.parse(e.target.value))}
@@ -58,16 +52,9 @@ function Select({
           {list.map((item, id) => (
             <option
               key={id}
-              style={{
-                backgroundColor:
-                  selected.value === item.value
-                    ? chroma(theme.primaryColor).darken(0.5).hex()
-                    : theme.primaryColor,
-                color:
-                  selected.value === item.value
-                    ? theme.secondaryColor
-                    : theme.textColor,
-              }}
+              className={classNames("hover:bg-primary", {
+                "text-primary": selected.value === item.value,
+              })}
               value={JSON.stringify(item)}
             >
               {item.name}

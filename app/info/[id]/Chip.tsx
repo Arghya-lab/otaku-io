@@ -6,7 +6,7 @@ function Chip({
   color = "#fff",
 }: {
   name?: string;
-  value: any;
+  value?: string | number;
   color: string;
 }) {
   if (!value) {
@@ -19,7 +19,7 @@ function Chip({
       style={{ backgroundColor: shade(color, -1, 0.2).toString() }}
     >
       {!!name && (
-        <span className="font-nunito text-lg capitalize">{name} : </span>
+        <span className="font-barlow text-lg capitalize">{name} : </span>
       )}
       <span className="font-sans">{value}</span>
     </div>

@@ -39,7 +39,7 @@ export async function PATCH(req: Request) {
       data: user.bookmarks,
       message: "Successfully update user bookmark.",
     });
-  } catch (error) {
+  } catch {
     return apiError();
   }
 }

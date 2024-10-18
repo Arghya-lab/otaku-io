@@ -24,7 +24,7 @@ export async function GET() {
         status: 400,
       });
     }
-  } catch (error) {
+  } catch {
     return apiError();
   }
 }

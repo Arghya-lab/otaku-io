@@ -2,15 +2,11 @@ import AuthProvider from "@/components/providers/AuthProvider";
 import PreferencesProvider from "@/components/providers/PreferenceProvider";
 // import ReactQueryProvider from "@/components/providers/ReactQueryProvider";
 import PageContentWrapper from "@/components/PageContentWrapper";
+import { ThemeProvider } from "@/components/providers/themeProvider";
 import TopNavbar from "@/components/TopNavbar";
 import connectDB from "@/db/db";
-import Preference from "@/models/Preference";
-import { themes } from "@/theme";
-import { nunito_Sans, poppins } from "@/utils/fonts";
+import { barlow, poppins } from "@/utils/fonts";
 import type { Metadata, Viewport } from "next";
-import { getServerSession } from "next-auth";
-import { CookiesProvider } from "next-client-cookies/server";
-import { cookies } from "next/headers";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -58,55 +54,33 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export const getUserTheme = async () => {
-  let themeId: undefined | number;
-
-  const session = await getServerSession();
-  const userEmail = session?.user?.email;
-  if (userEmail) {
-    const userPreference = await Preference.findOne({
-      email: userEmail,
-    }).select("themeId");
-    themeId = userPreference?.themeId;
-  }
-
-  let themeCookie = cookies().get("themeId");
-  themeId = themeId ? themeId : Number(themeCookie?.value || 1);
-
-  return themes.find((theme) => theme.id === themeId) || themes[0];
-};
-
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   await connectDB();
-  const theme = await getUserTheme();
 
   return (
-    <html lang="en" id="App">
-      {/* <ReactQueryProvider> */}
-      <AuthProvider>
-        <CookiesProvider>
-          <PreferencesProvider>
-            <body
-              className={`${poppins} ${nunito_Sans} relative w-full font-poppins`}
-            >
-              <div
-                className="fixed -z-20 h-screen w-screen bg-cover"
-                style={{
-                  backgroundColor: theme.primaryColor,
-                  background: theme.bgImg,
-                }}
-              />
+    <html lang="en" id="App" className="dark">
+      <body className={`${poppins} ${barlow} relative w-full font-poppins`}>
+        {/* <ReactQueryProvider> */}
+        <AuthProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <PreferencesProvider>
+              <div className="fixed -z-20 h-screen w-screen bg-cover" />
               <TopNavbar />
               <PageContentWrapper>{children}</PageContentWrapper>
-            </body>
-          </PreferencesProvider>
-        </CookiesProvider>
-      </AuthProvider>
-      {/* </ReactQueryProvider> */}
+            </PreferencesProvider>
+          </ThemeProvider>
+        </AuthProvider>
+        {/* </ReactQueryProvider> */}
+      </body>
     </html>
   );
 }

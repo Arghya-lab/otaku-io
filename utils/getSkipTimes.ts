@@ -12,6 +12,7 @@ export const getSkipTimes = async (
     );
     if (data?.found) {
       const results = data?.results || [];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const output: SkipTimeType[] = results.map((result: any) => {
         switch (result.skipType) {
           case "op":

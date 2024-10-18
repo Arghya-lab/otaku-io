@@ -34,7 +34,7 @@ export async function PATCH() {
       data: updatedPreference,
       message: "Successfully updated user preference.",
     });
-  } catch (error) {
+  } catch {
     return apiError();
   }
 }

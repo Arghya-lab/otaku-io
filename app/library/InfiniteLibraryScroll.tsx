@@ -1,9 +1,7 @@
 "use client";
 
 import PosterItem from "@/components/PosterItem";
-import { usePreference } from "@/components/providers/PreferenceProvider";
 import usePosterItemCount from "@/hooks/usePosterItemCount";
-import { themes } from "@/theme";
 import { ApiSuccessType } from "@/types/apiResponse";
 import { IAnimeResult } from "@consumet/extensions";
 import axios from "axios";
@@ -20,8 +18,6 @@ function InfiniteLibraryScroll({
   hasNextPage: boolean;
   perPage: number;
 }) {
-  const { themeId } = usePreference();
-  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
   const posterItemCount = usePosterItemCount();
 
   const [page, setPage] = useState(1);
@@ -54,15 +50,14 @@ function InfiniteLibraryScroll({
       hasMore={hasMore}
       loader={
         <div className="m-auto w-28">
-          <LineWave
-            visible={true}
-            height="200"
-            width="200"
-            color={theme.secondaryColor}
-          />
+          <LineWave visible={true} height="200" width="200" />
         </div>
       }
-      endMessage={<p style={{ textAlign: "center" }}>nothing to show more</p>}
+      endMessage={
+        <p className="text-center text-muted-foreground">
+          Nothing to show more
+        </p>
+      }
     >
       <div
         className="grid grid-cols-2 gap-2 px-4 pb-16 xxs:grid-cols-3 xxs:gap-3 xs:gap-4 xs:pb-0"

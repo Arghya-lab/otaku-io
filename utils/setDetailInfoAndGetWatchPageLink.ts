@@ -28,7 +28,7 @@ const setAnimeInfoAndGetWatchPageLink = async (
     resEpisodes = animeInfo?.episodes;
     if (resEpisodes && resEpisodes.length > 0) {
       const currentEpisodeIdx = resEpisodes.findIndex(
-        (episode: any) => episode.number == epNo
+        (episode) => episode.number == epNo
       );
       currentEpisode = resEpisodes[currentEpisodeIdx];
       return `/watch/${animeInfo.id}/${currentEpisode.number}/${
@@ -44,7 +44,7 @@ const setAnimeInfoAndGetWatchPageLink = async (
       resEpisodes = animeInfo?.episodes;
       if (resEpisodes) {
         const currentEpisodeIdx = resEpisodes.findIndex(
-          (episode: any) => episode.number == epNo
+          (episode) => episode.number == epNo
         );
         currentEpisode = resEpisodes[currentEpisodeIdx];
         return `/watch/${animeInfo.id}/${currentEpisode.number}/${

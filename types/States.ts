@@ -1,5 +1,4 @@
 export interface PreferenceType {
-  themeId: number;
   autoNext: boolean;
   autoPlay: boolean;
   autoSkip: boolean;

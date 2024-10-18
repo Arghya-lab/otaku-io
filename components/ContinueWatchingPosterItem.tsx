@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { themes } from "@/theme";
 import { WatchingAnimeType } from "@/types/anime";
 import { shade } from "@/utils/color";
 import getTitle from "@/utils/getTitle";
@@ -21,8 +20,7 @@ function ContinueWatchingPosterItem({
   isHorizontalScroll?: boolean;
 }) {
   const { animeInfo, lastWatched } = WatchingAnime;
-  const { themeId, isDub } = usePreference();
-  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
+  const { isDub } = usePreference();
 
   const router = useRouter();
   const [isHover, setIsHover] = useState(false);
@@ -48,7 +46,7 @@ function ContinueWatchingPosterItem({
   return (
     <div
       className={classNames("p-1", {
-        "w-[152px] p-2 xxs:p-3 sm:w-48": isHorizontalScroll,
+        "w-[152px] p-1.5 xxs:p-2 sm:w-48": isHorizontalScroll,
         "min-w-24 max-w-48": !isHorizontalScroll,
       })}
     >
@@ -77,13 +75,12 @@ function ContinueWatchingPosterItem({
                 size={48}
                 strokeWidth={isHover ? 1.5 : 1.25}
                 className={classNames("text-white", { "scale-125": isHover })}
-                style={
-                  isHover
-                    ? animeInfo?.color
-                      ? { color: shade(animeInfo.color, -2).toString() }
-                      : {}
-                    : {}
-                }
+                style={{
+                  color:
+                    isHover && animeInfo?.color
+                      ? shade(animeInfo.color, -2).hex()
+                      : undefined,
+                }}
               />
             ) : (
               <Oval
@@ -119,7 +116,7 @@ function ContinueWatchingPosterItem({
               color:
                 isHover && animeInfo?.color
                   ? shade(animeInfo.color, -2).toString()
-                  : theme.textColor,
+                  : undefined,
             }}
           >
             {title || ""}

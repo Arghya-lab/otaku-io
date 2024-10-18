@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { themes } from "@/theme";
 import { shade } from "@/utils/color";
 import getTitle from "@/utils/getTitle";
 import { IAnimeResult } from "@consumet/extensions";
@@ -17,9 +16,6 @@ function PosterItem({
   item: IAnimeResult;
   isHorizontalScroll?: boolean;
 }) {
-  const { themeId } = usePreference();
-  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
-
   const { isDub } = usePreference();
   const [isHover, setIsHover] = useState(false);
 
@@ -28,7 +24,7 @@ function PosterItem({
   return (
     <div
       className={classNames({
-        "w-[152px] p-2 xxs:p-3 sm:w-48": isHorizontalScroll,
+        "w-[152px] p-1.5 xxs:p-2 sm:w-48": isHorizontalScroll,
         "min-w-24 max-w-48 p-1": !isHorizontalScroll,
       })}
     >
@@ -63,12 +59,10 @@ function PosterItem({
         </div>
         <div className="flex h-16 items-center overflow-visible">
           <p
-            className="line-clamp-2 w-full px-2 text-center text-xs font-medium text-neutral-950 dark:text-white"
+            className="line-clamp-2 w-full px-2 text-center text-xs font-medium"
             style={{
               color:
-                isHover && item?.color
-                  ? shade(item?.color, -2).toString()
-                  : theme.textColor,
+                isHover && item?.color && shade(item?.color, -2).toString(),
             }}
           >
             {title}

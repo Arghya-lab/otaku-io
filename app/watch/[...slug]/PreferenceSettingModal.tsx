@@ -3,7 +3,6 @@ import Radio from "@/components/ui/Radio";
 import Select from "@/components/ui/Select";
 import useChangePreference from "@/hooks/useChangePreference";
 import useWindowSize from "@/hooks/useWindowSize";
-import { themes } from "@/theme";
 import { seekTimeList } from "@/types/constants";
 import * as Dialog from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
@@ -16,9 +15,7 @@ function PreferenceSettingModal({
   handleOpenChange: (value?: boolean) => void;
 }) {
   const { windowWidth } = useWindowSize();
-  const { themeId, autoPlay, autoSkip, autoNext, seekSeconds } =
-    usePreference();
-  const theme = themes.find((theme) => theme.id === themeId) || themes[0];
+  const { autoPlay, autoSkip, autoNext, seekSeconds } = usePreference();
 
   const {
     handleChangeAutoNext,
@@ -53,33 +50,20 @@ function PreferenceSettingModal({
           <div className="my-6 flex flex-col gap-4 px-4">
             <div className="flex items-center justify-between gap-4">
               <p className="text-sm">Auto Play</p>
-              <Radio
-                color={theme.secondaryColor}
-                enabled={autoPlay}
-                handleChange={handleChangeAutoPlay}
-              />
+              <Radio enabled={autoPlay} handleChange={handleChangeAutoPlay} />
             </div>
             <div className="flex items-center justify-between gap-4">
               <p className="text-sm">Auto Skip (Into, Outro, Recap)</p>
-              <Radio
-                color={theme.secondaryColor}
-                enabled={autoSkip}
-                handleChange={handleChangeAutoSkip}
-              />
+              <Radio enabled={autoSkip} handleChange={handleChangeAutoSkip} />
             </div>
             <div className="flex items-center justify-between gap-4">
               <p className="text-sm">Auto Next</p>
-              <Radio
-                color={theme.secondaryColor}
-                enabled={autoNext}
-                handleChange={handleChangeAutoNext}
-              />
+              <Radio enabled={autoNext} handleChange={handleChangeAutoNext} />
             </div>
             <div className="flex items-center justify-between gap-4">
               <p className="text-sm">Seek time</p>
               <Select
                 list={seekTimeList}
-                color={theme.secondaryColor}
                 selected={
                   seekTimeList[
                     seekTimeList.findIndex((item) => item.value === seekSeconds)

@@ -42,7 +42,7 @@ export async function PATCH(req: Request) {
       data: updatedPreference,
       message: "Successfully updated user preference.",
     });
-  } catch (error) {
+  } catch {
     return apiError();
   }
 }

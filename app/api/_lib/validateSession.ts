@@ -1,3 +1,5 @@
+import "server-only";
+
 import apiError from "@/app/api/_lib/apiError";
 import User from "@/models/User";
 import { getServerSession } from "next-auth";

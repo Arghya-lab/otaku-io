@@ -1,3 +1,5 @@
+import "server-only";
+
 import apiError from "@/app/api/_lib/apiError";
 import apiSuccess from "@/app/api/_lib/apiSuccess";
 import { advancedSearch } from "@/services/getAnime";
@@ -10,7 +12,6 @@ import { NextRequest } from "next/server";
  *   - query (optional): query to search for animes.
  *   - page (optional): Current page no for anime result.
  *   - perPage (optional): Per page result for anime.
- *   - type (optional): Type of anime anime.
  *   - genres (optional): Genres for anime anime result.
  *   - id (optional): Id of the anime to get that particular result.
  *   - format (optional): Format of anime.
@@ -26,7 +27,6 @@ export async function GET(req: NextRequest) {
       parseInt(req.nextUrl.searchParams.get("page") ?? "", 10) ?? undefined;
     const perPage =
       parseInt(req.nextUrl.searchParams.get("perPage") ?? "", 10) ?? undefined;
-    const type = req.nextUrl.searchParams.get("type") ?? undefined;
     const genres = req.nextUrl.searchParams.get("genres") ?? undefined;
     const id = req.nextUrl.searchParams.get("id") ?? undefined;
     const format = req.nextUrl.searchParams.get("format") ?? undefined;
@@ -40,7 +40,6 @@ export async function GET(req: NextRequest) {
       query,
       page,
       perPage,
-      type,
       genres,
       id,
       format,

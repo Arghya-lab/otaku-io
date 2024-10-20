@@ -64,7 +64,7 @@ function ContinueWatchingPosterItem({
           className={classNames(
             "relative w-full overflow-hidden rounded-xl ring-[3px]",
             {
-              "ring-slate-50": isHover,
+              "ring-card-foreground": isHover,
               "ring-transparent": !isHover,
             }
           )}

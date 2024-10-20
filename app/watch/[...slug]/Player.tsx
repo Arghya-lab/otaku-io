@@ -1,16 +1,15 @@
 import { usePreference } from "@/components/providers/PreferenceProvider";
 import useChangePreference from "@/hooks/useChangePreference";
-import { ApiSuccessType } from "@/types/apiResponse";
 import getPreviouslyWatchedTill from "@/utils/getPreviouslyWatchedTill";
 import { getSkipTimes } from "@/utils/getSkipTimes";
 import setWatchedTill from "@/utils/setWatchedTill";
 import ReactVideo from "@arghya-lab/react-video";
-import { IAnimeInfo, ISource } from "@consumet/extensions";
-import axios, { isAxiosError } from "axios";
+import { IAnimeInfo } from "@consumet/extensions";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import screenfull from "screenfull";
+import { useVideoLink } from "./VideoLinkProvider";
 
 export interface PlayerPropType {
   animeId: string;
@@ -34,7 +33,7 @@ function Player({
 }: PlayerPropType) {
   const router = useRouter();
   const { data: session } = useSession();
-  const videoRef = useRef<HTMLVideoElement>(null);
+  // const videoRef = useRef<HTMLVideoElement>(null);
   const markWatchedTill = useRef(0);
 
   const {
@@ -44,21 +43,7 @@ function Player({
     seekSeconds,
   } = usePreference();
   const { handleChangePlaybackQuality } = useChangePreference();
-
-  const [videoState, setVideoState] = useState<{
-    sources: { src: string; quality: string }[];
-    chapters: {
-      name: string;
-      startTime: number;
-      endTime: number;
-      color?: string;
-      skipAble?: boolean;
-    }[];
-    captions?: { src: string; srclang: string }[];
-  }>({
-    sources: [],
-    chapters: [],
-  });
+  const { videoRef, videoState, setVideoState } = useVideoLink();
 
   const handleSeekToUnwatched = async () => {
     const previouslyWatchedTill = await getPreviouslyWatchedTill(
@@ -67,54 +52,15 @@ function Player({
       session
     );
 
-    if (previouslyWatchedTill && videoRef.current) {
+    if (
+      previouslyWatchedTill &&
+      videoRef &&
+      videoRef.current &&
+      videoRef.current.duration - previouslyWatchedTill > 5
+    ) {
       videoRef.current.currentTime = previouslyWatchedTill;
     }
   };
-
-  // On initial page load or episode change fetch streaming links
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data }: { data: ApiSuccessType<ISource> } = await axios.get(
-          `/api/anime/streaming-links/${epId}`
-        );
-        if (data.success) {
-          setVideoState({
-            sources: data.data.sources
-              .filter((source) => source.quality !== "backup")
-              .map((source) => ({
-                src: source.url,
-                quality: source.quality || "unknown",
-              }))
-              .reverse(),
-            chapters: [],
-            captions: data.data.subtitles?.map((subtitle) => ({
-              src: subtitle.url,
-              srclang: subtitle.lang,
-            })),
-          });
-        }
-      } catch (error) {
-        if (isAxiosError(error)) {
-          // console.log(error.message);
-        }
-      }
-    })();
-
-    const video = videoRef.current;
-
-    // before name change update watchTill
-    return () => {
-      const currentTime = video?.currentTime;
-      (async () => {
-        if (currentTime) {
-          await setWatchedTill(animeId, epNo, currentTime, session);
-        }
-      })();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [epId]);
 
   // On initial page load or episode change and on load of video playing duration fetch skip times
   const handleDurationUpdate = async (duration: number) => {
@@ -146,45 +92,45 @@ function Player({
   };
 
   const handleEnded = () => {
-    // console.log("handled ended");
-
-    if (isAutoNextEnabled && animeInfo?.episodes) {
-      const currentEpIdx = animeInfo.episodes.findIndex((ep) => ep.id === epId);
-
-      screenfull.exit();
-      if (screen.orientation.unlock) screen.orientation.unlock();
-
-      // if the current episode is last episode
-      if (
-        animeInfo.episodes[animeInfo.episodes.length - 1].id ===
-        animeInfo.episodes[currentEpIdx].id
-      ) {
-        videoRef.current?.pause();
-        // console.log("run end of episodes");
-      } else {
-        // console.log("run router push");
-
-        const nextEp = animeInfo.episodes[currentEpIdx + 1];
-        router.push(
-          `/watch/${animeInfo.id}/${nextEp.number}/${nextEp.id}?dub=${isDub}`
+    if (videoRef) {
+      if (isAutoNextEnabled && animeInfo?.episodes) {
+        const currentEpIdx = animeInfo.episodes.findIndex(
+          (ep) => ep.id === epId
         );
+
+        screenfull.exit();
+        if (screen.orientation.unlock) screen.orientation.unlock();
+
+        // if the current episode is last episode
+        if (
+          animeInfo.episodes[animeInfo.episodes.length - 1].id ===
+          animeInfo.episodes[currentEpIdx].id
+        ) {
+          videoRef.current?.pause();
+        } else {
+          const nextEp = animeInfo.episodes[currentEpIdx + 1];
+          router.push(
+            `/watch/${animeInfo.id}/${nextEp.number}/${nextEp.id}?dub=${isDub}`
+          );
+        }
+      } else {
+        videoRef.current?.pause();
       }
-    } else {
-      videoRef.current?.pause();
     }
   };
 
   // on specific time during video playing the video played till save in DB
   const handleProgress = async ({ currentTime }: { currentTime: number }) => {
-    const duration = videoRef.current?.duration;
-    // console.log({ duration, currentTime });
+    if (videoRef && videoRef.current) {
+      const duration = videoRef.current.duration;
 
-    if (duration && currentTime / duration >= markWatchedTill.current + 0.04) {
-      // console.log(videoState);
-      // console.log("uploading current watch time.", currentTime);
-
-      markWatchedTill.current = currentTime / duration;
-      await setWatchedTill(animeId, epNo, currentTime, session);
+      if (
+        duration &&
+        currentTime / duration >= markWatchedTill.current + 0.04
+      ) {
+        markWatchedTill.current = currentTime / duration;
+        await setWatchedTill(animeId, epNo, currentTime, session);
+      }
     }
   };
 

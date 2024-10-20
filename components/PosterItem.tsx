@@ -39,9 +39,13 @@ function PosterItem({
         }}
       >
         <div
-          className={`relative w-full overflow-hidden rounded-xl shadow-xl ring-[3px] ${
-            isHover ? "ring-slate-50" : "ring-transparent"
-          }`}
+          className={classNames(
+            `relative w-full overflow-hidden rounded-xl shadow-xl ring-[3px]`,
+            {
+              "ring-card-foreground": isHover,
+              "ring-transparent": !isHover,
+            }
+          )}
         >
           <div
             className={`relative mb-auto flex aspect-[5/7] w-full transform-gpu select-none items-start overflow-hidden transition-transform duration-200 ease-in ${

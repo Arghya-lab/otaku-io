@@ -1,13 +1,11 @@
 "use client";
 
 import PosterItem from "@/components/PosterItem";
-import usePosterItemCount from "@/hooks/usePosterItemCount";
 import { ApiSuccessType } from "@/types/apiResponse";
 import { IAnimeResult, ISearch } from "@consumet/extensions";
 import axios from "axios";
 import { useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { LineWave } from "react-loader-spinner";
 
 function InfiniteSearchScroll({
   query,
@@ -18,8 +16,6 @@ function InfiniteSearchScroll({
   initialData: IAnimeResult[];
   hasNextPage: boolean;
 }) {
-  const posterItemCount = usePosterItemCount();
-
   const [data, setData] = useState(initialData);
   const [hasMore, setHasMore] = useState(hasNextPage);
   const [pageNo, setPageNo] = useState(1);
@@ -50,22 +46,17 @@ function InfiniteSearchScroll({
       next={handleFetchMoreData}
       hasMore={hasMore}
       loader={
-        <div className="m-auto w-28">
-          <LineWave visible={true} height="200" width="200" />
+        <div className="flex h-32 w-full items-center justify-center">
+          <div className="dot-loader" />
         </div>
       }
       endMessage={
-        <p className="text-center text-muted-foreground">
+        <p className="pt-8 text-center text-secondary-foreground">
           Nothing to show more
         </p>
       }
     >
-      <div
-        className="grid grid-cols-2 gap-2 px-4 pb-16 xxs:grid-cols-3 xxs:gap-3 xs:gap-4 xs:pb-0"
-        style={{
-          gridTemplateColumns: `repeat( ${posterItemCount}, 1fr)`,
-        }}
-      >
+      <div className="poster-grid px-4 pb-16 xs:pb-0">
         {data.map((item, id) => (
           <PosterItem key={id} item={item} />
         ))}

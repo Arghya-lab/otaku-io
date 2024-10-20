@@ -1,9 +1,10 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { LogIn, LogOut, Mail, User } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import Skeleton from "react-loading-skeleton";
 
 function AccountSection() {
   const { data: session, status } = useSession();
@@ -14,8 +15,8 @@ function AccountSection() {
       <div className="xs:pl-12">
         {status === "loading" ? (
           <div className="flex flex-col gap-2">
-            <Skeleton className="h-5 w-2/5 rounded-md" />
-            <Skeleton className="h-10 w-2/5 rounded-md" />
+            <Skeleton className="h-5 w-2/5" />
+            <Skeleton className="h-10 w-2/5" />
           </div>
         ) : status === "authenticated" ? (
           <>
@@ -27,26 +28,20 @@ function AccountSection() {
               <Mail size={16} />
               {session?.user?.email}
             </p>
-            <Link
-              href="/api/auth/signout?callbackUrl=/setting"
-              className="flex items-center gap-2 font-barlow text-destructive hover:underline"
-            >
-              <LogOut size={16} />
-              Logout
-            </Link>
+            <Button variant="link" className="px-0 font-poppins" asChild>
+              <Link href="/api/auth/signout?callbackUrl=/setting">
+                <LogOut size={16} /> Logout
+              </Link>
+            </Button>
           </>
         ) : (
           <div>
             <p>Connect your account for save your preferences in cloud.</p>
-            <div className="flex items-center gap-2">
-              <LogIn size={16} className="text-destructive" />
-              <Link
-                href="/api/auth/signin?callbackUrl=/setting"
-                className="font-barlow text-destructive hover:underline"
-              >
-                login
+            <Button variant="link" className="px-0 font-poppins" asChild>
+              <Link href="/api/auth/signin?callbackUrl=/setting">
+                <LogIn size={16} /> login
               </Link>
-            </div>
+            </Button>
           </div>
         )}
       </div>

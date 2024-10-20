@@ -1,3 +1,5 @@
+import "server-only";
+
 import mongoose from "mongoose";
 
 let isConnected = false;
@@ -10,7 +12,7 @@ const connectDB = async () => {
     await mongoose.connect(process.env.MONGODB_URI!);
     const connection = mongoose.connection;
     connection.on("connected", () => {
-      console.log("MongoDB Connected 🎈");
+      console.info("MongoDB Connected 🎈");
     });
     connection.on("error", (err) => {
       console.error(

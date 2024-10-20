@@ -1,3 +1,5 @@
+import "client-only";
+
 import {
   UpdateTypeEnum,
   usePreference,
@@ -20,7 +22,6 @@ const useChangePreference = () => {
 
   const handleChangeSeekSeconds = ({
     value,
-    name,
   }: {
     value?: string | number;
     name?: string;
@@ -32,7 +33,6 @@ const useChangePreference = () => {
 
   const handleChangePlaybackQuality = ({
     value,
-    name,
   }: {
     value?: string | number;
     name?: string;

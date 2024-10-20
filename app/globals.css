@@ -1,12 +1,5 @@
 @import "react-alice-carousel/lib/alice-carousel.css";
-@import "react-loading-skeleton/dist/skeleton.css";
 @import "@arghya-lab/react-video/dist/style.css";
-
-body,
-#root {
-  height: 100%;
-  width: 100%;
-}
 
 @tailwind base;
 @tailwind components;
@@ -208,7 +201,49 @@ body,
   .shortcut-btn {
     @apply flex min-w-12 flex-row items-center justify-center gap-1 rounded px-2 py-1 text-center text-xs shadow-md xs:gap-2 xs:text-base;
   }
+
+  .poster-grid {
+    @apply grid grid-cols-2 gap-2 xxs:grid-cols-3 xxs:gap-3 xs:grid-cols-4 xs:gap-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8 2xl:grid-cols-9 3xl:grid-cols-10;
+  }
 }
+
+body,
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+/***   Scrollbar    ***/
+/* Scrollbar color and width for Firefox */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--ring)) transparent;
+}
+
+/* Overall scrollbar styling */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+/* Track (background of the scrollbar) */
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+/* Handle (the draggable part) */
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--ring));
+  border-radius: 10px;
+  /* border: 3px solid #f1f1f1; */
+}
+
+/* Remove top and bottom (or left and right) arrow buttons */
+::-webkit-scrollbar-button {
+  display: none;
+}
+
+/***   Carousel    ***/
 
 /* Carousel custom styles */
 .alice-carousel__wrapper {
@@ -228,9 +263,10 @@ body,
   line-height: 1rem;
   font-weight: 300;
   color: unset;
-  background-color: rgba(0, 0, 0, 0);
+  background-color: hsl(var(--muted-foreground));
 }
 
+/***   Horizontal scroll    ***/
 .react-horizontal-scrolling-menu--inner-wrapper {
   position: relative;
   overflow-y: hidden;
@@ -243,4 +279,48 @@ body,
 }
 .react-horizontal-scrolling-menu--scroll-container ::-webkit-scrollbar {
   display: none; /* Safari and Chrome */
+}
+
+/***   dot loader    ***/
+.dot-loader {
+  width: 60px;
+  aspect-ratio: 2;
+  --_g: no-repeat
+    radial-gradient(
+      circle closest-side,
+      hsl(var(--muted-foreground)) 90%,
+      #0000
+    );
+  background:
+    var(--_g) 0% 50%,
+    var(--_g) 50% 50%,
+    var(--_g) 100% 50%;
+  background-size: calc(100% / 3) 50%;
+  animation: l3 1s infinite linear;
+}
+@keyframes l3 {
+  20% {
+    background-position:
+      0% 0%,
+      50% 50%,
+      100% 50%;
+  }
+  40% {
+    background-position:
+      0% 100%,
+      50% 0%,
+      100% 50%;
+  }
+  60% {
+    background-position:
+      0% 50%,
+      50% 100%,
+      100% 0%;
+  }
+  80% {
+    background-position:
+      0% 50%,
+      50% 50%,
+      100% 100%;
+  }
 }

@@ -1,3 +1,5 @@
+import "server-only";
+
 import connectDB from "@/db/db";
 import NextAuth from "next-auth";
 import { options } from "./options";

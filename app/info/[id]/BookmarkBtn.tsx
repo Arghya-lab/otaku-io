@@ -32,7 +32,7 @@ function BookmarkBtn({
       setBookmarks(data.data);
     } catch (error) {
       if (isAxiosError(error)) {
-        console.log(error.message);
+        console.error(error.message);
       }
     }
   };

@@ -1,29 +1,92 @@
-"use client";
+"use client"; // This ensures the component is client-side
 
 import PosterItem from "@/components/PosterItem";
-import usePosterItemCount from "@/hooks/usePosterItemCount";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ApiSuccessType } from "@/types/apiResponse";
 import { IAnimeResult, ISearch } from "@consumet/extensions";
 import axios, { isAxiosError } from "axios";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { LineWave } from "react-loader-spinner";
 
-function InfiniteDiscoverScroll() {
-  const posterItemCount = usePosterItemCount();
-  const searchParams = useSearchParams();
+function InfiniteDiscoverScroll({
+  initialData,
+  hasNextPage,
+  initialFormat,
+  initialGenres,
+  initialSort,
+  initialStatus,
+}: {
+  initialData: IAnimeResult[];
+  hasNextPage: boolean;
+  initialFormat?: string;
+  initialGenres?: string;
+  initialSort?: string;
+  initialStatus?: string;
+}) {
+  const searchParams = useSearchParams(); // Client-side only hook
 
-  const [data, setData] = useState<IAnimeResult[]>([]);
-  const [hasMore, setHasMore] = useState(true);
-  const [pageNo, setPageNo] = useState(0);
+  const [data, setData] = useState<IAnimeResult[]>(initialData);
+  const [hasMore, setHasMore] = useState(hasNextPage);
+  const [pageNo, setPageNo] = useState(1);
 
   const format = searchParams.get("format");
   const genres = searchParams.get("genres");
   const sort = searchParams.get("sort");
   const status = searchParams.get("status");
 
-  const fetchData = async () => {
+  const [PrevFormat, setPrevFormat] = useState(initialFormat);
+  const [PrevGenres, setPrevGenres] = useState(initialGenres);
+  const [PrevSort, setPrevSort] = useState(initialSort);
+  const [PrevStatus, setPrevStatus] = useState(initialStatus);
+
+  const [isNewFilterDataFetching, setIsNewFilterDataFetching] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      if (
+        format != PrevFormat ||
+        genres != PrevGenres ||
+        sort != PrevSort ||
+        status != PrevStatus
+      ) {
+        setIsNewFilterDataFetching(true);
+        try {
+          const { data }: { data: ApiSuccessType<ISearch<IAnimeResult>> } =
+            await axios.get(`/api/anime/discover`, {
+              params: {
+                format,
+                genres,
+                sort,
+                status,
+                perPage: 30,
+              },
+            });
+
+          setData(data.data.results);
+          setHasMore(data.data.hasNextPage || false);
+          setPageNo(data.data.currentPage || 1);
+          setPrevFormat(format || undefined);
+          setPrevGenres(genres || undefined);
+          setPrevSort(sort || undefined);
+          setPrevStatus(status || undefined);
+        } finally {
+          setIsNewFilterDataFetching(false);
+        }
+      }
+    })();
+  }, [
+    format,
+    PrevFormat,
+    genres,
+    PrevGenres,
+    sort,
+    PrevSort,
+    status,
+    PrevStatus,
+  ]);
+
+  const fetchMoreData = async () => {
     try {
       const { data }: { data: ApiSuccessType<ISearch<IAnimeResult>> } =
         await axios.get(`/api/anime/discover`, {
@@ -33,6 +96,7 @@ function InfiniteDiscoverScroll() {
             genres,
             sort,
             status,
+            perPage: 30,
           },
         });
 
@@ -41,62 +105,34 @@ function InfiniteDiscoverScroll() {
       setPageNo(data.data.currentPage || pageNo + 1);
     } catch (error) {
       if (isAxiosError(error)) {
-        console.log(error.message);
+        console.error(error.message);
       }
     }
   };
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data }: { data: ApiSuccessType<ISearch<IAnimeResult>> } =
-          await axios.get(`/api/anime/discover`, {
-            params: {
-              format,
-              genres,
-              sort,
-              status,
-            },
-          });
-
-        setData(data.data.results);
-        setHasMore(data.data.hasNextPage || false);
-        setPageNo(data.data.currentPage || pageNo + 1);
-      } catch (error) {
-        if (isAxiosError(error)) {
-          console.log(error.message);
-        }
-      }
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [format, genres, sort, status]);
 
   return (
     <InfiniteScroll
       className="h-full"
       dataLength={data.length}
-      next={fetchData}
+      next={fetchMoreData}
       hasMore={hasMore}
       loader={
-        <div className="m-auto w-28">
-          <LineWave visible={true} height="200" width="200" />
+        <div className="flex h-32 w-full items-center justify-center">
+          <div className="dot-loader" />
         </div>
       }
       endMessage={
-        <p className="text-center text-muted-foreground">
+        <p className="pt-8 text-center text-secondary-foreground">
           Nothing to show more
         </p>
       }
     >
-      <div
-        className="grid grid-cols-2 gap-2 px-4 pb-16 xxs:grid-cols-3 xxs:gap-3 xs:gap-4 xs:pb-0"
-        style={{
-          gridTemplateColumns: `repeat( ${posterItemCount}, 1fr)`,
-        }}
-      >
-        {data.map((item) => (
-          <PosterItem key={item.id} item={item} />
-        ))}
+      <div className="poster-grid px-4 pb-16 xs:pb-0">
+        {!isNewFilterDataFetching
+          ? data.map((item) => <PosterItem key={item.id} item={item} />)
+          : Array.from({ length: 30 }, (_, id) => (
+              <Skeleton className="aspect-[5/7] min-w-24 max-w-48" key={id} />
+            ))}
       </div>
     </InfiniteScroll>
   );

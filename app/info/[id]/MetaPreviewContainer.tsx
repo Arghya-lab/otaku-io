@@ -1,10 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
+import DescriptionMoreLess from "@/app/info/[id]/DescriptionMoreLess";
 import User from "@/models/User";
 import { AnimeImdbInfoType } from "@/types/anime";
 import getTitle from "@/utils/getTitle";
 import { IAnimeInfo } from "@consumet/extensions";
 import classNames from "classnames";
-import htmlParse from "html-react-parser";
 import { getServerSession } from "next-auth";
 import BookmarkBtn from "./BookmarkBtn";
 import Chip from "./Chip";
@@ -44,7 +44,7 @@ async function MetaPreviewContainer({
             src={`https://images.metahub.space/logo/small/${imdbInfo.imdbID}/img`}
           />
         ) : (
-          <div
+          <p
             className={classNames("min-h-32 break-all font-barlow text-white", {
               "text-3xl font-bold xxs:text-4xl xxs:font-extrabold":
                 title.length > 50,
@@ -54,7 +54,7 @@ async function MetaPreviewContainer({
             })}
           >
             {title}
-          </div>
+          </p>
         )}
         <BookmarkBtn userBookmarks={bookmarks} animeId={animeInfo.id} />
       </div>
@@ -138,12 +138,9 @@ async function MetaPreviewContainer({
             <p className="text-lg font-medium capitalize text-slate-50 opacity-50">
               description
             </p>
-            <div
-              className="prose pl-4 font-barlow text-white"
-              // style={{ color: textColor(item - 1) }}
-            >
-              {htmlParse(`<p >${animeInfo?.description}</p>`)}
-            </div>
+            <article className="prose pl-4 font-barlow text-white opacity-90">
+              <DescriptionMoreLess description={animeInfo.description} />
+            </article>
           </div>
         )}
         <div className="my-8 flex flex-wrap gap-3">

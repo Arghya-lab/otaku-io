@@ -1,13 +1,11 @@
 "use client";
 
 import ContinueWatchingPosterItem from "@/components/ContinueWatchingPosterItem";
-import usePosterItemCount from "@/hooks/usePosterItemCount";
 import { WatchingAnimeType } from "@/types/anime";
 import { ApiSuccessType } from "@/types/apiResponse";
 import axios, { isAxiosError } from "axios";
 import { useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { LineWave } from "react-loader-spinner";
 
 function InfiniteHistoryScroll({
   initialData,
@@ -18,8 +16,6 @@ function InfiniteHistoryScroll({
   hasNextPage: boolean;
   perPage: number;
 }) {
-  const posterItemCount = usePosterItemCount();
-
   const [pageNo, setPageNo] = useState(1);
 
   const [data, setData] = useState(initialData);
@@ -47,7 +43,7 @@ function InfiniteHistoryScroll({
       setPageNo(data.data.currentPage);
     } catch (error) {
       if (isAxiosError(error)) {
-        console.log(error.message);
+        console.error(error.message);
       }
     }
   };
@@ -59,22 +55,17 @@ function InfiniteHistoryScroll({
       next={handleFetchMoreData}
       hasMore={hasMore}
       loader={
-        <div className="m-auto w-28">
-          <LineWave visible={true} height="200" width="200" />
+        <div className="flex h-32 w-full items-center justify-center">
+          <div className="dot-loader" />
         </div>
       }
       endMessage={
-        <p className="text-center text-muted-foreground">
+        <p className="pt-8 text-center text-secondary-foreground">
           Nothing to show more
         </p>
       }
     >
-      <div
-        className="grid grid-cols-2 gap-2 px-4 pb-16 xxs:grid-cols-3 xxs:gap-3 xs:gap-4 xs:pb-0"
-        style={{
-          gridTemplateColumns: `repeat( ${posterItemCount}, 1fr)`,
-        }}
-      >
+      <div className="poster-grid px-4 pb-16 xs:pb-0">
         {data.map((WatchingAnime, id) => (
           <ContinueWatchingPosterItem key={id} WatchingAnime={WatchingAnime} />
         ))}

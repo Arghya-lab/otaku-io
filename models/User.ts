@@ -1,3 +1,5 @@
+import "server-only";
+
 import mongoose, { Document, Model } from "mongoose";
 
 // Interface for user document

@@ -1,3 +1,5 @@
+import "client-only";
+
 import { AnimeWatchedType } from "@/types/States";
 import axios from "axios";
 import { Session } from "next-auth";

@@ -27,6 +27,7 @@ function RecommendItem({ item }: { item: IAnimeResult }) {
               title={title}
               className="h-[136px] w-24 object-cover"
               src={item.image}
+              loading="lazy"
             />
           )}
         </div>

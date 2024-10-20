@@ -75,11 +75,13 @@ function EpBtnSheet({
 
     setTimeout(async () => {
       if (isWatchPage && animeInfo) {
-        await setDetailInfoAndGetWatchPageLink(
+        const UpdatedPageLink = await setDetailInfoAndGetWatchPageLink(
           animeInfo.id,
-          isDubEnable,
+          !isDubEnable,
           episodeNo
         );
+        setIsLoading(false);
+        if (UpdatedPageLink) router.replace(UpdatedPageLink);
       } else {
         const currentPath = window.location.pathname;
         const title = new URLSearchParams(window.location.search).get("title");

@@ -17,11 +17,11 @@ async function ContinueWatchingPosterBoard() {
     return (
       <section className="mt-4 pb-8">
         <div className="mb-1 flex items-center justify-between px-3 xxs:px-4">
-          <p className="font-barlow text-2xl capitalize">continue watching</p>
+          <p className="text-2xl capitalize">continue watching</p>
           <Link
             href="/history"
             role="button"
-            className="bg-muted flex flex-row items-center gap-2 rounded-[45px] p-2 pl-4 opacity-65 hover:bg-opacity-80 hover:opacity-100"
+            className="flex flex-row items-center gap-2 rounded-[45px] bg-muted p-2 pl-4 opacity-65 hover:bg-opacity-80 hover:opacity-100"
           >
             <p className="text-[15px]">See All</p>
             <ChevronRight size={24} />

@@ -1,5 +1,7 @@
+import "client-only";
+
 import { ApiSuccessType } from "@/types/apiResponse";
-import { IAnimeEpisode, IAnimeInfo } from "@consumet/extensions";
+import { IAnimeEpisode, IAnimeInfo, SubOrSub } from "@consumet/extensions";
 import axios from "axios";
 
 const setAnimeInfoAndGetWatchPageLink = async (
@@ -17,6 +19,23 @@ const setAnimeInfoAndGetWatchPageLink = async (
     );
     if (savedAnimeInfo && savedAnimeInfo.id === id) {
       animeInfo = savedAnimeInfo;
+
+      if (
+        animeInfo.hasDub !== isDub ||
+        (isDub && animeInfo.subOrDub === "sub") ||
+        (!isDub && animeInfo.subOrDub === "dub")
+      ) {
+        const { data }: { data: ApiSuccessType<IAnimeEpisode[]> } =
+          await axios.get(`/api/anime/episodes/${id}?dub=${isDub}`);
+        animeInfo.episodes = data.data;
+        if (isDub) {
+          animeInfo.hasDub = true;
+          animeInfo.subOrDub = "dub" as SubOrSub;
+        } else {
+          animeInfo.hasSub = true;
+          animeInfo.subOrDub = "sub" as SubOrSub;
+        }
+      }
     } else {
       const { data }: { data: ApiSuccessType<IAnimeInfo> } = await axios.get(
         `/api/anime/info/${id}?dub=${isDub}`
@@ -31,6 +50,7 @@ const setAnimeInfoAndGetWatchPageLink = async (
         (episode) => episode.number == epNo
       );
       currentEpisode = resEpisodes[currentEpisodeIdx];
+
       return `/watch/${animeInfo.id}/${currentEpisode.number}/${
         currentEpisode.id
       }?dub=${animeInfo.hasDub === true || animeInfo.subOrDub === "dub"}`;

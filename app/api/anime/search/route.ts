@@ -1,3 +1,5 @@
+import "server-only";
+
 import apiError from "@/app/api/_lib/apiError";
 import apiSuccess from "@/app/api/_lib/apiSuccess";
 import { getSearchData } from "@/services/getAnime";
@@ -18,7 +20,7 @@ export async function GET(req: NextRequest) {
     parseInt(req.nextUrl.searchParams.get("perPage") ?? "", 10) || 30;
 
   try {
-    const data = await getSearchData(query, page, perPage);
+    const data = await getSearchData({ query, page, perPage });
 
     return apiSuccess({
       data,

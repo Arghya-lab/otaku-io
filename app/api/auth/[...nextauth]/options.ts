@@ -1,3 +1,5 @@
+import "server-only";
+
 import Preference from "@/models/Preference";
 import User from "@/models/User";
 import { NextAuthOptions } from "next-auth";

@@ -1,3 +1,5 @@
+import "server-only";
+
 import apiError from "@/app/api/_lib/apiError";
 import apiSuccess from "@/app/api/_lib/apiSuccess";
 import { validateSession } from "@/app/api/_lib/validateSession";

@@ -1,3 +1,5 @@
+import "client-only";
+
 import { SkipTimeType } from "@/types/anime";
 import axios from "axios";
 

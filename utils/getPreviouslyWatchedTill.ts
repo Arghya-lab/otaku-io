@@ -1,3 +1,5 @@
+import "client-only";
+
 import { AnimeWatchedType } from "@/types/States";
 import { ApiSuccessType } from "@/types/apiResponse";
 import axios from "axios";

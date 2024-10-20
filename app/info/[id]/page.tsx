@@ -1,6 +1,8 @@
 import EpBtnSheet from "@/components/EpBtnSheet";
 import { getAnimeInfo } from "@/services/getAnime";
 import { getImdbInfo } from "@/services/getImdbInfo";
+import chroma from "chroma-js";
+import classNames from "classnames";
 import MetaPreviewContainer from "./MetaPreviewContainer";
 
 async function infoPage({
@@ -19,7 +21,7 @@ async function infoPage({
     : Promise.resolve(undefined);
 
   const [animeInfo, imdbInfo] = await Promise.all([
-    getAnimeInfo(id, isDub),
+    getAnimeInfo({ id, isDub }),
     imdbInfoPromise,
   ]);
 
@@ -27,15 +29,23 @@ async function infoPage({
     <>
       <div
         className="-xxs:top-16 fixed -top-14 -z-10 h-[calc(100vh+8rem)] w-screen bg-transparent bg-cover bg-center"
-        style={
-          imdbInfo
-            ? {
-                backgroundImage: `url(https://images.metahub.space/background/medium/${imdbInfo.imdbID}/img)`,
-              }
-            : {}
-        }
+        style={{
+          backgroundImage: imdbInfo?.imdbID
+            ? `url(https://images.metahub.space/background/medium/${imdbInfo.imdbID}/img)`
+            : undefined,
+        }}
       >
-        <div className="h-full w-full bg-black opacity-70" />
+        <div
+          className={classNames("h-full w-full", {
+            "bg-black opacity-70": imdbInfo?.imdbID,
+          })}
+          style={{
+            backgroundColor:
+              !imdbInfo?.imdbID && animeInfo.color
+                ? chroma(animeInfo.color).darken(5.2).hex()
+                : undefined,
+          }}
+        />
       </div>
       {/* Body */}
       <div className="mt-20 w-full">

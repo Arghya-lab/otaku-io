@@ -2,74 +2,107 @@
 
 import Select from "@/components/ui/Select";
 import useScroll from "@/hooks/useScroll";
-import useWindowSize from "@/hooks/useWindowSize";
 import {
   formatList,
-  genreList,
+  genresList,
   sortList,
   statusList,
 } from "@/lib/searchFilter";
-import { Dialog, Transition } from "@headlessui/react";
+import { FormatEnum, GenreEnum, SortEnum, StatusEnum } from "@/types/discover";
+import {
+  Dialog,
+  DialogPanel,
+  Transition,
+  TransitionChild,
+} from "@headlessui/react";
 import classNames from "classnames";
 import { FilterIcon } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { parseAsArrayOf, parseAsStringEnum, useQueryState } from "nuqs";
 import { Fragment, useState } from "react";
 
 function Filter() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
   const scrolled = useScroll();
-  const { windowWidth } = useWindowSize();
-
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  function updateQuery(name: string, value: (string | number)[] | undefined) {
-    let formatQueryValue: string | null;
-    let genresQueryValue: string | null;
-    let sortQueryValue: string | null;
-    let statusQueryValue: string | null;
+  const [format, setFormat] = useQueryState(
+    "format",
+    parseAsStringEnum<FormatEnum>(
+      Object.values(
+        formatList.map((format) => format.value).filter((format) => !!format)
+      )
+    )
+  );
+  const [genres, setGenres] = useQueryState(
+    "genres",
+    parseAsArrayOf(
+      parseAsStringEnum<GenreEnum>(
+        Object.values(
+          genresList.map((genre) => genre.value).filter((genre) => !!genre)
+        )
+      ),
+      ","
+    )
+  );
+  const [sort, setSort] = useQueryState(
+    "sort",
+    parseAsArrayOf(
+      parseAsStringEnum<SortEnum>(
+        Object.values(
+          sortList.map((sort) => sort.value).filter((sort) => !!sort)
+        )
+      ),
+      ","
+    )
+  );
+  const [status, setStatus] = useQueryState(
+    "status",
+    parseAsStringEnum<StatusEnum>(
+      Object.values(
+        statusList.map((status) => status.value).filter((status) => !!status)
+      )
+    )
+  );
 
-    if (name === "format") {
-      formatQueryValue = value ? value[0].toString() : null;
-    } else {
-      formatQueryValue = searchParams.get("format");
-    }
-
-    if (name === "genres") {
-      genresQueryValue = value ? JSON.stringify(value) : null;
-    } else {
-      genresQueryValue = searchParams.get("genres");
-    }
-
-    if (name === "sort") {
-      sortQueryValue = value ? JSON.stringify(value) : null;
-    } else {
-      sortQueryValue = searchParams.get("sort");
-    }
-
-    if (name === "status") {
-      statusQueryValue = value ? value[0].toString() : null;
-    } else {
-      statusQueryValue = searchParams.get("status");
-    }
-
-    const queriesArray = [];
-    if (formatQueryValue)
-      queriesArray.push({ name: "format", value: formatQueryValue });
-    if (genresQueryValue)
-      queriesArray.push({ name: "genres", value: genresQueryValue });
-    if (sortQueryValue)
-      queriesArray.push({ name: "sort", value: sortQueryValue });
-    if (statusQueryValue)
-      queriesArray.push({ name: "status", value: statusQueryValue });
-
-    const queries = queriesArray
-      .map((data) => `${data.name}=${data.value}`)
-      .join("&");
-
-    router.push(`/discover${queries ? `?${queries}` : ""}`);
-  }
+  const MoreFilters = (
+    <>
+      <Select
+        name={"genres"}
+        list={genresList}
+        selected={
+          genres
+            ? genresList[
+                genresList.findIndex((item) => item.value == genres[0])
+              ]
+            : genresList[0]
+        }
+        onChange={(data) => {
+          setGenres(data.value ? ([data.value] as GenreEnum[]) : null);
+        }}
+      />
+      <Select
+        name={"sort"}
+        list={sortList}
+        selected={
+          sort
+            ? sortList[sortList.findIndex((item) => item.value == sort[0])]
+            : sortList[0]
+        }
+        onChange={(data) => {
+          setSort(data.value ? ([data.value] as SortEnum[]) : null);
+        }}
+      />
+      <Select
+        name={"status"}
+        list={statusList}
+        selected={
+          statusList[statusList.findIndex((item) => item.value == status)]
+        }
+        onChange={(data) => {
+          setStatus(data.value as StatusEnum | null);
+        }}
+      />
+    </>
+  );
 
   return (
     <div
@@ -84,201 +117,66 @@ function Filter() {
         name={"format"}
         list={formatList}
         selected={
-          formatList[
-            formatList.findIndex(
-              (item) => item.value == searchParams.get("format")
-            )
-          ]
+          formatList[formatList.findIndex((item) => item.value == format)]
         }
         onChange={(data) => {
-          updateQuery("format", data?.value ? [data.value] : undefined);
+          setFormat(data.value as FormatEnum | null);
         }}
       />
-      {windowWidth < 1000 ? (
-        <>
-          <div>
-            <div className="pl-2">
-              <p className="capitalize">filter</p>
-            </div>
-            <div
-              role="button"
-              className="flex h-9 items-center justify-center rounded-[45px] bg-muted bg-opacity-20 px-4 shadow-lg"
-              onClick={() => setIsModalOpen(!isModalOpen)}
-            >
-              <FilterIcon size={18} color="#fff" fill="#fff" />
-            </div>
+      <div className="md:hidden">
+        <div>
+          <div className="pl-2">
+            <p className="capitalize">filter</p>
           </div>
-          <Transition appear show={isModalOpen} as={Fragment}>
-            <Dialog
-              as="div"
-              className="relative z-30"
-              onClose={() => setIsModalOpen(false)}
+          <div
+            role="button"
+            className="flex h-9 items-center justify-center rounded-[45px] bg-muted bg-opacity-20 px-4 shadow-lg"
+            onClick={() => setIsModalOpen(!isModalOpen)}
+          >
+            <FilterIcon size={18} color="#fff" fill="#fff" />
+          </div>
+        </div>
+        <Transition appear show={isModalOpen} as={Fragment}>
+          <Dialog
+            as="div"
+            className="relative z-30"
+            onClose={() => setIsModalOpen(false)}
+          >
+            <TransitionChild
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
             >
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0"
-                enterTo="opacity-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0"
-              >
-                <div className="fixed inset-0 bg-black/25" />
-              </Transition.Child>
+              <div className="fixed inset-0 bg-black/25" />
+            </TransitionChild>
 
-              <div className="fixed inset-0 overflow-y-auto">
-                <div className="flex min-h-full items-center justify-center p-4 text-center">
-                  <Transition.Child
-                    as={Fragment}
-                    enter="ease-out duration-300"
-                    enterFrom="opacity-0 scale-95"
-                    enterTo="opacity-100 scale-100"
-                    leave="ease-in duration-200"
-                    leaveFrom="opacity-100 scale-100"
-                    leaveTo="opacity-0 scale-95"
-                  >
-                    <Dialog.Panel className="flex w-5/6 max-w-64 transform flex-col gap-4 overflow-hidden rounded-2xl bg-background p-6 text-left align-middle shadow-xl transition-all">
-                      <Select
-                        name={"format"}
-                        list={formatList}
-                        selected={
-                          formatList[
-                            formatList.findIndex(
-                              (item) => item.value == searchParams.get("format")
-                            )
-                          ]
-                        }
-                        onChange={(data) => {
-                          updateQuery(
-                            "format",
-                            data?.value ? [data.value] : undefined
-                          );
-                        }}
-                      />
-                      <Select
-                        name={"genres"}
-                        list={genreList}
-                        selected={
-                          searchParams.get("genres")
-                            ? genreList[
-                                genreList.findIndex(
-                                  (item) =>
-                                    item.value ==
-                                    JSON.parse(
-                                      searchParams.get("genres") || ""
-                                    )[0]
-                                )
-                              ]
-                            : genreList[0]
-                        }
-                        onChange={(data) => {
-                          updateQuery(
-                            "genres",
-                            data?.value ? [data.value] : undefined
-                          );
-                        }}
-                      />
-                      <Select
-                        name={"sort"}
-                        list={sortList}
-                        selected={
-                          searchParams.get("sort")
-                            ? sortList[
-                                sortList.findIndex(
-                                  (item) =>
-                                    item.value ==
-                                    JSON.parse(
-                                      searchParams.get("sort") || ""
-                                    )[0]
-                                )
-                              ]
-                            : sortList[0]
-                        }
-                        onChange={(data) => {
-                          updateQuery(
-                            "sort",
-                            data?.value ? [data.value] : undefined
-                          );
-                        }}
-                      />
-                      <Select
-                        name={"status"}
-                        list={statusList}
-                        selected={
-                          statusList[
-                            statusList.findIndex(
-                              (item) => item.value == searchParams.get("status")
-                            )
-                          ]
-                        }
-                        onChange={(data) => {
-                          updateQuery(
-                            "status",
-                            data?.value ? [data.value] : undefined
-                          );
-                        }}
-                      />
-                    </Dialog.Panel>
-                  </Transition.Child>
-                </div>
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex min-h-full items-center justify-center p-4 text-center">
+                <TransitionChild
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 scale-95"
+                  enterTo="opacity-100 scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 scale-100"
+                  leaveTo="opacity-0 scale-95"
+                >
+                  <DialogPanel className="flex w-5/6 max-w-64 transform flex-col gap-4 overflow-hidden rounded-2xl bg-background p-6 text-left align-middle shadow-xl transition-all">
+                    {MoreFilters}
+                  </DialogPanel>
+                </TransitionChild>
               </div>
-            </Dialog>
-          </Transition>
-        </>
-      ) : (
-        <>
-          <Select
-            name={"genres"}
-            list={genreList}
-            selected={
-              searchParams.get("genres")
-                ? genreList[
-                    genreList.findIndex(
-                      (item) =>
-                        item.value ==
-                        JSON.parse(searchParams.get("genres") || "")[0]
-                    )
-                  ]
-                : genreList[0]
-            }
-            onChange={(data) => {
-              updateQuery("genres", data?.value ? [data.value] : undefined);
-            }}
-          />
-          <Select
-            name={"sort"}
-            list={sortList}
-            selected={
-              searchParams.get("sort")
-                ? sortList[
-                    sortList.findIndex(
-                      (item) =>
-                        item.value ==
-                        JSON.parse(searchParams.get("sort") || "")[0]
-                    )
-                  ]
-                : sortList[0]
-            }
-            onChange={(data) => {
-              updateQuery("sort", data?.value ? [data.value] : undefined);
-            }}
-          />
-          <Select
-            name={"status"}
-            list={statusList}
-            selected={
-              statusList[
-                statusList.findIndex(
-                  (item) => item.value == searchParams.get("status")
-                )
-              ]
-            }
-            onChange={(data) => {
-              updateQuery("status", data?.value ? [data.value] : undefined);
-            }}
-          />
-        </>
-      )}
+            </div>
+          </Dialog>
+        </Transition>
+      </div>
+      <div className="hidden md:flex md:items-center md:gap-4">
+        {MoreFilters}
+      </div>
     </div>
   );
 }

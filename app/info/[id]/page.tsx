@@ -14,14 +14,13 @@ async function infoPage({
 }) {
   const id = decodeURIComponent(params.id);
   const title = decodeURIComponent(searchParams.title || "");
-  const isDub = searchParams.dub === "true" ? true : false;
 
   const imdbInfoPromise = !!title
     ? getImdbInfo(title)
     : Promise.resolve(undefined);
 
   const [animeInfo, imdbInfo] = await Promise.all([
-    getAnimeInfo({ id, isDub }),
+    getAnimeInfo({ id }),
     imdbInfoPromise,
   ]);
 
@@ -56,7 +55,7 @@ async function infoPage({
           className="mx-4 my-8 h-full rounded-xl bg-black bg-opacity-20 p-8 px-4 xxs:mx-8 xs:mx-16"
           style={{ backdropFilter: "blur(15px)" }}
         >
-          <EpBtnSheet animeInfo={animeInfo} isDubEnable={isDub} />
+          <EpBtnSheet animeInfo={animeInfo} />
         </div>
       </div>
     </>

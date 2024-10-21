@@ -8,8 +8,6 @@ import { NextRequest } from "next/server";
 /**
  * Route: GET /api/anime/info/:id
  * Description: To get info  for anime.
- * Request Query:
- *   - dub (optional): Is info  for dub have to fetch.
  * Request Param(Dynamic EpId param) -(Required).
  */
 export async function GET(
@@ -17,10 +15,9 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   const id = params.id;
-  const isDub = req.nextUrl.searchParams.get("dub") === "true" ? true : false;
 
   try {
-    const data = await getAnimeInfo({ id, isDub });
+    const data = await getAnimeInfo({ id });
 
     return apiSuccess({
       data,

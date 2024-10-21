@@ -3,7 +3,7 @@ import { IAnimeEpisode } from "@consumet/extensions";
 
 const limit = perSelectEpisodesAmount;
 
-export const mapEpisodes = (
+export const getMapEpisodes = (
   episodes: IAnimeEpisode[] = [],
   selectedIdx: number
 ) => {

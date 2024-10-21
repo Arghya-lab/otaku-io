@@ -31,8 +31,12 @@ function InfiniteDiscoverScroll({
   const [pageNo, setPageNo] = useState(1);
 
   const format = searchParams.get("format");
-  const genres = searchParams.get("genres");
-  const sort = searchParams.get("sort");
+  const genres = searchParams.get("genres")
+    ? JSON.stringify([searchParams.get("genres")])
+    : null;
+  const sort = searchParams.get("sort")
+    ? JSON.stringify([searchParams.get("sort")])
+    : null;
   const status = searchParams.get("status");
 
   const [PrevFormat, setPrevFormat] = useState(initialFormat);
@@ -117,12 +121,12 @@ function InfiniteDiscoverScroll({
       next={fetchMoreData}
       hasMore={hasMore}
       loader={
-        <div className="flex h-32 w-full items-center justify-center">
+        <div className="flex h-24 w-full items-center justify-center">
           <div className="dot-loader" />
         </div>
       }
       endMessage={
-        <p className="pt-8 text-center text-secondary-foreground">
+        <p className="pb-8 text-center text-secondary-foreground">
           Nothing to show more
         </p>
       }

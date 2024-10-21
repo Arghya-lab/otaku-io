@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@arghya-lab/react-video':
-        specifier: ^1.4.0
-        version: 1.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^1.5.0
+        version: 1.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@consumet/extensions':
         specifier: github:consumet/consumet.ts
         version: https://codeload.github.com/consumet/consumet.ts/tar.gz/853f1e862dc2b79623e44b40c32522e1792f53a5
@@ -74,6 +74,9 @@ importers:
       next-themes:
         specifier: ^0.3.0
         version: 0.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      nuqs:
+        specifier: ^1.20.0
+        version: 1.20.0(next@14.2.15(@babel/core@7.25.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       react:
         specifier: ^18
         version: 18.3.1
@@ -173,8 +176,8 @@ packages:
     peerDependencies:
       ajv: '>=8'
 
-  '@arghya-lab/react-video@1.4.0':
-    resolution: {integrity: sha512-OGvHA0UDbdTNQK9ECmXCB+AY+Beka3bwgaBvg6UsN4IXNZVjBIjqCL5gRsSXPou3sFCFYRBE4nOE1LZRz5Eafg==}
+  '@arghya-lab/react-video@1.5.0':
+    resolution: {integrity: sha512-W5u9zXtWMJgJ1HDMP2lyzFo8gDCOShSkEjcBJEmhlvftDo01Lz2u/Q6ZaWR2v6fwiKyHPPnA1iXD6ifuRrEWPA==}
     peerDependencies:
       react: ^17 || ^18
       react-dom: ^17 || ^18
@@ -2620,6 +2623,9 @@ packages:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
     engines: {node: '>=16 || 14 >=14.17'}
 
+  mitt@3.0.1:
+    resolution: {integrity: sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==}
+
   mongodb-connection-string-url@3.0.1:
     resolution: {integrity: sha512-XqMGwRX0Lgn05TDB4PyG2h2kKO/FfWJyCzYQbIhXUxz7ETt0I/FqHjUeqj37irJ+Dl1ZtU82uYyj14u2XsZKfg==}
 
@@ -2726,6 +2732,11 @@ packages:
 
   nth-check@2.1.1:
     resolution: {integrity: sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w==}
+
+  nuqs@1.20.0:
+    resolution: {integrity: sha512-nGVfv7eWMNxAzOJ9n8ARTo6ObqeEr1ETYZ+dIMCg/VfGUoZoPrqyTOndIvQIgUzK3pIC41mTXg10JJxh9ziEhw==}
+    peerDependencies:
+      next: '>=13.4 <14.0.2 || ^14.0.3'
 
   oauth@0.9.15:
     resolution: {integrity: sha512-a5ERWK1kh38ExDEfoO6qUHJb32rd7aYmPHuyCu3Fta/cnICvYmgd2uhuKXvPD+PXB+gCEYYEaQdIRAjCOwAKNA==}
@@ -3076,11 +3087,6 @@ packages:
     resolution: {integrity: sha512-k+NyTogrBgPVpE84r6AdDLgf60k9cR4F0zlhp3w8Hoquq+UStKjAOatsVYDLwfWD8wqF6smRXohi2rvQZRpQDQ==}
     peerDependencies:
       react: 16 - 18.x
-
-  react-slider@2.0.6:
-    resolution: {integrity: sha512-gJxG1HwmuMTJ+oWIRCmVWvgwotNCbByTwRkFZC6U4MBsHqJBmxwbYRJUmxy4Tke1ef8r9jfXjgkmY/uHOCEvbA==}
-    peerDependencies:
-      react: ^16 || ^17 || ^18
 
   react-style-singleton@2.2.1:
     resolution: {integrity: sha512-ZWj0fHEMyWkHzKYUr2Bs/4zU6XLmq9HsgBURm7g5pAVfyn49DgUiNgY2d4lXRlYSiCif9YBGpQleewkcqddc7g==}
@@ -3450,9 +3456,6 @@ packages:
     resolution: {integrity: sha512-H7oLPV0P7+jgvrk+6mwwwBDmxTaxnu9HMXmloNLXwnNO0ZxZ31Orah2n8lU1eMPvsaowP2CX+USCgyovXfdOFQ==}
     engines: {node: '>=8'}
 
-  tinycolor2@1.6.0:
-    resolution: {integrity: sha512-XPaBkWQJdsf3pLKJV9p4qN/S+fm2Oj8AIPo1BTUhg5oxkvm9+SVEGFdhyOz7tTdUTfvxMiAs4sp6/eZO2Ew+pw==}
-
   to-fast-properties@2.0.0:
     resolution: {integrity: sha512-/OaKK0xYrs3DmxRYqL/yDc+FxFUVYhDlXMhRmv3z915w2HF1tnN1omB354j8VUGO/hbRzyD6Y3sA7v7GS/ceog==}
     engines: {node: '>=4'}
@@ -3768,15 +3771,10 @@ snapshots:
       jsonpointer: 5.0.1
       leven: 3.1.0
 
-  '@arghya-lab/react-video@1.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@arghya-lab/react-video@1.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      classnames: 2.5.1
       react: 18.3.1
-      react-device-detect: 2.2.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-dom: 18.3.1(react@18.3.1)
-      react-slider: 2.0.6(react@18.3.1)
-      screenfull: 6.0.2
-      tinycolor2: 1.6.0
 
   '@babel/code-frame@7.25.7':
     dependencies:
@@ -6571,6 +6569,8 @@ snapshots:
 
   minipass@7.1.2: {}
 
+  mitt@3.0.1: {}
+
   mongodb-connection-string-url@3.0.1:
     dependencies:
       '@types/whatwg-url': 11.0.5
@@ -6675,6 +6675,11 @@ snapshots:
   nth-check@2.1.1:
     dependencies:
       boolbase: 1.0.0
+
+  nuqs@1.20.0(next@14.2.15(@babel/core@7.25.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)):
+    dependencies:
+      mitt: 3.0.1
+      next: 14.2.15(@babel/core@7.25.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
   oauth@0.9.15: {}
 
@@ -6954,11 +6959,6 @@ snapshots:
       '@types/react': 18.3.11
 
   react-show-more-text@1.7.1(react@18.3.1):
-    dependencies:
-      prop-types: 15.8.1
-      react: 18.3.1
-
-  react-slider@2.0.6(react@18.3.1):
     dependencies:
       prop-types: 15.8.1
       react: 18.3.1
@@ -7376,8 +7376,6 @@ snapshots:
       any-promise: 1.3.0
 
   throttle-debounce@2.3.0: {}
-
-  tinycolor2@1.6.0: {}
 
   to-fast-properties@2.0.0: {}
 

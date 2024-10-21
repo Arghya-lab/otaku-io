@@ -154,30 +154,6 @@ export async function advancedSearch({
 }
 
 /**
- *
- * @param {string} [id] Anime id
- * @param {boolean} [isDub] to get dubbed episodes (optional) set to `true` to get dubbed episodes. **ONLY WORKS FOR GOGOANIME**
- * @param {boolean} [fetchFiller] to get filler boolean on the episode object (optional) set to true to get filler boolean on the episode object.
- */
-export async function getAnimeInfo({
-  id,
-  isDub,
-  fetchFiller,
-}: {
-  id: string;
-  isDub?: boolean;
-  fetchFiller?: boolean;
-}): Promise<IAnimeInfo> {
-  try {
-    const anilist = generateAnilistMeta(provider);
-
-    return await anilist.fetchAnimeInfo(id, isDub, fetchFiller);
-  } catch {
-    throw new Error("Error occur while getting anime info.");
-  }
-}
-
-/**
  * @param {string} [query] Search query
  * @param {number} [page] Page number (optional)
  * @param {number} [perPage] Number of results per page (optional) (default: 15) (max: 50)
@@ -197,6 +173,80 @@ export const getSearchData = async ({
     return await anilist.search(query, page || 1, perPage || 30);
   } catch {
     throw new Error("Error occur while getting searching anime.");
+  }
+};
+
+/**
+ *
+ * @param {string} [id] Anime id
+ * @param {boolean} [isDub] to get dubbed episodes (optional) set to `true` to get dubbed episodes. **ONLY WORKS FOR GOGOANIME**
+ * @param {boolean} [fetchFiller] to get filler boolean on the episode object (optional) set to true to get filler boolean on the episode object.
+ */
+export async function getAnimeInfo({
+  id,
+  fetchFiller,
+}: {
+  id: string;
+  fetchFiller?: boolean;
+}): Promise<IAnimeInfo> {
+  try {
+    const anilist = generateAnilistMeta(provider);
+
+    const [animeInfo, dubEpisodes] = await Promise.all([
+      anilist.fetchAnimeInfo(id, false, fetchFiller),
+      getEpisodesListById({ id, fetchFiller, isDub: true }),
+    ]);
+    animeInfo.dubEpisodes = dubEpisodes;
+    animeInfo.recommendations = animeInfo.recommendations?.slice(0, 10);
+    animeInfo.relations = animeInfo.relations?.slice(0, 10);
+    animeInfo.characters = [];
+    animeInfo.mappings = [];
+    animeInfo.artwork = [];
+
+    // According to query send data
+
+    return animeInfo;
+  } catch {
+    throw new Error("Error occur while getting anime info.");
+  }
+}
+
+/**
+ *
+ * @param {string} [id] — anilist id
+ *@param {boolean} [isDub] — language of the dubbed version (optional) currently only works for gogoanime
+ *@param {boolean} [fetchFiller] — to get filler boolean on the episode object (optional) set to true to get filler boolean on the episode object.
+ *@returns — episode list (without anime info)
+ */
+export const getEpisodesListById = async ({
+  id,
+  isDub,
+  fetchFiller,
+}: {
+  id: string;
+  isDub?: boolean;
+  fetchFiller?: boolean;
+}) => {
+  try {
+    const anilist = generateAnilistMeta(provider);
+
+    return await anilist.fetchEpisodesListById(id, isDub, fetchFiller);
+  } catch {
+    throw new Error("Error occur while fetching episode list.");
+  }
+};
+
+/**
+ *
+ * @param episodeId — Episode id
+ */
+export const getEpisodeServers = async (episodeId: string) => {
+  try {
+    const anilist = generateAnilistMeta(provider);
+
+    return await anilist.fetchEpisodeServers(episodeId);
+  } catch {
+    throw new Error("Error occur while fetching servers.");
   }
 };
 
@@ -320,44 +370,5 @@ export const getRecentEpisodes = async ({
     return await anilist.fetchRecentEpisodes(provider, page, perPage);
   } catch {
     throw new Error("Error occur while fetching recent episodes.");
-  }
-};
-
-/**
- *
- * @param episodeId — Episode id
- */
-export const getEpisodeServers = async (episodeId: string) => {
-  try {
-    const anilist = generateAnilistMeta(provider);
-
-    return await anilist.fetchEpisodeServers(episodeId);
-  } catch {
-    throw new Error("Error occur while fetching servers.");
-  }
-};
-
-/**
- *
- * @param {string} [id] — anilist id
- *@param {boolean} [isDub] — language of the dubbed version (optional) currently only works for gogoanime
- *@param {boolean} [fetchFiller] — to get filler boolean on the episode object (optional) set to true to get filler boolean on the episode object.
- *@returns — episode list (without anime info)
- */
-export const getEpisodesListById = async ({
-  id,
-  isDub,
-  fetchFiller,
-}: {
-  id: string;
-  isDub?: boolean;
-  fetchFiller?: boolean;
-}) => {
-  try {
-    const anilist = generateAnilistMeta(provider);
-
-    return await anilist.fetchEpisodesListById(id, isDub, fetchFiller);
-  } catch {
-    throw new Error("Error occur while fetching episode list.");
   }
 };

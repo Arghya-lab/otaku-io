@@ -1,14 +1,6 @@
 import { advancedSearch } from "@/services/getAnime";
-import dynamic from "next/dynamic";
 import { Suspense } from "react";
-
-// Dynamically import InfiniteDiscoverScroll so that it runs only on the client
-const InfiniteDiscoverScroll = dynamic(
-  () => import("@/app/discover/InfiniteDiscoverScroll"),
-  {
-    ssr: false, // Disable SSR for this component
-  }
-);
+import InfiniteDiscoverScroll from "./InfiniteDiscoverScroll";
 
 async function DiscoverPage({
   searchParams,
@@ -20,12 +12,22 @@ async function DiscoverPage({
     status: string | undefined;
   };
 }) {
+  const format = searchParams?.format;
+  const genres = searchParams?.genres
+    ? JSON.stringify([searchParams.genres])
+    : undefined;
+  const sort = searchParams?.sort
+    ? JSON.stringify([searchParams.sort])
+    : undefined;
+  const status = searchParams?.status;
+  const perPage = 30;
+
   const { results, hasNextPage } = await advancedSearch({
-    format: searchParams?.format,
-    genres: searchParams?.genres,
-    sort: searchParams?.sort,
-    status: searchParams?.status,
-    perPage: 30,
+    format,
+    genres,
+    sort,
+    status,
+    perPage,
   });
 
   return (
@@ -33,10 +35,10 @@ async function DiscoverPage({
       <InfiniteDiscoverScroll
         initialData={results}
         hasNextPage={!!hasNextPage}
-        initialFormat={searchParams?.format}
-        initialGenres={searchParams?.genres}
-        initialSort={searchParams?.sort}
-        initialStatus={searchParams?.status}
+        initialFormat={format}
+        initialGenres={genres}
+        initialSort={sort}
+        initialStatus={status}
       />
     </Suspense>
   );

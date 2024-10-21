@@ -7,7 +7,7 @@ function layout({
   children: React.ReactNode;
 }>) {
   return (
-    <main className="flex flex-row pt-24 xs:pl-20">
+    <main className="flex flex-row pb-24 pt-24 xs:pb-6 xs:pl-20">
       <Suspense>
         <Filter />
       </Suspense>

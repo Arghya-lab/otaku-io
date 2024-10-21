@@ -1,4 +1,11 @@
-import { IAnimeResult } from "@consumet/extensions";
+import "@consumet/extensions";
+import { IAnimeEpisode, IAnimeResult } from "@consumet/extensions";
+
+declare module "@consumet/extensions" {
+  interface IAnimeInfo {
+    dubEpisodes?: IAnimeEpisode[];
+  }
+}
 
 export enum MediaStatus {
   ONGOING = "Ongoing",

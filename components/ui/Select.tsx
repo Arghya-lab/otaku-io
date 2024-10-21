@@ -10,17 +10,19 @@ function Select({
   list,
   selected,
   onChange,
+  className,
   isWatchPage = false,
 }: {
   name?: string;
   color?: string;
   list: { value?: string | number; name: string }[];
   selected: { value?: string | number; name: string };
+  className?: string;
   onChange: (value: { value?: string | number; name: string }) => void;
   isWatchPage?: boolean;
 }) {
   return (
-    <div>
+    <div className={className}>
       {name && (
         <div className="pl-4">
           <p className="capitalize">{name}</p>

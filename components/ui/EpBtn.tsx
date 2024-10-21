@@ -2,21 +2,22 @@
 
 import { IAnimeEpisode } from "@consumet/extensions";
 import classNames from "classnames";
+import Link from "next/link";
 import { useState } from "react";
 import { shade } from "../../utils/color";
 
 function EpBtn({
-  color = "#000",
   episode,
+  href,
+  color = "#000",
   watched,
-  handleClick,
   watching = false,
   isWatchPage = false,
 }: {
-  color?: string;
   episode: IAnimeEpisode;
+  href: string;
+  color?: string;
   watched?: boolean;
-  handleClick: (ep: IAnimeEpisode) => void;
   watching?: boolean;
   isWatchPage?: boolean;
 }) {
@@ -38,9 +39,9 @@ function EpBtn({
   };
 
   return (
-    <button
+    <Link
+      href={href}
       key={episode?.number}
-      disabled={watching && isWatchPage}
       className={classNames(
         "flex h-7 w-14 items-center justify-center rounded-md border-2 border-border bg-background opacity-80",
         {
@@ -71,10 +72,9 @@ function EpBtn({
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={() => handleClick(episode)}
     >
       {episode?.number}
-    </button>
+    </Link>
   );
 }
 

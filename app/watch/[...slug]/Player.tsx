@@ -1,3 +1,5 @@
+"use client";
+
 import { usePreference } from "@/components/providers/PreferenceProvider";
 import useChangePreference from "@/hooks/useChangePreference";
 import getPreviouslyWatchedTill from "@/utils/getPreviouslyWatchedTill";
@@ -7,6 +9,7 @@ import ReactVideo from "@arghya-lab/react-video";
 import { IAnimeInfo } from "@consumet/extensions";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { parseAsBoolean, useQueryState } from "nuqs";
 import { useRef } from "react";
 import screenfull from "screenfull";
 import { useVideoLink } from "./VideoLinkProvider";
@@ -19,21 +22,13 @@ export interface PlayerPropType {
   };
   epNo: string;
   epId: string;
-  isDub: boolean;
   animeInfo: IAnimeInfo;
 }
 
-function Player({
-  animeId,
-  infoText,
-  epNo,
-  epId,
-  isDub,
-  animeInfo,
-}: PlayerPropType) {
+function Player({ animeId, infoText, epNo, epId, animeInfo }: PlayerPropType) {
   const router = useRouter();
   const { data: session } = useSession();
-  // const videoRef = useRef<HTMLVideoElement>(null);
+  const [isDub] = useQueryState("dub", parseAsBoolean.withDefault(false));
   const markWatchedTill = useRef(0);
 
   const {
@@ -45,7 +40,8 @@ function Player({
   const { handleChangePlaybackQuality } = useChangePreference();
   const { videoRef, videoState, setVideoState } = useVideoLink();
 
-  const handleSeekToUnwatched = async () => {
+  const handleReady = async () => {
+    fetchSkipTimes();
     const previouslyWatchedTill = await getPreviouslyWatchedTill(
       animeId,
       epNo,
@@ -63,9 +59,13 @@ function Player({
   };
 
   // On initial page load or episode change and on load of video playing duration fetch skip times
-  const handleDurationUpdate = async (duration: number) => {
-    if (animeInfo?.malId && duration !== 0 && animeInfo.malId) {
-      const skipTimes = await getSkipTimes(animeInfo.malId, epNo, duration);
+  const fetchSkipTimes = async () => {
+    if (animeInfo?.malId && videoRef?.current?.duration && animeInfo.malId) {
+      const skipTimes = await getSkipTimes(
+        animeInfo.malId,
+        epNo,
+        videoRef.current.duration
+      );
 
       if (skipTimes) {
         setVideoState((prev) => ({
@@ -149,8 +149,7 @@ function Player({
       loadingPoster={animeInfo.cover}
       infoText={infoText}
       fullscreenOnlyInfoText
-      onReady={handleSeekToUnwatched}
-      onDuration={handleDurationUpdate}
+      onReady={handleReady}
       onProgress={handleProgress}
       onEnded={handleEnded}
       onQualityChange={(sourceItem) => {

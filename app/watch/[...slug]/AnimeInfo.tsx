@@ -12,8 +12,6 @@ function AnimeInfo({ animeInfo }: { animeInfo: IAnimeInfo }) {
   const { isDub } = usePreference();
   const title = getTitle(animeInfo.title);
 
-  console.log(animeInfo?.releaseDate);
-
   return (
     <div className="my-3 gap-2">
       <div className="flex h-fit w-full flex-col">

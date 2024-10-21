@@ -45,12 +45,12 @@ function InfiniteLibraryScroll({
       next={handleFetchMoreData}
       hasMore={hasMore}
       loader={
-        <div className="flex h-32 w-full items-center justify-center">
+        <div className="flex h-24 w-full items-center justify-center">
           <div className="dot-loader" />
         </div>
       }
       endMessage={
-        <p className="pt-8 text-center text-secondary-foreground">
+        <p className="pb-8 text-center text-secondary-foreground">
           Nothing to show more
         </p>
       }

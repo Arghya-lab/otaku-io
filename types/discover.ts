@@ -40,7 +40,7 @@ export enum SortEnum {
   ID_DESC = "ID_DESC",
 }
 
-export enum GenresEnum {
+export enum GenreEnum {
   Action = "Action",
   Adventure = "Adventure",
   Cars = "Cars",

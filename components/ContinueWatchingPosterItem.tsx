@@ -40,7 +40,7 @@ function ContinueWatchingPosterItem({
     );
     if (watchPageLink) {
       router.push(watchPageLink);
-    }
+    } // TODO: throw error
   };
 
   return (

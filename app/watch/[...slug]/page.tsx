@@ -7,6 +7,7 @@ import getTitle from "@/utils/getTitle";
 import { IAnimeEpisode, IAnimeInfo } from "@consumet/extensions";
 import axios, { isAxiosError } from "axios";
 import htmlParse from "html-react-parser";
+import { parseAsBoolean, useQueryState } from "nuqs";
 import { useEffect, useRef, useState } from "react";
 import AnimeInfo from "./AnimeInfo";
 import Player from "./Player";
@@ -16,20 +17,18 @@ import VideoLinkProvider from "./VideoLinkProvider";
 
 function VideoWatchPage({
   params,
-  searchParams,
 }: {
   params: { slug: ["animeId", "epNo", "epId"] };
-  searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const currentAnimeContainer = useRef<HTMLDivElement>(null);
 
   const animeId = decodeURIComponent(params.slug[0]);
   const epNo = decodeURIComponent(params.slug[1]);
   const epId = decodeURIComponent(params.slug[2]);
-  const isDub = searchParams.dub === "true" ? true : false;
+  const [isDub] = useQueryState("dub", parseAsBoolean.withDefault(false));
 
   const [animeInfo, setAnimeInfo] = useState<IAnimeInfo | null>(null);
-  const [episode, setEpisode] = useState<IAnimeEpisode | null>(null);
+  const [playingEp, setPlayingEp] = useState<IAnimeEpisode | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -37,27 +36,29 @@ function VideoWatchPage({
         localStorage.getItem("animeInfo") || "null"
       );
 
-      if (
-        savedAnimeInfo &&
-        (savedAnimeInfo.hasDub === isDub ||
-          (savedAnimeInfo.subOrDub === "dub") === isDub) &&
-        savedAnimeInfo?.episodes
-      ) {
-        const savedEpisode = savedAnimeInfo.episodes.find(
-          (ep) => ep.id === epId
-        );
+      if (savedAnimeInfo && savedAnimeInfo.id === animeId) {
+        const episodeList = isDub
+          ? savedAnimeInfo?.dubEpisodes
+          : savedAnimeInfo?.episodes;
+        const savedEpisode =
+          episodeList && episodeList.find((ep) => ep.id === epId);
+
         if (savedEpisode) {
           setAnimeInfo(savedAnimeInfo);
-          setEpisode(savedEpisode);
+          setPlayingEp(savedEpisode);
         }
+
+        //TODO :: throw error if save episode is not found
       } else {
         try {
           const { data }: { data: ApiSuccessType<IAnimeInfo> } =
-            await axios.get(`/api/anime/info/${animeId}?dub=${isDub}`);
+            await axios.get(`/api/anime/info/${animeId}`);
 
           setAnimeInfo(data.data);
           if (data.data?.episodes) {
-            setEpisode(data.data.episodes.find((ep) => ep.id === epId) ?? null);
+            setPlayingEp(
+              data.data.episodes.find((ep) => ep.id === epId) ?? null
+            );
           }
         } catch (error) {
           if (isAxiosError(error)) {
@@ -67,13 +68,16 @@ function VideoWatchPage({
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [animeId, epId]);
+
+  const episodes = isDub ? animeInfo?.dubEpisodes : animeInfo?.episodes;
 
   if (!animeId || !epNo || !epId) {
     return <p>Invalid url</p>;
   }
 
-  if (!animeInfo || !episode) {
+  if (!animeInfo || !playingEp) {
+    // TODO :: Fix this  //
     return (
       <div className="relative h-full w-full">
         <Skeleton className="m-[5%] my-4 h-[75vh] w-[90%] rounded-md" />
@@ -93,29 +97,25 @@ function VideoWatchPage({
           <Player
             animeId={animeId}
             infoText={{
-              title:
-                animeInfo?.episodes?.length !== 1
-                  ? episode?.title || ""
-                  : title,
-              summery: animeInfo?.episodes?.length !== 1 ? title : undefined,
+              title: episodes?.length !== 1 ? playingEp?.title || "" : title,
+              summery: episodes?.length !== 1 ? title : undefined,
             }}
             animeInfo={animeInfo}
             epId={epId}
             epNo={epNo}
-            isDub={isDub}
           />
           <h1 className="px-2 pt-4 font-poppins text-2xl font-bold xxs:px-0">
             {getTitle(animeInfo.title)}
           </h1>
           <h3 className="px-2 pb-4 pt-3 font-barlow text-xl font-semibold xxs:px-0">
-            {animeInfo?.episodes &&
-              animeInfo?.episodes?.length > 1 &&
-              episode?.title &&
-              `Episode ${epNo} • ${episode?.title ?? ""}`}
+            {episodes &&
+              episodes.length > 1 &&
+              playingEp.title &&
+              `Episode ${epNo} • ${playingEp.title ?? ""}`}
           </h3>
-          {episode?.description && (
+          {playingEp?.description && (
             <article className="md:pb-18 px-2 pb-4 xxs:px-0 lg:pb-12">
-              {htmlParse(episode.description)}
+              {htmlParse(playingEp.description)}
             </article>
           )}
           <div className="my-4 border-t" />
@@ -124,7 +124,6 @@ function VideoWatchPage({
           <div className="px-2 xxs:px-0">
             <EpBtnSheet
               animeInfo={animeInfo}
-              isDubEnable={isDub}
               episodeNo={Number(epNo)}
               isWatchPage={true}
             />

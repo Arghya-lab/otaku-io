@@ -1,13 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import useWindowSize from "@/hooks/useWindowSize";
+// import useWindowSize from "@/hooks/useWindowSize";
 import { IAnimeResult } from "@consumet/extensions";
 import htmlParse from "html-react-parser";
 import AliceCarousel from "react-alice-carousel";
 
 function Carousel({ trending }: { trending: IAnimeResult[] }) {
-  const { windowWidth } = useWindowSize();
+  // const { windowWidth } = useWindowSize();
 
   const items = trending.map((data, id) =>
     data?.cover ? (
@@ -22,7 +22,7 @@ function Carousel({ trending }: { trending: IAnimeResult[] }) {
     ) : null
   );
 
-  const lineClampValue = windowWidth >= 640 ? 6 : 3;
+  // const lineClampValue = windowWidth >= 640 ? 6 : 3;
 
   const info = trending.map((data) => ({
     isCoverPresent: !!data?.cover,
@@ -48,12 +48,10 @@ function Carousel({ trending }: { trending: IAnimeResult[] }) {
           info[item - 1].isCoverPresent ? (
             <div className="relative">
               <div className="prose absolute -bottom-[5.5rem] left-0 right-0 h-20 rounded-xl bg-black p-4 font-barlow text-xs text-white xs:-bottom-36 xs:h-32 2xl:-bottom-52 2xl:h-48 2xl:text-lg">
-                {htmlParse(`<p style="overflow: hidden;
+                {htmlParse(`<p class="clamped-text" style="overflow: hidden;
               display: -webkit-box;
               -webkit-box-orient: vertical;
-              -webkit-line-clamp: ${lineClampValue};">${
-                info[item - 1].description || ""
-              }</p>`)}
+              -webkit-line-clamp: 6;">${info[item - 1].description || ""}</p>`)}
               </div>
             </div>
           ) : null

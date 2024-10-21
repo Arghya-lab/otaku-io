@@ -1,4 +1,4 @@
-import { FormatEnum, GenresEnum, SortEnum, StatusEnum } from "@/types/discover";
+import { FormatEnum, GenreEnum, SortEnum, StatusEnum } from "@/types/discover";
 
 export const formatList = [
   { value: undefined, name: "None" },
@@ -29,24 +29,24 @@ export const sortList = [
   { value: SortEnum.TITLE_ROMAJI_DESC, name: "Alphabetically Desc" },
 ];
 
-export const genreList = [
+export const genresList = [
   { value: undefined, name: "None" },
-  { value: GenresEnum.Action, name: "Action" },
-  { value: GenresEnum.Adventure, name: "Adventure" },
-  { value: GenresEnum.Comedy, name: "Comedy" },
-  { value: GenresEnum.Drama, name: "Drama" },
-  { value: GenresEnum.Fantasy, name: "Fantasy" },
-  { value: GenresEnum.Horror, name: "Horror" },
-  { value: GenresEnum.Mecha, name: "Mecha" },
-  { value: GenresEnum.Music, name: "Music" },
-  { value: GenresEnum.Mystery, name: "Mystery" },
-  { value: GenresEnum.Psychological, name: "Psychological" },
-  { value: GenresEnum.Romance, name: "Romance" },
-  { value: GenresEnum.SciFi, name: "Sci-Fi" },
-  { value: GenresEnum.SliceOfLife, name: "Slice of Life" },
-  { value: GenresEnum.Sports, name: "Sports" },
-  { value: GenresEnum.Supernatural, name: "Supernatural" },
-  { value: GenresEnum.Thriller, name: "Thriller" },
+  { value: GenreEnum.Action, name: "Action" },
+  { value: GenreEnum.Adventure, name: "Adventure" },
+  { value: GenreEnum.Comedy, name: "Comedy" },
+  { value: GenreEnum.Drama, name: "Drama" },
+  { value: GenreEnum.Fantasy, name: "Fantasy" },
+  { value: GenreEnum.Horror, name: "Horror" },
+  { value: GenreEnum.Mecha, name: "Mecha" },
+  { value: GenreEnum.Music, name: "Music" },
+  { value: GenreEnum.Mystery, name: "Mystery" },
+  { value: GenreEnum.Psychological, name: "Psychological" },
+  { value: GenreEnum.Romance, name: "Romance" },
+  { value: GenreEnum.SciFi, name: "Sci-Fi" },
+  { value: GenreEnum.SliceOfLife, name: "Slice of Life" },
+  { value: GenreEnum.Sports, name: "Sports" },
+  { value: GenreEnum.Supernatural, name: "Supernatural" },
+  { value: GenreEnum.Thriller, name: "Thriller" },
 ];
 
 export const statusList = [
